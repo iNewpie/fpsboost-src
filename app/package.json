@@ -1,0 +1,29 @@
+{
+  "name": "optimizer",
+  "version": "0.1.0",
+  "description": "Windows network + FPS optimizer with a subscription",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "dist": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "ir.optimizer.app",
+    "productName": "Optimizer",
+    "files": ["src/**", "renderer/**", "tweaks/**", "package.json"],
+    "win": {
+      "target": "nsis",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

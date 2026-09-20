@@ -1,0 +1,24 @@
+# Website + account API for the optimizer — deploy with:  bash server/deploy.sh
+# Set the custom domain below once the domain is on the product's Cloudflare account.
+name = "optimizer-site"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = true                        # keep on until the domain is attached, then turn off
+# routes = [{ pattern = "example.com", custom_domain = true }]
+
+[vars]
+APP_NAME = "Optimizer"                    # product name shown everywhere (rename once you pick one)
+PRICES = '{"1": 150000, "3": 390000, "12": 1290000}'   # months → Toman
+DOWNLOAD_URL = "https://github.com/iNewpie/optimizer/releases/latest"   # where /download sends people (the installer)
+MAX_MACHINES = "2"                        # PCs per account
+TRIAL_DAYS = "0"                          # free days for a fresh account (0 = none)
+ZARINPAL_SANDBOX = "1"                    # "1" = sandbox.zarinpal.com while testing, "0" = real payments
+
+# Accounts, subscriptions, payments: one Durable Object with SQLite (free plan).
+[[durable_objects.bindings]]
+name = "STORE"
+class_name = "Store"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Store"]

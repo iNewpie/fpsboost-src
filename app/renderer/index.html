@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"><title>Optimizer</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<div id="login" class="screen">
+  <div class="card auth"><div class="logo" id="logo1">O</div><h1 id="appname1">Optimizer</h1><p class="muted" data-i18n="login_sub"></p>
+    <form id="loginform"><input id="lu" data-i18n-ph="username" autocomplete="username" required><input id="lp" type="password" data-i18n-ph="password" autocomplete="current-password" required><p class="err" id="lerr"></p><button id="lbtn" data-i18n="login"></button></form>
+    <p class="muted"><a href="#" id="lreg" data-i18n="no_account"></a> · <a href="#" id="langtoggle1" class="lang"></a></p>
+  </div>
+</div>
+<div id="main" class="screen" hidden>
+  <header><div class="brand"><div class="logo" id="logo2">O</div><div><h1 id="appname2">Optimizer</h1><div class="muted" id="sysline"></div></div></div>
+    <div class="pills"><span class="pill" id="userpill"></span><span class="pill" id="subpill"></span><a href="#" id="langtoggle2" class="lang"></a><button class="ghost sm" id="logout" data-i18n="logout"></button></div></header>
+  <div id="banner" class="banner" hidden></div>
+  <nav class="tabs"><button class="tab active" data-tab="fps" data-i18n="tab_fps"></button><button class="tab" data-tab="network" data-i18n="tab_network"></button><button class="tab" data-tab="tools" data-i18n="tab_tools"></button></nav>
+  <section id="tab-fps" class="tabpane"><div class="bar"><button id="fps-rec" data-i18n="apply_recommended"></button><button class="ghost" id="fps-revert" data-i18n="revert_all"></button><span class="muted" id="fps-count"></span></div><div class="list" id="list-fps"></div></section>
+  <section id="tab-network" class="tabpane" hidden><div class="bar"><button id="network-rec" data-i18n="apply_recommended"></button><button class="ghost" id="network-revert" data-i18n="revert_all"></button><span class="muted" id="network-count"></span></div><div class="list" id="list-network"></div></section>
+  <section id="tab-tools" class="tabpane" hidden>
+    <div class="card"><h2 data-i18n="ping_title"></h2><p class="muted" data-i18n="ping_sub"></p><div class="row"><input id="pinghosts" class="mono"><button id="pingbtn" data-i18n="ping_run"></button></div><table class="pingt" id="pingt"></table></div>
+    <div class="card"><h2 data-i18n="actions_title"></h2><div class="list" id="list-actions"></div></div>
+    <div class="card"><h2 data-i18n="sysinfo"></h2><div id="sysinfo" class="muted mono"></div></div>
+  </section>
+  <footer class="muted"><span id="version"></span> · <a href="#" id="site" data-i18n="open_site"></a></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script src="i18n.js"></script><script src="app.js"></script>
+</body></html>
