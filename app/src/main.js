@@ -45,8 +45,13 @@ ipcMain.handle('auth:logout', wrap(() => auth.logout()));
 ipcMain.handle('tweaks:state', wrap(() => engine.state()));
 ipcMain.handle('tweaks:apply', wrap(gated((id, option) => engine.apply(id, option))));
 ipcMain.handle('tweaks:revert', wrap(gated((id) => engine.revert(id))));
-ipcMain.handle('tweaks:applyRecommended', wrap(gated((category) => engine.applyRecommended(category))));
+ipcMain.handle('tweaks:applyRecommended', wrap(gated(async (category) => {
+  const restore = await tools.restorePoint(engine.runner);   // best effort: a System Restore point before the first batch of changes
+  const results = await engine.applyRecommended(category);
+  return results.concat(restore ? [{ id: 'restore_point', info: restore }] : []);
+})));
 ipcMain.handle('tweaks:revertAll', wrap(gated((category) => engine.revertAll(category))));
 ipcMain.handle('tools:ping', wrap((e, hosts) => tools.ping(engine.runner, hosts || CONFIG.PING_HOSTS)));
 ipcMain.handle('tools:action', wrap(gated((id) => tools.action(engine.runner, id))));
+ipcMain.handle('tools:list', wrap(() => tools.actionList()));
 ipcMain.handle('system:info', wrap(() => tools.systemInfo(engine.runner, os)));

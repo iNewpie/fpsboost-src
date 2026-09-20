@@ -1,5 +1,10 @@
 // One-shot tools (no state to revert): ping test, flush DNS, Winsock reset, temp cleanup, system info, admin check.
 const ACTIONS = {
+  restore_point: {
+    title: { en: 'Create a System Restore point', fa: 'ساخت نقطهٔ بازیابی ویندوز (System Restore)' },
+    desc: { en: 'A Windows snapshot you can roll back to from Settings → Recovery, independent of this app. Made automatically before "Apply recommended".', fa: 'یک عکس فوری از ویندوز که از Settings → Recovery می‌توانید به آن برگردید، مستقل از این برنامه. قبل از «اعمال پیشنهادی» خودکار ساخته می‌شود.' },
+    async run(ctx) { const r = await restorePoint(ctx.runner); if (!r) throw new Error('System Restore is not available on this PC'); return r.skipped ? { en: 'A restore point from the last 24 h already exists', fa: 'نقطهٔ بازیابی ۲۴ ساعت اخیر از قبل وجود دارد' } : { en: 'Restore point created', fa: 'نقطهٔ بازیابی ساخته شد' }; },
+  },
   flush_dns: {
     title: { en: 'Flush DNS cache', fa: 'پاک کردن کش DNS' }, desc: { en: 'Forget cached name lookups — fixes sites that resolve to a dead or slow address.', fa: 'رکوردهای کش‌شده را فراموش می‌کند — سایت‌هایی که به آدرس مرده یا کند می‌روند درست می‌شوند.' },
     async run(ctx) { await ctx.must('ipconfig', ['/flushdns']); return { en: 'DNS cache flushed', fa: 'کش DNS پاک شد' }; },
@@ -22,9 +27,21 @@ const ACTIONS = {
 
 const { makeCtx } = require('./engine');
 
+/* System Restore: enable protection on the system drive if it is off, then checkpoint. Windows makes at most one
+   restore point per 24 h through this API (it silently skips otherwise) — we report that as "skipped". null = unavailable. */
+async function restorePoint(runner) {
+  if (process.platform !== 'win32') return null;
+  const script = `try { Enable-ComputerRestore -Drive "$env:SystemDrive\\" -ErrorAction SilentlyContinue; $before = (Get-ComputerRestorePoint | Measure-Object).Count; Checkpoint-Computer -Description "FPS Boost" -RestorePointCreationType MODIFY_SETTINGS -ErrorAction Stop; $after = (Get-ComputerRestorePoint | Measure-Object).Count; if ($after -gt $before) { 'created' } else { 'skipped' } } catch { 'unavailable: ' + $_.Exception.Message }`;
+  const r = await runner.run('powershell', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', script], { timeout: 180000 });
+  const out = (r.out || '').trim();
+  if (r.code !== 0 || out.startsWith('unavailable')) return null;
+  return { skipped: out === 'skipped' };
+}
+
 async function action(runner, id) {
   const a = ACTIONS[id]; if (!a) throw new Error('unknown action ' + id);
-  const msg = await a.run(makeCtx(runner, null));
+  const ctx = makeCtx(runner, null); ctx.runner = runner;
+  const msg = await a.run(ctx);
   return { id, message: msg, reboot: !!a.reboot };
 }
 const actionList = () => Object.entries(ACTIONS).map(([id, a]) => ({ id, title: a.title, desc: a.desc, reboot: !!a.reboot }));
@@ -50,4 +67,4 @@ async function systemInfo(runner, os) {
   return info;
 }
 
-module.exports = { ACTIONS, action, actionList, ping, isAdmin, systemInfo };
+module.exports = { ACTIONS, action, actionList, ping, isAdmin, systemInfo, restorePoint };

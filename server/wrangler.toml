@@ -1,15 +1,14 @@
-# Website + account API for the optimizer — deploy with:  bash server/deploy.sh
-# Set the custom domain below once the domain is on the product's Cloudflare account.
-name = "optimizer-site"
+# fpsboost.ir — website + account API for FPS Boost. Deploy with:  bash server/deploy.sh
+name = "fpsboost-site"
 main = "worker.js"
 compatibility_date = "2026-09-01"
-workers_dev = true                        # keep on until the domain is attached, then turn off
-# routes = [{ pattern = "example.com", custom_domain = true }]
+workers_dev = false
+routes = [{ pattern = "fpsboost.ir", custom_domain = true }]   # the zone must be Active on this Cloudflare account before the first deploy
 
 [vars]
-APP_NAME = "Optimizer"                    # product name shown everywhere (rename once you pick one)
+APP_NAME = "FPS Boost"
 PRICES = '{"1": 150000, "3": 390000, "12": 1290000}'   # months → Toman
-DOWNLOAD_URL = "https://github.com/iNewpie/optimizer/releases/latest"   # where /download sends people (the installer)
+DOWNLOAD_URL = "https://github.com/iNewpie/fpsboost/releases/latest"   # where /download sends people (the installer)
 MAX_MACHINES = "2"                        # PCs per account
 TRIAL_DAYS = "0"                          # free days for a fresh account (0 = none)
 ZARINPAL_SANDBOX = "1"                    # "1" = sandbox.zarinpal.com while testing, "0" = real payments

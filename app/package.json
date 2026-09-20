@@ -1,5 +1,5 @@
 {
-  "name": "optimizer",
+  "name": "fpsboost",
   "version": "0.1.0",
   "description": "Windows network + FPS optimizer with a subscription",
   "private": true,
@@ -14,8 +14,8 @@
     "electron-builder": "^26.0.0"
   },
   "build": {
-    "appId": "ir.optimizer.app",
-    "productName": "Optimizer",
+    "appId": "ir.fpsboost.app",
+    "productName": "FPS Boost",
     "files": ["src/**", "renderer/**", "tweaks/**", "package.json"],
     "win": {
       "target": "nsis",

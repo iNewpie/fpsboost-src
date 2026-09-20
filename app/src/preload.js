@@ -5,5 +5,5 @@ contextBridge.exposeInMainWorld('api', {
   info: call('app:info'), open: call('app:open'),
   login: call('auth:login'), status: call('auth:status'), logout: call('auth:logout'),
   state: call('tweaks:state'), apply: call('tweaks:apply'), revert: call('tweaks:revert'), applyRecommended: call('tweaks:applyRecommended'), revertAll: call('tweaks:revertAll'),
-  ping: call('tools:ping'), action: call('tools:action'), systemInfo: call('system:info'),
+  ping: call('tools:ping'), action: call('tools:action'), actions: call('tools:list'), systemInfo: call('system:info'),
 });

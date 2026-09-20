@@ -16,4 +16,4 @@ if [ -z "$SESSION_SECRET" ]; then
 fi
 npx --yes wrangler@4 deploy
 for k in ADMIN_USER ADMIN_PASS SESSION_SECRET ZARINPAL_MERCHANT; do v="${!k}"; [ -n "$v" ] || continue; printf '%s' "$v" | npx --yes wrangler@4 secret put "$k" >/dev/null && echo "secret $k set"; done
-echo; echo "admin: https://<your-domain>/admin  (login: $ADMIN_USER)"
+echo; echo "site:  https://fpsboost.ir"; echo "admin: https://fpsboost.ir/admin  (login: $ADMIN_USER)"

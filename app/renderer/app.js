@@ -78,7 +78,7 @@ document.addEventListener('click', async (e) => {
   const m = btn.id.match(/^(fps|network)-(rec|revert)$/);
   if (m) {
     btn.disabled = true;
-    try { const rs = await call(m[2] === 'rec' ? api.applyRecommended : api.revertAll, m[1]); const ok = rs.filter(r => !r.error).length, bad = rs.filter(r => r.error);
+    try { const rs = await call(m[2] === 'rec' ? api.applyRecommended : api.revertAll, m[1]); const ok = rs.filter(r => !r.error && !r.info).length, bad = rs.filter(r => r.error);
       toast(t(m[2] === 'rec' ? 'applied_n' : 'reverted_n', { n: ok }) + (bad.length ? ' · ' + t('error') + ': ' + bad.map(b => b.id).join(', ') : '') + (rs.some(r => r.reboot) ? ' — ' + t('reboot_hint') : '')); } catch (err) { toast(t('error') + ': ' + err.message); }
     await refresh(); return;
   }
@@ -92,15 +92,10 @@ document.addEventListener('click', async (e) => {
 /* ---- start ---- */
 (async () => {
   info = (await api.info()).data || {};
-  $('#appname1').textContent = $('#appname2').textContent = info.name || 'Optimizer'; $('#logo1').textContent = $('#logo2').textContent = (info.name || 'O')[0];
+  $('#appname1').textContent = $('#appname2').textContent = info.name || 'FPS Boost'; $('#logo1').textContent = $('#logo2').textContent = (info.name || 'F')[0];
   $('#version').textContent = 'v' + (info.version || ''); $('#pinghosts').value = (info.pingHosts || []).join(' ');
-  actions = [{ id: 'flush_dns' }, { id: 'winsock_reset', reboot: true }, { id: 'clean_temp' }].map(a => ({ ...a, ...ACTION_TEXT[a.id] }));
+  actions = (await api.actions()).data || [];
   applyLang();
   status = (await api.status()).data || {};
   if (status.loggedIn) await showMain(); else $('#login').hidden = false;
 })();
-const ACTION_TEXT = {
-  flush_dns: { title: { en: 'Flush DNS cache', fa: 'پاک کردن کش DNS' }, desc: { en: 'Forget cached name lookups — fixes sites that resolve to a dead or slow address.', fa: 'رکوردهای کش‌شده را فراموش می‌کند — سایت‌هایی که به آدرس مرده یا کند می‌روند درست می‌شوند.' } },
-  winsock_reset: { title: { en: 'Reset Winsock + TCP/IP stack', fa: 'ریست Winsock و TCP/IP' }, desc: { en: 'Rebuilds the network stack config. The fix for "connected but nothing loads" after VPNs or antivirus leftovers. Needs a restart.', fa: 'پیکربندی شبکه را از نو می‌سازد. درمان «وصل است ولی چیزی باز نمی‌شود» بعد از VPN یا آنتی‌ویروس. نیاز به ریستارت.' } },
-  clean_temp: { title: { en: 'Clean temporary files', fa: 'پاک‌سازی فایل‌های موقت' }, desc: { en: 'Deletes files in your Temp and Windows\\Temp folders (files in use are skipped).', fa: 'فایل‌های پوشهٔ Temp شما و Windows\\Temp را حذف می‌کند (فایل‌های در حال استفاده رد می‌شوند).' } },
-};

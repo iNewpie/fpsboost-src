@@ -1,5 +1,5 @@
 /* ============================================================
-   The optimizer's website + account API — one Cloudflare Worker (free plan) with a Durable Object (SQLite) for
+   fpsboost.ir — the website + account API for FPS Boost — one Cloudflare Worker (free plan) with a Durable Object (SQLite) for
    accounts, subscriptions and payments. Persian (RTL) + English.
 
      /                       landing: features, prices, download, login/register
@@ -337,7 +337,7 @@ ol.how{margin:0;padding-inline-start:20px;color:#c9cfdb}ol.how li{margin:6px 0}
 footer{margin-top:40px;color:var(--muted);font-size:13px;text-align:center}`;
 
 function layout(ctx, title, body) {
-  const { env, lang, user, url } = ctx, name = env.APP_NAME || 'Optimizer', fa = lang === 'fa';
+  const { env, lang, user, url } = ctx, name = env.APP_NAME || 'FPS Boost', fa = lang === 'fa';
   const other = fa ? 'en' : 'fa'; const u = new URL(url); u.searchParams.set('lang', other);
   return `<!doctype html><html lang="${lang}" dir="${fa ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(name)} · ${esc(title)}</title><style>${CSS}</style></head><body><div class="wrap">
 <header><a class="brand" href="/"><div class="logo">${esc(name[0] || 'O')}</div><h1>${esc(name)}</h1></a>
