@@ -1,6 +1,6 @@
 /* ============================================================
    fpsboost.ir — every HTML page. Dark violet theme (spotlight beams, glass cards, gradient headings) with a handful of
-   scroll effects: word-by-word heading reveal, floating tokens + particle field in the hero, the tilted app mock-up that
+   scroll effects: word-by-word heading reveal, tokens drifting in from far out while they brighten + a particle field in the hero, the tilted app mock-up that
    straightens as you scroll, a scroll-driven marquee band, count-up stats, cursor glow on the module cards, section reveal.
    Persian (RTL) + English. Everything inline (one Worker), scripts/styles carry the per-request CSP nonce.
    Reduced motion: every effect renders in its final state, nothing is skipped or hidden.
@@ -144,7 +144,11 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,92,246,.18)
 main{position:relative;z-index:1}
 
 /* nav */
-.nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(5,5,7,.6);border-bottom:1px solid rgba(255,255,255,.05);animation:up .8s .7s both}
+.nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(5,5,7,.6);border-bottom:1px solid rgba(255,255,255,.05)}
+/* page-load: the mark pops, the wordmark slides out from behind it, then the links and the right-hand buttons pop in one after another (backwards fill so hover transforms keep working afterwards) */
+@keyframes pop{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:none}}@keyframes slidein{from{transform:translateX(-110%);opacity:0}to{transform:none;opacity:1}}@keyframes slideinr{from{transform:translateX(110%);opacity:0}to{transform:none;opacity:1}}
+.nav .brand{animation:pop .5s cubic-bezier(.16,1,.3,1) .45s backwards}.nav .brand .bn{overflow:hidden;display:inline-block;vertical-align:middle;padding:2px 0}.nav .brand .bn>span{display:inline-block;animation:slidein .55s cubic-bezier(.16,1,.3,1) .8s backwards}[dir=rtl] .nav .brand .bn>span{animation-name:slideinr}
+.links a{animation:pop .45s cubic-bezier(.16,1,.3,1) calc(1s + var(--i,0)*.07s) backwards}.navr>*{animation:pop .45s cubic-bezier(.16,1,.3,1) .7s backwards}.navr>:nth-child(2){animation-delay:.85s}.navr>:nth-child(3){animation-delay:1.2s}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;height:64px}
 .brand{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase}
 .links{display:flex;gap:24px;font-size:14px}.links a{color:var(--muted);position:relative;padding:4px 0}.links a:after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--accent2);transition:right .3s}.links a:hover{color:var(--text)}.links a:hover:after{right:0}
@@ -162,22 +166,23 @@ background:conic-gradient(from 0deg at 50% 0,transparent 0 42%,rgba(139,92,246,.
 .wmk{position:absolute;left:50%;top:40px;width:min(1100px,120vw);height:560px;margin-left:min(-550px,-60vw);z-index:-1;pointer-events:none;opacity:.045;background:#fff;-webkit-mask:url(/logo.png) center/contain no-repeat;mask:url(/logo.png) center/contain no-repeat;transform:translateY(var(--py,0))}
 .wm{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .04em .12em;margin:0 -.04em -.12em}.w{display:inline-block}
 .hero h1{font-size:clamp(40px,6.6vw,78px);font-weight:600;letter-spacing:-.025em;margin:18px auto 16px;max-width:920px}
-.hero h1 .w{opacity:0;transform:translateY(110%) rotate(6deg);filter:blur(8px);animation:wr .9s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(.25s + var(--i)*.1s)}
-@keyframes wr{60%{filter:blur(0)}to{opacity:1;transform:none;filter:none}}
-.hero .pill{animation:up .7s .15s both}.hero .lead{color:var(--muted);font-size:17px;max-width:640px;margin:0 auto 26px;animation:up .8s 1.05s both}.hero .actions{animation:up .8s 1.2s both}.mockwrap{animation:up 1.1s 1.35s both}
+.hero h1 .w{opacity:0;transform:translateY(105%) rotate(7deg);transform-origin:0 100%;filter:blur(4px);animation:wr .6s cubic-bezier(.16,1,.3,1) forwards;animation-delay:calc(.55s + var(--i)*.17s)}[dir=rtl] .hero h1 .w{transform:translateY(105%) rotate(-7deg);transform-origin:100% 100%}
+@keyframes wr{45%{opacity:1;filter:blur(0) drop-shadow(0 0 18px rgba(196,181,253,.6))}to{opacity:1;transform:none;filter:drop-shadow(0 0 10px rgba(196,181,253,.22))}}
+.hero .pill{animation:up .6s .45s both}.hero .lead{color:var(--muted);font-size:17px;max-width:640px;margin:0 auto 26px;animation:up .7s 1.75s both}.hero .actions{animation:up .7s 1.95s both}.mockwrap{animation:up 1.1s 2.15s both}
 .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
-.hint{position:fixed;inset-inline-end:22px;bottom:18px;z-index:15;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:8px;transition:opacity .4s;animation:up .8s 2s both}.hint.off{opacity:0;pointer-events:none}
+.hint{position:fixed;inset-inline-end:22px;bottom:18px;z-index:15;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:8px;transition:opacity .4s;animation:up .8s 2.7s both}.hint.off{opacity:0;pointer-events:none}
 .hint i{width:18px;height:28px;border:1px solid var(--line2);border-radius:10px;position:relative}.hint i:after{content:"";position:absolute;left:50%;top:6px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:var(--accent2);animation:wheel 1.6s ease-in-out infinite}
 @keyframes wheel{0%{transform:translateY(0);opacity:1}100%{transform:translateY(10px);opacity:0}}
-/* physics field: FPS / ping chips and app tiles that drift, collide, get pushed by the cursor and can be thrown */
+/* token field: FPS / ping glyphs and app tiles. Each one starts far out from its home spot, dim and blurred, and drifts in while its opacity
+   ramps up (the reference video's track — long stagger, ease-out over ~2.4s), then floats slowly and shifts with the cursor by depth. Shaded, not glowing. */
 .field{position:absolute;left:0;right:0;top:0;height:640px;z-index:0;pointer-events:none}.hero .wrap{position:relative;z-index:1;pointer-events:none}.hero .wrap>*{pointer-events:auto}
-.body{position:absolute;left:0;top:0;will-change:transform;pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;direction:ltr;unicode-bidi:isolate;opacity:0;animation:bin .6s ease var(--e,1.2s) forwards;filter:blur(calc((1 - var(--z,1)) * 3px))}
-.body.drag{cursor:grabbing}@keyframes bin{to{opacity:calc(.5 + var(--z,1) * .5)}}
-.num{display:flex;align-items:baseline;gap:5px;padding:8px 13px;border-radius:12px;background:rgba(12,12,20,.85);border:1px solid var(--line2);box-shadow:0 0 30px -8px rgba(139,92,246,.7),0 10px 24px -10px #000;font-weight:700;font-size:17px;letter-spacing:-.02em;color:#f4f2fb;white-space:nowrap}
-.num small{font-size:10.5px;font-weight:500;color:var(--accent3);letter-spacing:.06em}.num.good{color:var(--ok)}.num.good small{color:var(--ok)}
-.app{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;background:var(--bg1);box-shadow:0 14px 34px -12px #000,0 0 0 1px rgba(255,255,255,.14) inset,0 0 24px -8px var(--bg1);letter-spacing:-.02em}
+.body{position:absolute;left:0;top:0;will-change:transform,opacity;pointer-events:none;user-select:none;-webkit-user-select:none;direction:ltr;unicode-bidi:isolate;opacity:0}
+.num{display:flex;align-items:baseline;gap:6px;font-weight:500;font-size:calc(15px + var(--z,1)*13px);letter-spacing:-.02em;color:#cfc9ea;white-space:nowrap;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+.num small{font-size:.5em;font-weight:500;color:var(--accent3);letter-spacing:.08em}.num.good{color:#d2f5e2}.num.good small{color:var(--ok)}
+.num.card{padding:.35em .5em;border:1.5px solid rgba(207,201,234,.7);border-radius:.32em;background:rgba(8,8,14,.45);box-shadow:0 0 0 1px rgba(0,0,0,.4) inset,0 14px 34px -16px #000}
+.app{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;background:var(--bg1);box-shadow:0 14px 34px -12px #000,0 0 0 1px rgba(255,255,255,.12) inset,0 -18px 24px -14px rgba(0,0,0,.55) inset;letter-spacing:-.02em;filter:saturate(.7) brightness(.88)}
 .app svg{width:30px;height:30px}.app .px{width:34px;height:34px;border-radius:5px;background-color:#8a5a2b;background-image:linear-gradient(#5faa3a 0 32%,transparent 32%),linear-gradient(90deg,#4a8f2c 0 25%,transparent 25% 50%,#6bbd45 50% 75%,transparent 75%),linear-gradient(#7c4f24 0 55%,#96602f 55% 80%,#7c4f24 80%);background-size:100% 100%,50% 32%,100% 100%;background-repeat:no-repeat,repeat-x,no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.4) inset}
-@media(max-width:700px){.field{height:560px}.body{pointer-events:none}.body:not(.m){display:none}.num{font-size:13px;padding:6px 9px}.app{width:40px;height:40px;border-radius:12px;font-size:12px}.app svg{width:22px;height:22px}}
+@media(max-width:700px){.field{height:560px}.body:not(.m){display:none}.num{font-size:calc(11px + var(--z,1)*8px)}.app{width:40px;height:40px;border-radius:12px;font-size:12px}.app svg{width:22px;height:22px}}
 .mockwrap{perspective:1600px;margin:56px auto 0;max-width:980px;position:relative}
 .mock{transform:rotateX(var(--tilt,14deg)) rotateY(var(--ty,0deg));transform-origin:50% 0;transition:transform .15s linear;border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,#0f0e18,#08080d);
 box-shadow:0 40px 120px -30px rgba(139,92,246,.55),0 0 0 1px rgba(255,255,255,.03) inset;overflow:hidden;text-align:start;display:grid;grid-template-columns:190px 1fr 230px;min-height:440px;font-size:12.5px}
@@ -230,7 +235,7 @@ section.s{padding:110px 0 0}.s .head{text-align:center;max-width:640px;margin:0 
 .rv.l{transform:translateX(-46px) rotate(-2deg)}.rv.r{transform:translateX(46px) rotate(2deg)}.rv.sc{transform:translateY(40px) scale(.94)}
 [dir=rtl] .rv.l{transform:translateX(46px) rotate(2deg)}[dir=rtl] .rv.r{transform:translateX(-46px) rotate(-2deg)}
 .rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}
-.words .w{opacity:0;transform:translateY(110%) rotate(5deg);filter:blur(6px);transition:opacity .5s,transform .9s cubic-bezier(.2,.7,.2,1),filter .6s;transition-delay:calc(var(--i)*.07s)}.words.in .w{opacity:1;transform:none;filter:none}
+.words .w{opacity:0;transform:translateY(105%) rotate(7deg);transform-origin:0 100%;filter:blur(4px);transition:opacity .4s,transform .6s cubic-bezier(.16,1,.3,1),filter .5s;transition-delay:calc(var(--i)*.12s)}[dir=rtl] .words .w{transform:translateY(105%) rotate(-7deg);transform-origin:100% 100%}.words.in .w{opacity:1;transform:none;filter:none}
 
 /* before / after */
 .ba{position:relative;overflow:hidden;padding-bottom:20px}
@@ -381,7 +386,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:10px 8px;
 .acts form{display:inline}.tbl{overflow-x:auto}.kpis{display:flex;gap:12px;flex-wrap:wrap}.kpi{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 16px}.kpi b{font-size:20px;display:block}
 ol.terms{margin:0;padding-inline-start:20px}ol.terms li{margin:10px 0;color:#c9c4de}
 
-@media(prefers-reduced-motion:reduce){body,.nav,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.helix i,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after{animation:none!important}
+@media(prefers-reduced-motion:reduce){body,.nav,.nav .brand,.nav .brand .bn>span,.links a,.navr>*,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.helix i,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after{animation:none!important}
 .hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.lines span{opacity:.6!important}.mock,.ba-card,.ba-w,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
 .helix path{stroke-dashoffset:0!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}`;
 
@@ -404,25 +409,19 @@ var c=document.getElementById('stars');if(c&&!rm){var x=c.getContext('2d'),W,H,P
   for(var i=0;i<70;i++)P.push({x:Math.random(),y:Math.random(),z:.3+Math.random()*.7,s:Math.random()*6.28});
   addEventListener('mousemove',function(e){mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5)},{passive:true});
   (function draw(t){x.clearRect(0,0,W,H);for(var i=0;i<P.length;i++){var p=P[i],px=(p.x+mx*.03*p.z)*W,py=(p.y+my*.03*p.z+Math.sin(t/2200+p.s)*.004)*H,r=(0.8+p.z*1.4)*devicePixelRatio;x.beginPath();x.arc(px,py,r,0,6.28);x.fillStyle='rgba(196,181,253,'+(0.15+p.z*.45)+')';x.fill()}requestAnimationFrame(draw)})(0)}
-// physics field
-var F=document.querySelector('.field');if(F){var B=[].slice.call(F.querySelectorAll('.body')).filter(function(el){return el.offsetParent!==null}),FW=F.offsetWidth,FH=F.offsetHeight,PX=-1e4,PY=-1e4,DR=null,t0=performance.now();
-  var MOB=innerWidth<=700;function home(el){return MOB&&el.dataset.mx?[el.dataset.mx/100*FW,el.dataset.my/100*FH]:[el.dataset.x/100*FW,el.dataset.y/100*FH]}
-  B.forEach(function(el,i){var hm=home(el),hx=hm[0],hy=hm[1],z=+el.dataset.z||1,side=hx<FW/2?-1:1;el.style.setProperty('--z',z);el.style.setProperty('--e',(1.1+i*.07)+'s');
-    el.b={el:el,hx:hx,hy:hy,x:rm?hx:hx+side*FW*.7,y:rm?hy:hy+(i%2?-1:1)*220,vx:0,vy:0,r:rm?0:side*40,vr:0,z:z,w:el.offsetWidth,h:el.offsetHeight,seed:i*7.3,sc:.72+.28*z};
-    el.addEventListener('pointerdown',function(e){if(rm)return;DR=el.b;el.classList.add('drag');el.setPointerCapture(e.pointerId);var r=F.getBoundingClientRect();DR.px=e.clientX-r.left;DR.py=e.clientY-r.top;e.preventDefault()});
-    el.addEventListener('pointerup',function(){if(DR){DR.el.classList.remove('drag');DR=null}});el.addEventListener('pointercancel',function(){if(DR){DR.el.classList.remove('drag');DR=null}})});
-  addEventListener('pointermove',function(e){var r=F.getBoundingClientRect();PX=e.clientX-r.left;PY=e.clientY-r.top;if(DR){DR.px=PX;DR.py=PY}},{passive:true});
-  addEventListener('resize',function(){FW=F.offsetWidth;FH=F.offsetHeight;MOB=innerWidth<=700;B.forEach(function(el){var hm=home(el);el.b.hx=hm[0];el.b.hy=hm[1]})});
-  function place(b){b.el.style.transform='translate('+(b.x-b.w/2).toFixed(1)+'px,'+(b.y-b.h/2).toFixed(1)+'px) rotate('+b.r.toFixed(2)+'deg) scale('+b.sc+')'}
-  if(rm){B.forEach(function(el){place(el.b)})}else{(function step(now){var t=(now-t0)/1000;
-    for(var i=0;i<B.length;i++){var b=B[i].b,ax=(b.hx-b.x)*.0035,ay=(b.hy-b.y)*.0035;ax+=Math.sin(t*.6+b.seed)*.025;ay+=Math.cos(t*.45+b.seed*1.7)*.025;
-      var dx=b.x-PX,dy=b.y-PY,d2=dx*dx+dy*dy;if(d2<180*180&&d2>0){var d=Math.sqrt(d2),f=(180-d)/180*1.1;ax+=dx/d*f;ay+=dy/d*f}
-      if(!MOB&&b.x>FW*.24&&b.x<FW*.76&&b.y>FH*.1&&b.y<FH*.8){ax+=(b.x<FW/2?-1:1)*.3}
-      for(var j=i+1;j<B.length;j++){var c=B[j].b,ex=b.x-c.x,ey=b.y-c.y,min=(b.w+c.w)/2*.85,e2=ex*ex+ey*ey;if(e2<min*min&&e2>0){var ed=Math.sqrt(e2),pf=(min-ed)/min*.6;ex/=ed;ey/=ed;b.vx+=ex*pf;b.vy+=ey*pf;c.vx-=ex*pf;c.vy-=ey*pf}}
-      if(DR===b){b.vx=(b.px-b.x)*.35;b.vy=(b.py-b.y)*.35;b.x+=b.vx;b.y+=b.vy}else{b.vx=(b.vx+ax)*.93;b.vy=(b.vy+ay)*.93;b.x+=b.vx;b.y+=b.vy}
-      var hw=b.w/2,hh=b.h/2;if(b.x<hw){b.x=hw;b.vx=Math.abs(b.vx)*.6}if(b.x>FW-hw){b.x=FW-hw;b.vx=-Math.abs(b.vx)*.6}if(b.y<hh){b.y=hh;b.vy=Math.abs(b.vy)*.6}if(b.y>FH-hh){b.y=FH-hh;b.vy=-Math.abs(b.vy)*.6}
-      b.vr=(b.vr+b.vx*.12-b.r*.015)*.9;b.r+=b.vr;place(b)}
-    requestAnimationFrame(step)})(t0)}}
+// token field — the reference track: each token starts far out on the line from the field centre through its home spot, dim, smaller and blurred,
+// and eases home over 2.4s while its opacity ramps up; .16s stagger from .8s. After that: slow float + a parallax shift with the cursor scaled by depth.
+var F=document.querySelector('.field');if(F){var B=[].slice.call(F.querySelectorAll('.body')).filter(function(el){return el.offsetParent!==null}),FW=F.offsetWidth,FH=F.offsetHeight,PX=0,PY=0,t0=performance.now(),MOB=innerWidth<=700;
+  function home(el){return MOB&&el.dataset.mx?[el.dataset.mx/100*FW,el.dataset.my/100*FH]:[el.dataset.x/100*FW,el.dataset.y/100*FH]}
+  function setHome(el){var hm=home(el),b=el.b;b.hx=hm[0];b.hy=hm[1];var dx=b.hx-FW/2,dy=b.hy-FH*.45,d=Math.sqrt(dx*dx+dy*dy)||1,far=110+150*(1-b.z);b.ox=dx/d*far;b.oy=dy/d*far;b.w=el.offsetWidth;b.h=el.offsetHeight}
+  B.forEach(function(el,i){var z=+el.dataset.z||1;el.b={el:el,z:z,seed:i*7.3,delay:.8+i*.16,dur:2.4,tilt:+el.dataset.tilt||0,op:el.classList.contains('app')?.78:.32+.36*z};setHome(el)});
+  addEventListener('pointermove',function(e){PX=e.clientX/innerWidth-.5;PY=e.clientY/innerHeight-.5},{passive:true});
+  addEventListener('resize',function(){FW=F.offsetWidth;FH=F.offsetHeight;MOB=innerWidth<=700;B.forEach(setHome)});
+  function ease(p){return 1-Math.pow(1-p,3)}
+  function place(b,e,t){var fx=Math.sin(t*.5+b.seed)*9*b.z,fy=Math.cos(t*.37+b.seed*1.7)*8*b.z,px=-PX*44*b.z,py=-PY*30*b.z;
+    b.el.style.transform='translate('+(b.hx+b.ox*(1-e)+fx+px-b.w/2).toFixed(1)+'px,'+(b.hy+b.oy*(1-e)+fy+py-b.h/2).toFixed(1)+'px) rotate('+(b.tilt+(1-e)*(b.seed%2?16:-16)+Math.sin(t*.3+b.seed)*2*b.z).toFixed(2)+'deg) scale('+(.78+.22*e).toFixed(3)+')';
+    b.el.style.opacity=(b.op*e).toFixed(3);var bl=(1-e)*5+(1-b.z)*2.5;b.el.style.filter=bl>.05?'blur('+bl.toFixed(1)+'px)':''}
+  if(rm){B.forEach(function(el){place(el.b,1,0)})}else{(function step(now){var t=(now-t0)/1000;for(var i=0;i<B.length;i++){var b=B[i].b,p=Math.min(1,Math.max(0,(t-b.delay)/b.dur));place(b,ease(p),t)}requestAnimationFrame(step)})(t0)}}
 var mock=document.querySelector('.mock'),mw=document.querySelector('.mockwrap'),wmk=document.querySelector('.wmk'),hint=document.querySelector('.hint');
 if(mw&&!rm){mw.addEventListener('mousemove',function(e){var r=mw.getBoundingClientRect();mock.style.setProperty('--ty',(((e.clientX-r.left)/r.width-.5)*10)+'deg')});mw.addEventListener('mouseleave',function(){mock.style.setProperty('--ty','0deg')})}
 // scroll-driven: marquee bands, mock straightening, before/after, pinned stage
@@ -449,8 +448,8 @@ export function layout(ctx, title, body, opts = {}) {
 <title>${esc(name)} · ${esc(title)}</title><meta name="description" content="${esc(t(lang, 'lead'))}"><meta name="theme-color" content="#050507">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${font}&display=swap">
 <style nonce="${nonce}">${CSS}</style></head><body class="${fa ? 'fa' : ''}"><div class="light" aria-hidden="true"></div>
-<header class="nav"><div class="wrap"><a class="brand" href="/">${MARK}${esc(name)}</a>
-<nav class="links"><a href="/#features">${t(lang, 'nav_features')}</a><a href="/#how">${t(lang, 'nav_how')}</a><a href="/#games">${t(lang, 'nav_games')}</a><a href="/#plans">${t(lang, 'nav_plans')}</a><a href="/#faq">${t(lang, 'nav_faq')}</a></nav>
+<header class="nav"><div class="wrap"><a class="brand" href="/">${MARK}<span class="bn"><span>${esc(name)}</span></span></a>
+<nav class="links"><a href="/#features" style="--i:0">${t(lang, 'nav_features')}</a><a href="/#how" style="--i:1">${t(lang, 'nav_how')}</a><a href="/#games" style="--i:2">${t(lang, 'nav_games')}</a><a href="/#plans" style="--i:3">${t(lang, 'nav_plans')}</a><a href="/#faq" style="--i:4">${t(lang, 'nav_faq')}</a></nav>
 <div class="navr"><a class="lang" href="${esc(u.pathname + u.search)}" hreflang="${other}">${t(lang, 'lang')}</a>${user ? `<a class="btn ghost" href="/account">${t(lang, 'account')}</a>` : `<a class="lang login" href="/login">${t(lang, 'login')}</a><a class="btn" href="/download">${t(lang, 'download_short')}</a>`}</div></div></header>
 <main>${body}</main>
 <footer><div class="wrap"><div class="fcols"><div><a class="brand" href="/">${MARK}${esc(name)}</a><p class="muted" style="max-width:300px;margin:12px 0 0">${t(lang, 'cta_sub')}</p></div>
@@ -462,7 +461,8 @@ ${opts.script ? `<script nonce="${nonce}">${opts.script}</script>` : ''}</body><
 }
 
 /* ============================================================ landing ============================================================ */
-const words = (s, cls = '') => s.split(' ').map((w, i) => `<span class="wm"><span class="w${cls ? ' ' + cls : ''}" style="--i:${i}">${esc(w)}</span></span>`).join(' ');
+const words = (s, cls = '', off = 0) => s.split(' ').map((w, i) => `<span class="wm"><span class="w${cls ? ' ' + cls : ''}" style="--i:${i + off}">${esc(w)}</span></span>`).join(' ');
+const nw = s => s.split(' ').length;
 const ICONS = {
   pc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',
   net: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1"/></svg>',
@@ -489,7 +489,7 @@ function mockHtml(ctx) {
 }
 export function landing(ctx) {
   const { env, lang } = ctx, fa = lang === 'fa', P = Object.entries(prices(env));
-  // the physics field: numbers + app tiles with a home position (% of the field), depth z, and m = also shown on phones
+  // the token field: numbers + app tiles with a home position (% of the field), depth z, m = also shown on phones, tilt = outline card
   const APP = {
     val: ['#ff4655', '<svg viewBox="0 0 24 24" fill="#fff"><path d="M3 4l9 12 3-4L9 4zm18 0-6 8 3 4 3-4z"/></svg>'], mc: ['#3c8527', '<i class="px"></i>'], cs2: ['#f5a623', 'CS2'], fn: ['#2b6cff', 'F'],
     apex: ['#ff5a36', '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3 3 20h6l3-6 3 6h6zm0 7-1.5 3h3z"/></svg>'], rbx: ['#e53e3e', '<svg viewBox="0 0 24 24" fill="#fff"><path d="M6 3 3 18l15 3 3-15zm5 7 4 1-1 4-4-1z"/></svg>'], gta: ['#2f9e44', 'V'],
@@ -498,9 +498,9 @@ export function landing(ctx) {
     chrome: ['#f1f3f4', '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/><path d="M12 2a10 10 0 0 1 8.7 5H12a5 5 0 0 0-4.3 2.5L4.6 5.8A10 10 0 0 1 12 2z" fill="#ea4335"/><path d="M21.6 9a10 10 0 0 1-5 12.1L12.9 17A5 5 0 0 0 16.3 9z" fill="#fbbc05"/><path d="M4.6 5.8 7.7 9.5A5 5 0 0 0 12.9 17l-3 4.9A10 10 0 0 1 4.6 5.8z" fill="#34a853"/><circle cx="12" cy="12" r="3.3" fill="#4285f4"/></svg>'],
     obs: ['#302e31', '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3v5.5M5 16.5l4.5-3M19 16.5l-4.5-3" opacity=".8"/></svg>'], spot: ['#1db954', '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5c4-1.2 8.5-1 12 .8M7 13c3.3-1 7-.8 10 .7M8 16.3c2.5-.7 5.5-.6 8 .5"/></svg>'],
   };
-  const NUMS = [['144', 'FPS', 1, 12, 22, 1, [28, 7]], ['18', 'ms', 1, 84, 30, 1, [74, 7]], ['+38', 'FPS', 1, 20, 62, .8, 0], ['−11', 'ms', 1, 80, 68, .8, 0], ['240', 'Hz', 0, 6, 44, .6, 0], ['7.0', 'ms', 0, 92, 50, .6, 0], ['98', '1% LOW', 0, 88, 12, .7, 0], ['60→144', '', 0, 30, 88, .55, 0]];
-  const TILES = [['val', 8, 10, 1, [7, 6]], ['mc', 90, 22, 1, [93, 6]], ['cs2', 4, 76, .8, 0], ['fn', 94, 82, .9, 0], ['apex', 20, 44, .6, 0], ['dc', 76, 10, .9, 0], ['steam', 14, 92, .7, 0], ['ps', 78, 90, .8, 0], ['pr', 96, 64, .6, 0], ['chrome', 22, 6, .55, 0], ['gta', 80, 46, .7, 0], ['rbx', 8, 30, .6, 0], ['obs', 84, 76, .55, 0], ['spot', 26, 96, .5, 0]];
-  const field = `<div class="field" aria-hidden="true">${NUMS.map(([n, u, good, x, y, z, m]) => `<div class="body num${good ? ' good' : ''}${m ? ' m' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''}>${n}${u ? `<small>${u}</small>` : ''}</div>`).join('')}${TILES.map(([k, x, y, z, m]) => `<div class="body app${m ? ' m' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} style="--bg1:${APP[k][0]}">${APP[k][1]}</div>`).join('')}</div>`;
+  const NUMS = [['144', 'FPS', 1, 12, 22, 1, [28, 7], -14], ['18', 'ms', 1, 91, 37, 1, [74, 7], 12], ['+38', 'FPS', 1, 20, 62, .8, 0], ['−11', 'ms', 1, 80, 68, .8, 0], ['240', 'Hz', 0, 6, 44, .6, 0], ['7.0', 'ms', 0, 92, 50, .6, 0], ['98', '1% LOW', 0, 88, 12, .7, 0], ['60→144', '', 0, 30, 88, .55, 0]];
+  const TILES = [['val', 8, 10, 1, [7, 6]], ['mc', 88, 20, 1, [93, 6]], ['cs2', 4, 76, .8, 0], ['fn', 94, 82, .9, 0], ['apex', 20, 44, .6, 0], ['dc', 76, 10, .9, 0], ['steam', 14, 92, .7, 0], ['ps', 78, 90, .8, 0], ['pr', 96, 64, .6, 0], ['chrome', 22, 6, .55, 0], ['gta', 80, 46, .7, 0], ['rbx', 8, 30, .6, 0], ['obs', 84, 76, .55, 0], ['spot', 26, 96, .5, 0]];
+  const field = `<div class="field" aria-hidden="true">${NUMS.map(([n, u, good, x, y, z, m, tilt]) => `<div class="body num${good ? ' good' : ''}${m ? ' m' : ''}${tilt ? ' card' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${tilt ? ` data-tilt="${tilt}"` : ''}${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} style="--z:${z}">${n}${u ? `<small>${u}</small>` : ''}</div>`).join('')}${TILES.map(([k, x, y, z, m]) => `<div class="body app${m ? ' m' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} style="--bg1:${APP[k][0]}">${APP[k][1]}</div>`).join('')}</div>`;
   const stats = [[20, '+', 'st1'], [4, '', 'st2'], [8, '', 'st3'], [100, '%', 'st4']].map(([v, s, k]) => `<div class="stat" data-n="${v}" data-suf="${s}"><b>0</b><span>${t(lang, k)}</span></div>`).join('');
   const mq = t(lang, 'marquee'); const track = [...mq, ...mq].map(w => `<span>${esc(w)}</span><em>✦</em>`).join('');
   const mq2 = t(lang, 'marquee2'); const track2 = [...mq2, ...mq2].map(w => `<span>${esc(w)}</span><em>✦</em>`).join('');
@@ -533,7 +533,7 @@ export function landing(ctx) {
   const body = `
 <section class="hero"><div class="cone"></div><div class="beam b1"></div><div class="beam b2"></div><div class="wmk"></div><canvas id="stars"></canvas>${field}<div class="wrap">
 <span class="pill"><i></i>${t(lang, 'hero_pill')}</span>
-<h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad')}<br>${words(t(lang, 'h1c'))}</h1>
+<h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad', nw(t(lang, 'h1a')))}<br>${words(t(lang, 'h1c'), '', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')))}</h1>
 <p class="lead">${t(lang, 'lead')}</p><div class="hint"><i></i>${t(lang, 'scroll_hint')}</div>
 <div class="actions"><a class="btn" href="/download">${t(lang, 'download')}</a><a class="btn ghost" href="/register">${t(lang, 'register')}</a></div>
 ${mockHtml(ctx)}
