@@ -169,14 +169,15 @@ background:conic-gradient(from 0deg at 50% 0,transparent 0 42%,rgba(139,92,246,.
 .hint{position:fixed;inset-inline-end:22px;bottom:18px;z-index:15;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:8px;transition:opacity .4s;animation:up .8s 2s both}.hint.off{opacity:0;pointer-events:none}
 .hint i{width:18px;height:28px;border:1px solid var(--line2);border-radius:10px;position:relative}.hint i:after{content:"";position:absolute;left:50%;top:6px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:var(--accent2);animation:wheel 1.6s ease-in-out infinite}
 @keyframes wheel{0%{transform:translateY(0);opacity:1}100%{transform:translateY(10px);opacity:0}}
-.tok{position:absolute;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(10,10,16,.75);color:var(--accent3);font-size:12.5px;font-weight:500;backdrop-filter:blur(6px);direction:ltr;unicode-bidi:isolate;
-box-shadow:0 0 30px -8px rgba(139,92,246,.6);animation:tin 1.3s cubic-bezier(.2,.7,.2,1) var(--e,1.3s) both,float 6s ease-in-out calc(var(--e,1.3s) + 1.3s) infinite;will-change:transform;pointer-events:none;white-space:nowrap}
-.tok.sq{width:50px;height:50px;padding:0;display:grid;place-items:center;border-radius:10px;font-size:15px;font-weight:600;color:#ece7ff;--rot:-12deg}.tok.sq:nth-child(odd){--rot:10deg}
-.tok.far{filter:blur(1.5px);font-size:11px;animation-name:tin,floatfar}.tok.far.sq{width:40px;height:40px;font-size:12px}
-@keyframes tin{from{opacity:0;transform:translate(var(--fx,0),var(--fy,60px)) rotate(calc(var(--rot,0deg) + 40deg)) scale(.5)}to{opacity:1;transform:translate(var(--px,0),0) rotate(var(--rot,0deg)) scale(1)}}
-@keyframes float{0%,100%{transform:translate(var(--px,0),0) rotate(var(--rot,0deg))}50%{transform:translate(var(--px,0),-14px) rotate(calc(var(--rot,0deg) + 3deg))}}
-@keyframes floatfar{0%,100%{opacity:.55;transform:translate(var(--px,0),0) rotate(var(--rot,0deg))}50%{opacity:.55;transform:translate(var(--px,0),-10px) rotate(var(--rot,0deg))}}
-@media(max-width:900px){.tok,.tok.sq{display:none}}
+/* physics field: FPS / ping chips and app tiles that drift, collide, get pushed by the cursor and can be thrown */
+.field{position:absolute;left:0;right:0;top:0;height:640px;z-index:0;pointer-events:none}.hero .wrap{position:relative;z-index:1;pointer-events:none}.hero .wrap>*{pointer-events:auto}
+.body{position:absolute;left:0;top:0;will-change:transform;pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;direction:ltr;unicode-bidi:isolate;opacity:0;animation:bin .6s ease var(--e,1.2s) forwards;filter:blur(calc((1 - var(--z,1)) * 3px))}
+.body.drag{cursor:grabbing}@keyframes bin{to{opacity:calc(.5 + var(--z,1) * .5)}}
+.num{display:flex;align-items:baseline;gap:5px;padding:8px 13px;border-radius:12px;background:rgba(12,12,20,.85);border:1px solid var(--line2);box-shadow:0 0 30px -8px rgba(139,92,246,.7),0 10px 24px -10px #000;font-weight:700;font-size:17px;letter-spacing:-.02em;color:#f4f2fb;white-space:nowrap}
+.num small{font-size:10.5px;font-weight:500;color:var(--accent3);letter-spacing:.06em}.num.good{color:var(--ok)}.num.good small{color:var(--ok)}
+.app{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;background:var(--bg1);box-shadow:0 14px 34px -12px #000,0 0 0 1px rgba(255,255,255,.14) inset,0 0 24px -8px var(--bg1);letter-spacing:-.02em}
+.app svg{width:30px;height:30px}.app .px{width:34px;height:34px;border-radius:5px;background-color:#8a5a2b;background-image:linear-gradient(#5faa3a 0 32%,transparent 32%),linear-gradient(90deg,#4a8f2c 0 25%,transparent 25% 50%,#6bbd45 50% 75%,transparent 75%),linear-gradient(#7c4f24 0 55%,#96602f 55% 80%,#7c4f24 80%);background-size:100% 100%,50% 32%,100% 100%;background-repeat:no-repeat,repeat-x,no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.4) inset}
+@media(max-width:700px){.field{height:560px}.body{pointer-events:none}.body:not(.m){display:none}.num{font-size:13px;padding:6px 9px}.app{width:40px;height:40px;border-radius:12px;font-size:12px}.app svg{width:22px;height:22px}}
 .mockwrap{perspective:1600px;margin:56px auto 0;max-width:980px;position:relative}
 .mock{transform:rotateX(var(--tilt,14deg)) rotateY(var(--ty,0deg));transform-origin:50% 0;transition:transform .15s linear;border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,#0f0e18,#08080d);
 box-shadow:0 40px 120px -30px rgba(139,92,246,.55),0 0 0 1px rgba(255,255,255,.03) inset;overflow:hidden;text-align:start;display:grid;grid-template-columns:190px 1fr 230px;min-height:440px;font-size:12.5px}
@@ -380,8 +381,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:10px 8px;
 .acts form{display:inline}.tbl{overflow-x:auto}.kpis{display:flex;gap:12px;flex-wrap:wrap}.kpi{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 16px}.kpi b{font-size:20px;display:block}
 ol.terms{margin:0;padding-inline-start:20px}ol.terms li{margin:10px 0;color:#c9c4de}
 
-@media(prefers-reduced-motion:reduce){body,.nav,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.tok,.beam,.cone,.cta .mark,.xh,.helix i,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after{animation:none!important}
-.hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.tok,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.lines span{opacity:.6!important}.mock,.ba-card,.ba-w,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
+@media(prefers-reduced-motion:reduce){body,.nav,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.helix i,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after{animation:none!important}
+.hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.lines span{opacity:.6!important}.mock,.ba-card,.ba-w,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
 .helix path{stroke-dashoffset:0!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}`;
 
 /* ============================================================ JS (landing) ============================================================ */
@@ -401,8 +402,27 @@ if(!rm){document.querySelectorAll('.btn,button').forEach(function(b){b.addEventL
 // hero: particle field, token parallax, mock tilt (scroll + mouse), watermark parallax
 var c=document.getElementById('stars');if(c&&!rm){var x=c.getContext('2d'),W,H,P=[],mx=0,my=0;function rs(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio}rs();addEventListener('resize',rs);
   for(var i=0;i<70;i++)P.push({x:Math.random(),y:Math.random(),z:.3+Math.random()*.7,s:Math.random()*6.28});
-  addEventListener('mousemove',function(e){mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5);var dx=mx*-36;document.querySelectorAll('.tok').forEach(function(t,i){t.style.setProperty('--px',dx*(1+i%3*.5)+'px')})},{passive:true});
+  addEventListener('mousemove',function(e){mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5)},{passive:true});
   (function draw(t){x.clearRect(0,0,W,H);for(var i=0;i<P.length;i++){var p=P[i],px=(p.x+mx*.03*p.z)*W,py=(p.y+my*.03*p.z+Math.sin(t/2200+p.s)*.004)*H,r=(0.8+p.z*1.4)*devicePixelRatio;x.beginPath();x.arc(px,py,r,0,6.28);x.fillStyle='rgba(196,181,253,'+(0.15+p.z*.45)+')';x.fill()}requestAnimationFrame(draw)})(0)}
+// physics field
+var F=document.querySelector('.field');if(F){var B=[].slice.call(F.querySelectorAll('.body')).filter(function(el){return el.offsetParent!==null}),FW=F.offsetWidth,FH=F.offsetHeight,PX=-1e4,PY=-1e4,DR=null,t0=performance.now();
+  var MOB=innerWidth<=700;function home(el){return MOB&&el.dataset.mx?[el.dataset.mx/100*FW,el.dataset.my/100*FH]:[el.dataset.x/100*FW,el.dataset.y/100*FH]}
+  B.forEach(function(el,i){var hm=home(el),hx=hm[0],hy=hm[1],z=+el.dataset.z||1,side=hx<FW/2?-1:1;el.style.setProperty('--z',z);el.style.setProperty('--e',(1.1+i*.07)+'s');
+    el.b={el:el,hx:hx,hy:hy,x:rm?hx:hx+side*FW*.7,y:rm?hy:hy+(i%2?-1:1)*220,vx:0,vy:0,r:rm?0:side*40,vr:0,z:z,w:el.offsetWidth,h:el.offsetHeight,seed:i*7.3,sc:.72+.28*z};
+    el.addEventListener('pointerdown',function(e){if(rm)return;DR=el.b;el.classList.add('drag');el.setPointerCapture(e.pointerId);var r=F.getBoundingClientRect();DR.px=e.clientX-r.left;DR.py=e.clientY-r.top;e.preventDefault()});
+    el.addEventListener('pointerup',function(){if(DR){DR.el.classList.remove('drag');DR=null}});el.addEventListener('pointercancel',function(){if(DR){DR.el.classList.remove('drag');DR=null}})});
+  addEventListener('pointermove',function(e){var r=F.getBoundingClientRect();PX=e.clientX-r.left;PY=e.clientY-r.top;if(DR){DR.px=PX;DR.py=PY}},{passive:true});
+  addEventListener('resize',function(){FW=F.offsetWidth;FH=F.offsetHeight;MOB=innerWidth<=700;B.forEach(function(el){var hm=home(el);el.b.hx=hm[0];el.b.hy=hm[1]})});
+  function place(b){b.el.style.transform='translate('+(b.x-b.w/2).toFixed(1)+'px,'+(b.y-b.h/2).toFixed(1)+'px) rotate('+b.r.toFixed(2)+'deg) scale('+b.sc+')'}
+  if(rm){B.forEach(function(el){place(el.b)})}else{(function step(now){var t=(now-t0)/1000;
+    for(var i=0;i<B.length;i++){var b=B[i].b,ax=(b.hx-b.x)*.0035,ay=(b.hy-b.y)*.0035;ax+=Math.sin(t*.6+b.seed)*.025;ay+=Math.cos(t*.45+b.seed*1.7)*.025;
+      var dx=b.x-PX,dy=b.y-PY,d2=dx*dx+dy*dy;if(d2<180*180&&d2>0){var d=Math.sqrt(d2),f=(180-d)/180*1.1;ax+=dx/d*f;ay+=dy/d*f}
+      if(!MOB&&b.x>FW*.24&&b.x<FW*.76&&b.y>FH*.1&&b.y<FH*.8){ax+=(b.x<FW/2?-1:1)*.3}
+      for(var j=i+1;j<B.length;j++){var c=B[j].b,ex=b.x-c.x,ey=b.y-c.y,min=(b.w+c.w)/2*.85,e2=ex*ex+ey*ey;if(e2<min*min&&e2>0){var ed=Math.sqrt(e2),pf=(min-ed)/min*.6;ex/=ed;ey/=ed;b.vx+=ex*pf;b.vy+=ey*pf;c.vx-=ex*pf;c.vy-=ey*pf}}
+      if(DR===b){b.vx=(b.px-b.x)*.35;b.vy=(b.py-b.y)*.35;b.x+=b.vx;b.y+=b.vy}else{b.vx=(b.vx+ax)*.93;b.vy=(b.vy+ay)*.93;b.x+=b.vx;b.y+=b.vy}
+      var hw=b.w/2,hh=b.h/2;if(b.x<hw){b.x=hw;b.vx=Math.abs(b.vx)*.6}if(b.x>FW-hw){b.x=FW-hw;b.vx=-Math.abs(b.vx)*.6}if(b.y<hh){b.y=hh;b.vy=Math.abs(b.vy)*.6}if(b.y>FH-hh){b.y=FH-hh;b.vy=-Math.abs(b.vy)*.6}
+      b.vr=(b.vr+b.vx*.12-b.r*.015)*.9;b.r+=b.vr;place(b)}
+    requestAnimationFrame(step)})(t0)}}
 var mock=document.querySelector('.mock'),mw=document.querySelector('.mockwrap'),wmk=document.querySelector('.wmk'),hint=document.querySelector('.hint');
 if(mw&&!rm){mw.addEventListener('mousemove',function(e){var r=mw.getBoundingClientRect();mock.style.setProperty('--ty',(((e.clientX-r.left)/r.width-.5)*10)+'deg')});mw.addEventListener('mouseleave',function(){mock.style.setProperty('--ty','0deg')})}
 // scroll-driven: marquee bands, mock straightening, before/after, pinned stage
@@ -469,10 +489,18 @@ function mockHtml(ctx) {
 }
 export function landing(ctx) {
   const { env, lang } = ctx, fa = lang === 'fa', P = Object.entries(prices(env));
-  const toks = [['tok1', '8%', '30%', '', '-120px', '40px', '1.3s'], ['tok2', '84%', '26%', '', '120px', '40px', '1.45s'], ['tok3', '4%', '58%', 'far', '-100px', '60px', '1.6s'], ['tok4', '86%', '52%', '', '120px', '60px', '1.5s'],
-    ['tok5', '14%', '78%', 'far', '-80px', '80px', '1.9s'], ['tok6', '78%', '76%', 'far', '80px', '80px', '1.8s'], ['tok7', '20%', '10%', '', '-60px', '-60px', '1.7s'], ['tok8', '72%', '8%', '', '60px', '-60px', '1.55s'],
-    ['144', '26%', '20%', 'sq', '-80px', '-40px', '1.65s'], ['+38', '68%', '40%', 'sq', '90px', '20px', '1.75s'], ['−11', '10%', '46%', 'sq far', '-90px', '30px', '2s'], ['7.0', '90%', '14%', 'sq far', '90px', '-40px', '1.95s'], ['1%', '80%', '64%', 'sq', '80px', '60px', '1.85s'], ['60', '4%', '16%', 'sq far', '-80px', '-50px', '2.1s']]
-    .map(([k, l, tp, cls, fx, fy, e]) => `<span class="tok ${cls}" style="left:${l};top:${tp};--fx:${fx};--fy:${fy};--e:${e}">${k.startsWith('tok') ? t(lang, k) : k}</span>`).join('');
+  // the physics field: numbers + app tiles with a home position (% of the field), depth z, and m = also shown on phones
+  const APP = {
+    val: ['#ff4655', '<svg viewBox="0 0 24 24" fill="#fff"><path d="M3 4l9 12 3-4L9 4zm18 0-6 8 3 4 3-4z"/></svg>'], mc: ['#3c8527', '<i class="px"></i>'], cs2: ['#f5a623', 'CS2'], fn: ['#2b6cff', 'F'],
+    apex: ['#ff5a36', '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3 3 20h6l3-6 3 6h6zm0 7-1.5 3h3z"/></svg>'], rbx: ['#e53e3e', '<svg viewBox="0 0 24 24" fill="#fff"><path d="M6 3 3 18l15 3 3-15zm5 7 4 1-1 4-4-1z"/></svg>'], gta: ['#2f9e44', 'V'],
+    dc: ['#5865f2', '<svg viewBox="0 0 24 24" fill="#fff"><path d="M19.5 5.5A16 16 0 0 0 15.6 4l-.5 1a15 15 0 0 0-6.2 0l-.5-1a16 16 0 0 0-3.9 1.5C2 9.3 1.4 13 1.7 16.6A16 16 0 0 0 6.5 19l1-1.6a10 10 0 0 1-1.6-.8l.4-.3a11.5 11.5 0 0 0 11.4 0l.4.3-1.6.8 1 1.6a16 16 0 0 0 4.8-2.4c.4-4.2-.7-7.8-2.8-11.1zM8.7 14.4c-.9 0-1.7-.9-1.7-2s.8-2 1.7-2 1.7.9 1.7 2-.8 2-1.7 2zm6.6 0c-.9 0-1.7-.9-1.7-2s.8-2 1.7-2 1.7.9 1.7 2-.8 2-1.7 2z"/></svg>'],
+    steam: ['#1b2838', '<svg viewBox="0 0 24 24" fill="#fff"><circle cx="15.5" cy="8.5" r="3.5"/><circle cx="8" cy="16" r="2.6"/><path d="M4 15.6l4.9 2.1 4.6-5.2L11.2 9.4 5.9 12z" opacity=".85"/></svg>'], ps: ['#001e36', '<b style="color:#31a8ff">Ps</b>'], pr: ['#00005b', '<b style="color:#9999ff">Pr</b>'],
+    chrome: ['#f1f3f4', '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/><path d="M12 2a10 10 0 0 1 8.7 5H12a5 5 0 0 0-4.3 2.5L4.6 5.8A10 10 0 0 1 12 2z" fill="#ea4335"/><path d="M21.6 9a10 10 0 0 1-5 12.1L12.9 17A5 5 0 0 0 16.3 9z" fill="#fbbc05"/><path d="M4.6 5.8 7.7 9.5A5 5 0 0 0 12.9 17l-3 4.9A10 10 0 0 1 4.6 5.8z" fill="#34a853"/><circle cx="12" cy="12" r="3.3" fill="#4285f4"/></svg>'],
+    obs: ['#302e31', '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3v5.5M5 16.5l4.5-3M19 16.5l-4.5-3" opacity=".8"/></svg>'], spot: ['#1db954', '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5c4-1.2 8.5-1 12 .8M7 13c3.3-1 7-.8 10 .7M8 16.3c2.5-.7 5.5-.6 8 .5"/></svg>'],
+  };
+  const NUMS = [['144', 'FPS', 1, 12, 22, 1, [28, 7]], ['18', 'ms', 1, 84, 30, 1, [74, 7]], ['+38', 'FPS', 1, 20, 62, .8, 0], ['−11', 'ms', 1, 80, 68, .8, 0], ['240', 'Hz', 0, 6, 44, .6, 0], ['7.0', 'ms', 0, 92, 50, .6, 0], ['98', '1% LOW', 0, 88, 12, .7, 0], ['60→144', '', 0, 30, 88, .55, 0]];
+  const TILES = [['val', 8, 10, 1, [7, 6]], ['mc', 90, 22, 1, [93, 6]], ['cs2', 4, 76, .8, 0], ['fn', 94, 82, .9, 0], ['apex', 20, 44, .6, 0], ['dc', 76, 10, .9, 0], ['steam', 14, 92, .7, 0], ['ps', 78, 90, .8, 0], ['pr', 96, 64, .6, 0], ['chrome', 22, 6, .55, 0], ['gta', 80, 46, .7, 0], ['rbx', 8, 30, .6, 0], ['obs', 84, 76, .55, 0], ['spot', 26, 96, .5, 0]];
+  const field = `<div class="field" aria-hidden="true">${NUMS.map(([n, u, good, x, y, z, m]) => `<div class="body num${good ? ' good' : ''}${m ? ' m' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''}>${n}${u ? `<small>${u}</small>` : ''}</div>`).join('')}${TILES.map(([k, x, y, z, m]) => `<div class="body app${m ? ' m' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} style="--bg1:${APP[k][0]}">${APP[k][1]}</div>`).join('')}</div>`;
   const stats = [[20, '+', 'st1'], [4, '', 'st2'], [8, '', 'st3'], [100, '%', 'st4']].map(([v, s, k]) => `<div class="stat" data-n="${v}" data-suf="${s}"><b>0</b><span>${t(lang, k)}</span></div>`).join('');
   const mq = t(lang, 'marquee'); const track = [...mq, ...mq].map(w => `<span>${esc(w)}</span><em>✦</em>`).join('');
   const mq2 = t(lang, 'marquee2'); const track2 = [...mq2, ...mq2].map(w => `<span>${esc(w)}</span><em>✦</em>`).join('');
@@ -503,12 +531,12 @@ export function landing(ctx) {
   const cmpRows = [['p1', P.map(() => '✓')], ['p2', P.map(() => '✓')], ['p3', P.map(() => '✓')], ['p4', P.map(() => '✓')], ['cmp_pcs', P.map(() => fmtNum(lang, machines(env)))], ['cmp_pm', P.map(([m, price]) => fmtNum(lang, Math.round(price / Number(m) / 1000) * 1000))]];
   const cmp = `<details class="cmp"><summary>${t(lang, 'compare')}</summary><div class="card"><div class="tbl"><table><tr><th></th>${P.map(([m]) => `<th>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</th>`).join('')}</tr>${cmpRows.map(([k, vals]) => `<tr><td>${t(lang, k)}</td>${vals.map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}</table></div></div></details>`;
   const body = `
-<section class="hero"><div class="cone"></div><div class="beam b1"></div><div class="beam b2"></div><div class="wmk"></div><canvas id="stars"></canvas><div class="wrap">
+<section class="hero"><div class="cone"></div><div class="beam b1"></div><div class="beam b2"></div><div class="wmk"></div><canvas id="stars"></canvas>${field}<div class="wrap">
 <span class="pill"><i></i>${t(lang, 'hero_pill')}</span>
 <h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad')}<br>${words(t(lang, 'h1c'))}</h1>
 <p class="lead">${t(lang, 'lead')}</p><div class="hint"><i></i>${t(lang, 'scroll_hint')}</div>
 <div class="actions"><a class="btn" href="/download">${t(lang, 'download')}</a><a class="btn ghost" href="/register">${t(lang, 'register')}</a></div>
-${toks}${mockHtml(ctx)}
+${mockHtml(ctx)}
 <div class="stats"><i class="xh v"></i><i class="xh h"></i>${stats}</div></div></section>
 <div class="marq" aria-hidden="true"><div class="track">${track}</div></div>
 <section class="s ba"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'ba_pill')}</span><h2 class="words">${words(t(lang, 'ba_h'))}</h2></div>
