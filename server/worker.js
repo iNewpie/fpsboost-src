@@ -21,9 +21,10 @@
    on failed logins; usernames and password lengths are bounded before any hashing. Pages live in pages.js.
    ============================================================ */
 import { DurableObject } from 'cloudflare:workers';
-import { t, ICON_SVG, landing, authPage, termsPage, accountPage, payPage, messagePage, adminPage, prices } from './pages.js';
+import { ASSETS } from './assets.js';
+import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, adminPage, prices } from './pages.js';
 
-const BUILD = '2026-09-25b';
+const BUILD = '2026-09-25c';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
@@ -161,7 +162,8 @@ async function routeInner(request, env, base) {
   if (method === 'POST' && !sameOrigin(request, url)) return html(messagePage(ctx, '403', t(lang, 'err_csrf')), 403);
   if (method !== 'GET' && method !== 'HEAD' && method !== 'POST') return new Response('method', { status: 405 });
   if (p === '/download') return redirect(env.DOWNLOAD_URL || '/');
-  if (p === '/favicon.svg' || p === '/favicon.ico') return new Response(ICON_SVG, { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=86400' } });
+  const asset = ASSETS[p === '/favicon.ico' ? 'favicon.png' : p.slice(1)];
+  if (asset) return new Response(b64d(asset), { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=604800, immutable' } });
   if (p === '/terms') return html(termsPage(ctx), 200, langCookie);
   if (p === '/health') return Response.json({ ok: true, build: BUILD });
   if (p === '/') return html(landing(ctx), 200, langCookie);
