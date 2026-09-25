@@ -15,7 +15,7 @@ let win = null, engine = null, auth = null;
 function createWindow() {
   win = new BrowserWindow({
     width: 1040, height: 720, minWidth: 820, minHeight: 560, show: false, backgroundColor: '#0a0c12',
-    title: CONFIG.APP_NAME, autoHideMenuBar: true,
+    title: CONFIG.APP_NAME, autoHideMenuBar: true, icon: path.join(__dirname, '..', 'build', 'icon.png'),
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true },
   });
   Menu.setApplicationMenu(null);

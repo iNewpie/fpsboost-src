@@ -18,7 +18,7 @@
    ============================================================ */
 import { DurableObject } from 'cloudflare:workers';
 
-const BUILD = '2026-09-20a';
+const BUILD = '2026-09-25a';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
@@ -134,6 +134,8 @@ async function route(request, env) {
 
   if (p.startsWith('/api/app/')) return appApi(request, env, p, ip);
   if (p === '/download') return redirect(env.DOWNLOAD_URL || '/');
+  if (p === '/favicon.svg' || p === '/favicon.ico') return new Response(ICON_SVG, { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=86400' } });
+  if (p === '/terms') return html(termsPage(ctx), 200, langCookie);
   if (p === '/health') return Response.json({ ok: true, build: BUILD });
   if (p === '/') return html(landing(ctx), 200, langCookie);
   if (p === '/login') return method === 'POST' ? doLogin(request, ctx) : html(authPage(ctx, 'login'), 200, langCookie);
@@ -290,7 +292,7 @@ const STR = {
     err_username: 'Username: 3–20 letters, digits or _', err_password: 'Password: at least 8 characters', err_taken: 'That username is taken', err_login: 'Wrong username or password', err_disabled: 'This account is disabled',
     err_braked: 'Too many attempts — wait 10 minutes', err_plan: 'Unknown plan', err_gateway: 'Payment gateway is not available right now', status: 'Status', date: 'Date', amount: 'Amount', plan: 'Plan',
     have_account: 'Already have an account?', no_account: 'No account yet?', how: 'How it works', how1: 'Create an account and buy a plan.', how2: 'Download the app and log in with the same username.', how3: 'Press "Apply recommended" — done. Revert anything any time.',
-    lang: 'فارسی',
+    lang: 'فارسی', terms: 'Terms & refunds', support: 'Support',
   },
   fa: {
     home: 'خانه', tagline: 'پینگ کمتر. FPS بیشتر. با یک کلیک.', lead: 'برنامه‌ای برای ویندوز که تنظیمات ثابت‌شدهٔ شبکه و گیمینگ را برایتان اعمال می‌کند — با قابلیت بازگشت کامل — تا بازی‌ها روان‌تر و اینترنت سریع‌تر واکنش نشان دهد.',
@@ -304,7 +306,7 @@ const STR = {
     err_username: 'نام کاربری: ۳ تا ۲۰ حرف انگلیسی، عدد یا _', err_password: 'رمز عبور: حداقل ۸ کاراکتر', err_taken: 'این نام کاربری گرفته شده', err_login: 'نام کاربری یا رمز اشتباه است', err_disabled: 'این حساب غیرفعال است',
     err_braked: 'تلاش‌های زیاد — ۱۰ دقیقه صبر کنید', err_plan: 'پلن ناشناخته', err_gateway: 'درگاه پرداخت فعلاً در دسترس نیست', status: 'وضعیت', date: 'تاریخ', amount: 'مبلغ', plan: 'پلن',
     have_account: 'حساب دارید؟', no_account: 'حساب ندارید؟', how: 'چطور کار می‌کند', how1: 'حساب بسازید و یک پلن بخرید.', how2: 'برنامه را دانلود کنید و با همان نام کاربری وارد شوید.', how3: 'دکمهٔ «اعمال پیشنهادی» را بزنید — تمام. هر وقت خواستید برگردانید.',
-    lang: 'English',
+    lang: 'English', terms: 'قوانین و بازگشت وجه', support: 'پشتیبانی',
   },
 };
 const t = (lang, k) => (STR[lang] || STR.en)[k] || STR.en[k] || k;
@@ -322,7 +324,7 @@ button,.btn{display:inline-block;background:linear-gradient(135deg,var(--accent)
 input,select{background:#0b0e15;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14.5px;width:100%;font-family:inherit}
 .wrap{max-width:1000px;margin:0 auto;padding:24px 16px 60px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:26px}
-.brand{display:flex;align-items:center;gap:12px;color:var(--text)}.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800}
+.brand{display:flex;align-items:center;gap:12px;color:var(--text)}.logo svg{width:22px;height:22px}.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800}
 nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}nav a{color:var(--muted)}nav a:hover{color:var(--text)}
 h1{font-size:22px;margin:0}.hero{padding:34px 0 26px}.hero h2{font-size:34px;line-height:1.2;margin:0 0 10px}.hero p{color:var(--muted);font-size:17px;max-width:680px;margin:0 0 20px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}.card.wide{grid-column:1/-1}
@@ -334,16 +336,41 @@ table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:9px 6px;b
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}.acts form{display:inline}
 ol.how{margin:0;padding-inline-start:20px;color:#c9cfdb}ol.how li{margin:6px 0}
 .tbl{overflow-x:auto}.stats{display:flex;gap:12px;flex-wrap:wrap}.stat{background:#0b0e15;border:1px solid var(--line);border-radius:10px;padding:10px 14px}.stat b{font-size:20px;display:block}
-footer{margin-top:40px;color:var(--muted);font-size:13px;text-align:center}`;
+footer{margin-top:40px;color:var(--muted);font-size:13px;text-align:center;display:grid;gap:4px}.terms li{margin:8px 0;color:#c9cfdb}`;
 
 function layout(ctx, title, body) {
   const { env, lang, user, url } = ctx, name = env.APP_NAME || 'FPS Boost', fa = lang === 'fa';
   const other = fa ? 'en' : 'fa'; const u = new URL(url); u.searchParams.set('lang', other);
-  return `<!doctype html><html lang="${lang}" dir="${fa ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(name)} · ${esc(title)}</title><style>${CSS}</style></head><body><div class="wrap">
-<header><a class="brand" href="/"><div class="logo">${esc(name[0] || 'O')}</div><h1>${esc(name)}</h1></a>
+  return `<!doctype html><html lang="${lang}" dir="${fa ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(name)} · ${esc(title)}</title><meta name="description" content="${esc(t(lang, 'lead'))}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><style>${CSS}</style></head><body><div class="wrap">
+<header><a class="brand" href="/"><div class="logo">${BOLT}</div><h1>${esc(name)}</h1></a>
 <nav><a href="/#plans">${t(lang, 'pricing')}</a><a href="/download">${t(lang, 'download')}</a>${user ? `<a href="/account">${t(lang, 'account')}</a><a href="/logout">${t(lang, 'logout')}</a>` : `<a href="/login">${t(lang, 'login')}</a><a class="btn" href="/register">${t(lang, 'register')}</a>`}<a href="${esc(u.pathname + u.search)}">${t(lang, 'lang')}</a></nav></header>
 ${body}
-<footer>${esc(name)} · ${new Date().getFullYear()}</footer></div></body></html>`;
+<footer><div><a href="/terms">${t(lang, 'terms')}</a>${env.SUPPORT ? ` · ${t(lang, 'support')}: ${supportLink(env.SUPPORT)}` : ''}</div><div>${esc(name)} · ${new Date().getFullYear()}</div></footer></div></body></html>`;
+}
+const BOLT = '<svg viewBox="0 0 1024 1024" aria-hidden="true"><path fill="#fff" d="M590 130 270 580h220l-70 320 340-480H535l105-290z"/></svg>';
+const ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect width="1024" height="1024" rx="230" fill="url(#g)"/><path fill="#fff" d="M590 130 270 580h220l-70 320 340-480H535l105-290z"/></svg>';
+// SUPPORT: an email, a https:// link or a @telegram handle
+function supportLink(v) {
+  const href = v.includes('@') && !v.startsWith('@') ? 'mailto:' + v : v.startsWith('@') ? 'https://t.me/' + v.slice(1) : v;
+  return `<a href="${esc(href)}" dir="ltr">${esc(v)}</a>`;
+}
+const TERMS = {
+  en: ['FPS Boost is a subscription for a Windows 10/11 app. The price of each plan is shown on the site in Toman; the subscription starts the moment the payment is verified.',
+    'One account works on up to {n} PCs at a time. You can reset your devices from your account page. Sharing or reselling an account is not allowed and can get it disabled.',
+    'The app needs administrator rights because it changes Windows settings. Every change it makes is backed up and can be reverted from the app, and it creates a System Restore point before “Apply recommended”.',
+    'Results depend on your hardware, your games and your internet connection — we do not promise a specific FPS or ping number.',
+    'Refunds: if the app does not run on your PC and support cannot fix it, you get your money back within 7 days of the purchase. Contact support with your username and the payment tracking code.',
+    'Payments go through Zarinpal. We never see or store your card details; we keep your username, a hashed password, your device IDs and your payment records.'],
+  fa: ['FPS Boost اشتراک یک برنامهٔ ویندوز ۱۰/۱۱ است. قیمت هر پلن به تومان روی سایت نوشته شده و اشتراک از لحظهٔ تأیید پرداخت شروع می‌شود.',
+    'هر حساب همزمان روی حداکثر {n} کامپیوتر کار می‌کند و از صفحهٔ حساب می‌توانید دستگاه‌ها را ریست کنید. اشتراک‌گذاری یا فروش حساب مجاز نیست و ممکن است حساب غیرفعال شود.',
+    'برنامه برای تغییر تنظیمات ویندوز به دسترسی Administrator نیاز دارد. از هر تغییر نسخهٔ پشتیبان گرفته می‌شود و از داخل برنامه قابل بازگشت است، و قبل از «اعمال پیشنهادی» یک System Restore Point ساخته می‌شود.',
+    'نتیجه به سخت‌افزار، بازی و اینترنت شما بستگی دارد — عدد مشخصی برای FPS یا پینگ تضمین نمی‌شود.',
+    'بازگشت وجه: اگر برنامه روی کامپیوتر شما اجرا نشود و پشتیبانی نتواند مشکل را حل کند، تا ۷ روز پس از خرید مبلغ کامل برگردانده می‌شود. با نام کاربری و کد پیگیری پرداخت به پشتیبانی پیام دهید.',
+    'پرداخت از طریق زرین‌پال انجام می‌شود. اطلاعات کارت شما نزد ما ذخیره نمی‌شود؛ فقط نام کاربری، رمز هش‌شده، شناسهٔ دستگاه‌ها و سوابق پرداخت نگهداری می‌شود.'],
+};
+function termsPage(ctx) {
+  const { env, lang } = ctx, n = fmtNum(lang, Number(env.MAX_MACHINES) || 2);
+  return layout(ctx, t(lang, 'terms'), `<section class="card"><h2>${t(lang, 'terms')}</h2><ol class="terms">${(TERMS[lang] || TERMS.en).map(x => `<li>${esc(x.replace('{n}', n))}</li>`).join('')}</ol>${env.SUPPORT ? `<p>${t(lang, 'support')}: ${supportLink(env.SUPPORT)}</p>` : ''}</section>`);
 }
 function plansHtml(ctx) {
   const { env, lang, user } = ctx, P = prices(env);
