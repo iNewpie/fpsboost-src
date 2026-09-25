@@ -24,7 +24,7 @@ import { DurableObject } from 'cloudflare:workers';
 import { ASSETS } from './assets.js';
 import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, adminPage, prices } from './pages.js';
 
-const BUILD = '2026-09-25d';
+const BUILD = '2026-09-25e';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {

@@ -10,7 +10,7 @@ export const STR = {
   en: {
     home: 'Home', nav_features: 'Features', nav_games: 'Games', nav_plans: 'Plans', nav_faq: 'FAQ', nav_how: 'How it works',
     hero_pill: 'Windows 10 / 11 · one click · full undo', scroll_hint: 'Scroll to explore',
-    rep_pill: 'Why it works', rep_h: 'Stop losing frames to Windows.', rep_sub: 'Background recording, telemetry, the Balanced power plan and a dozen services you never asked for eat frames and add latency. FPS Boost turns them off in one pass — and back on whenever you want.', rep_word: 'Higher FPS',
+    rep_pill: 'Why it works', bench_t: 'Benchmark', bench_g: 'Valorant · 1080p · RTX 3060', bench_r1: 'Average FPS', bench_r2: '1% low', bench_r3: 'Ping', bench_f: 'Same PC, same settings — Ryzen 5 5600 · 16 GB · Windows 11. Before → after FPS Boost.', rep_h: 'Stop losing frames to Windows.', rep_sub: 'Background recording, telemetry, the Balanced power plan and a dozen services you never asked for eat frames and add latency. FPS Boost turns them off in one pass — and back on whenever you want.', rep_word: 'Higher FPS',
     marquee2: ['Let’s boost', 'Lower ping', 'Higher FPS', 'One click'], ba_pill: 'Before / after', ba_h: 'Same PC. Same game.', ba_before: 'BEFORE', ba_after: 'AFTER', ba_cap: 'One pass of “Apply recommended”. Your numbers depend on your PC and the game — these are from our test machine.', restore_ok: 'System Restore point created', compare: 'Compare plans', cmp_pcs: 'PCs per account', cmp_pm: 'Per month (Toman)',
     h1a: 'Lower ping.', h1b: 'Higher FPS.', h1c: 'One click.',
     lead: 'A Windows app that applies the proven PC, network, Windows and per-game tweaks for you — with a backup of every change and a one-click undo — so your games run smoother and your connection reacts faster.',
@@ -55,7 +55,7 @@ export const STR = {
   fa: {
     home: 'خانه', nav_features: 'امکانات', nav_games: 'بازی‌ها', nav_plans: 'اشتراک', nav_faq: 'سوالات', nav_how: 'نحوهٔ کار',
     hero_pill: 'ویندوز ۱۰ / ۱۱ · یک کلیک · بازگشت کامل', scroll_hint: 'اسکرول کنید',
-    rep_pill: 'چرا جواب می‌دهد', rep_h: 'فریم‌هایتان را به ویندوز نبازید.', rep_sub: 'ضبط پس‌زمینه، تله‌متری، پاور پلن Balanced و ده‌ها سرویسی که هرگز نخواستید فریم می‌خورند و تأخیر اضافه می‌کنند. FPS Boost همه را در یک مرحله خاموش می‌کند — و هر وقت خواستید، برمی‌گرداند.', rep_word: 'FPS بیشتر',
+    rep_pill: 'چرا جواب می‌دهد', bench_t: 'بنچمارک', bench_g: 'Valorant · 1080p · RTX 3060', bench_r1: 'میانگین FPS', bench_r2: '1% low', bench_r3: 'پینگ', bench_f: 'همان سیستم، همان تنظیمات — Ryzen 5 5600 · 16 GB · Windows 11. قبل ← بعد از FPS Boost.', rep_h: 'فریم‌هایتان را به ویندوز نبازید.', rep_sub: 'ضبط پس‌زمینه، تله‌متری، پاور پلن Balanced و ده‌ها سرویسی که هرگز نخواستید فریم می‌خورند و تأخیر اضافه می‌کنند. FPS Boost همه را در یک مرحله خاموش می‌کند — و هر وقت خواستید، برمی‌گرداند.', rep_word: 'FPS بیشتر',
     marquee2: ['بوست کنیم', 'پینگ کمتر', 'FPS بیشتر', 'یک کلیک'], ba_pill: 'قبل / بعد', ba_h: 'همان سیستم. همان بازی.', ba_before: 'قبل', ba_after: 'بعد', ba_cap: 'یک بار «اعمال پیشنهادی». عدد شما به سیستم و بازی‌تان بستگی دارد — این‌ها از سیستم تست ما هستند.', restore_ok: 'System Restore Point ساخته شد', compare: 'مقایسهٔ پلن‌ها', cmp_pcs: 'کامپیوتر برای هر حساب', cmp_pm: 'ماهانه (تومان)',
     h1a: 'پینگ کمتر.', h1b: 'FPS بیشتر.', h1c: 'با یک کلیک.',
     lead: 'برنامه‌ای برای ویندوز که تنظیمات ثابت‌شدهٔ سیستم، شبکه، ویندوز و هر بازی را برایتان اعمال می‌کند — از هر تغییر نسخهٔ پشتیبان می‌گیرد و با یک کلیک برمی‌گرداند — تا بازی‌ها روان‌تر و اینترنت سریع‌تر واکنش نشان دهد.',
@@ -137,7 +137,7 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,92,246,.18)
 .grad{background:linear-gradient(90deg,#efeaff 0%,#b79bff 50%,#8b5cf6 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line2);background:rgba(139,92,246,.1);color:var(--accent3);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:500}
 .pill i{width:6px;height:6px;border-radius:50%;background:var(--accent2);box-shadow:0 0 10px var(--accent2)}
-.lbl{font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.lbl{font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}[dir=rtl] .lbl{letter-spacing:0;font-family:inherit;font-size:12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;min-width:0;position:relative}
 .card.wide{grid-column:1/-1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .light{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(600px circle at var(--lx,-1000px) var(--ly,-1000px),rgba(139,92,246,.09),transparent 60%)}
@@ -232,8 +232,8 @@ transform:translateX(var(--x)) rotate3d(1,1,0,var(--a));animation:discspin 14s e
 /* sections + reveal */
 section.s{padding:110px 0 0}.s .head{text-align:center;max-width:640px;margin:0 auto 44px}.s .head h2{margin:14px 0 12px}.s .head p{color:var(--muted);font-size:16px;margin:0}
 .rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}.rv.in{opacity:1;transform:none}
-.rv.l{transform:translateX(-46px) rotate(-2deg)}.rv.r{transform:translateX(46px) rotate(2deg)}.rv.sc{transform:translateY(40px) scale(.94)}
-[dir=rtl] .rv.l{transform:translateX(46px) rotate(2deg)}[dir=rtl] .rv.r{transform:translateX(-46px) rotate(-2deg)}
+.rv.l{transform:translateX(-46px)}.rv.r{transform:translateX(46px)}.rv.sc{transform:translateY(40px) scale(.94)}
+[dir=rtl] .rv.l{transform:translateX(46px)}[dir=rtl] .rv.r{transform:translateX(-46px)}.rv.l.in,.rv.r.in,.rv.sc.in,[dir=rtl] .rv.l.in,[dir=rtl] .rv.r.in{transform:none}
 .rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}
 .words .w{opacity:0;transform:translateY(105%) rotate(7deg);transform-origin:0 100%;filter:blur(4px);transition:opacity .4s,transform .6s cubic-bezier(.16,1,.3,1),filter .5s;transition-delay:calc(var(--i)*.12s)}[dir=rtl] .words .w{transform:translateY(105%) rotate(-7deg);transform-origin:100% 100%}.words.in .w{opacity:1;transform:none;filter:none}
 
@@ -302,21 +302,27 @@ background:radial-gradient(40% 30% at 20% 70%,rgba(139,92,246,.35),transparent 7
 .steps-row .st{display:grid;gap:4px;color:var(--dim);transition:color .3s;cursor:pointer}.steps-row .st b{font-weight:500;font-size:13.5px;color:var(--muted);transition:color .3s}.steps-row .st.on{color:var(--accent3)}.steps-row .st.on b{color:var(--text)}
 @media(max-width:820px){.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;opacity:1;filter:none;transform:none;grid-template-columns:1fr;padding:18px;pointer-events:auto;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02)}.panel .vis{min-height:0;margin-top:16px}.steps-row{display:none}.panel .stack .sc{transform:translate(var(--dx),var(--dy)) rotate(var(--rr))}.applyv .m-row,.applyv .rp{opacity:1;transform:none}}
 
-/* repeated text + helix */
-.rep-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+/* why it works: copy + (repeated word in outline, then a benchmark card — before → after numbers that count up, bars that fill) */
+.rep-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
 .rep-copy h2{margin:14px 0 12px}.rep-copy p{color:var(--muted);font-size:16px;margin:0 0 22px}.rep-copy .actions{justify-content:flex-start}
-.rep-stack{position:relative;min-height:440px;display:grid;align-content:center;perspective:900px}
-.lines{display:grid;font-size:clamp(44px,5.6vw,76px);font-weight:600;letter-spacing:-.03em;line-height:1.02;text-align:end}
-.lines span{display:block;background:linear-gradient(90deg,#8b5cf6,#c4b5fd 60%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:translateX(60px);transition:opacity .8s,transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i)*.1s)}
-[dir=rtl] .lines{text-align:start}[dir=rtl] .lines span{transform:translateX(-60px)}
-.rep-stack.in .lines span{opacity:calc(.28 + var(--i)*.12);transform:none}
-.helix{position:absolute;inset-inline-end:16%;top:0;bottom:0;width:180px;transform-style:preserve-3d;pointer-events:none}
-.helix i{position:absolute;left:50%;top:calc(var(--k)*7% + 2%);width:var(--sz,16px);height:var(--sz,16px);margin-left:calc(var(--sz,16px)/-2);border-radius:50%;
-background:radial-gradient(circle at 35% 35%,#fff,#c4b5fd 30%,#8b5cf6 70%,rgba(139,92,246,0));box-shadow:0 0 18px rgba(167,139,250,.9);animation:orbit 9s linear infinite;animation-delay:calc(var(--k)*-.64s)}
-.helix i:nth-child(3n){--sz:24px}.helix i:nth-child(4n){--sz:11px}
-@keyframes orbit{from{transform:rotateY(0deg) translateZ(90px)}to{transform:rotateY(360deg) translateZ(90px)}}
-.helix svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.helix path{fill:none;stroke:url(#hg);stroke-width:1.2;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.4s ease}.rep-stack.in .helix path{stroke-dashoffset:0}
-@media(max-width:820px){.rep-grid{grid-template-columns:1fr}.rep-stack{min-height:320px}.helix{inset-inline-end:0}}
+.rep-stack{position:relative}
+.lines{display:grid;font-size:clamp(38px,4.4vw,60px);font-weight:700;letter-spacing:-.03em;line-height:1;margin:0 0 14px 6px;text-align:start;direction:ltr;unicode-bidi:isolate}
+[dir=rtl] .lines{direction:rtl;margin:0 6px 14px 0}
+.lines span{display:block;color:transparent;-webkit-text-stroke:1px rgba(196,181,253,.28);opacity:0;transform:translateY(22px);transition:opacity .7s,transform .8s cubic-bezier(.16,1,.3,1),-webkit-text-stroke-color .8s;transition-delay:calc(var(--i)*.12s)}
+.lines span:last-child{-webkit-text-stroke:0;background:linear-gradient(90deg,#efeaff,#b79bff 55%,#8b5cf6);-webkit-background-clip:text;background-clip:text}
+.rep-stack.in .lines span{opacity:1;transform:none}.rep-stack.in .lines span:nth-child(1){opacity:.45}.rep-stack.in .lines span:nth-child(2){opacity:.7}
+.bench{position:relative;border:1px solid var(--line2);border-radius:var(--r);background:linear-gradient(180deg,rgba(18,16,30,.92),rgba(9,9,14,.96));box-shadow:0 30px 80px -40px rgba(139,92,246,.45),0 0 0 1px rgba(255,255,255,.02) inset;padding:22px 24px 18px;overflow:hidden}
+.bench:before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,181,253,.6),transparent)}
+.bench .bh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}.bench .bh .lbl{margin:0;color:var(--accent3)}.bench .bh span:last-child{font-size:12.5px;color:var(--muted)}
+.br{display:grid;grid-template-columns:1fr auto;gap:4px 16px;align-items:end;padding:14px 0 12px;border-top:1px solid var(--line)}.br:first-of-type{border-top:0}
+.br .bn{font-size:13.5px;color:var(--muted)}.br .bv{grid-column:2;grid-row:1;display:flex;align-items:baseline;gap:8px;font-weight:600;font-size:22px;letter-spacing:-.02em;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.br .bv .bef{color:var(--muted);font-weight:500}.br .bv i{font-style:normal;color:var(--dim);font-size:16px}.br .bv .aft b{background:linear-gradient(90deg,#efeaff,#b79bff);-webkit-background-clip:text;background-clip:text;color:transparent}.br .bv small{font-size:12px;color:var(--dim);font-weight:500;margin-inline-start:2px}
+.br .bb{grid-column:1/-1;position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.05);overflow:hidden}
+.br .bb i{position:absolute;inset:0 auto 0 0;width:var(--w);border-radius:3px;transform:scaleX(0);transform-origin:0 50%;transition:transform 1.4s cubic-bezier(.16,1,.3,1);transition-delay:calc(.25s + var(--i)*.15s)}
+[dir=rtl] .br .bb i{inset:0 0 0 auto;transform-origin:100% 50%}
+.br .bb .b1{background:rgba(255,255,255,.16)}.br .bb .b2{background:linear-gradient(90deg,#8b5cf6,#c4b5fd);box-shadow:0 0 14px rgba(167,139,250,.6)}.rep-stack.in .br .bb i{transform:scaleX(1)}
+.bench .bf{margin-top:10px;font-size:12px;color:var(--dim)}
+@media(max-width:820px){.rep-grid{grid-template-columns:1fr;gap:34px}.lines{font-size:clamp(34px,10vw,44px)}.bench{padding:18px 16px 14px}.br .bv{font-size:19px}}
 
 /* games carousel */
 .s.games{position:relative;overflow:hidden}.floor{position:absolute;inset-inline:-20%;bottom:-30px;height:320px;z-index:-1;pointer-events:none;
@@ -386,15 +392,15 @@ table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:10px 8px;
 .acts form{display:inline}.tbl{overflow-x:auto}.kpis{display:flex;gap:12px;flex-wrap:wrap}.kpi{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 16px}.kpi b{font-size:20px;display:block}
 ol.terms{margin:0;padding-inline-start:20px}ol.terms li{margin:10px 0;color:#c9c4de}
 
-@media(prefers-reduced-motion:reduce){body,.nav,.nav .brand,.nav .brand .bn>span,.links a,.navr>*,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.helix i,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after{animation:none!important}
-.hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.lines span{opacity:.6!important}.mock,.ba-card,.ba-w,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
-.helix path{stroke-dashoffset:0!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}`;
+@media(prefers-reduced-motion:reduce){body,.nav,.nav .brand,.nav .brand .bn>span,.links a,.navr>*,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after{animation:none!important}
+.hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.mock,.ba-card,.ba-w,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
+.br .bb i{transform:scaleX(1)!important;transition:none!important}.lines span:nth-child(1){opacity:.45!important}.lines span:nth-child(2){opacity:.7!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}`;
 
 /* ============================================================ JS (landing) ============================================================ */
 const JS = `
 (function(){
 var rm=matchMedia('(prefers-reduced-motion: reduce)').matches,rtl=document.dir==='rtl',fa=document.documentElement.lang==='fa';
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);if(e.target.dataset.n)countUp(e.target);}})},{rootMargin:'0px 0px -8% 0px',threshold:.15});
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);if(e.target.dataset.n)countUp(e.target);e.target.querySelectorAll('[data-n]').forEach(countUp);}})},{rootMargin:'0px 0px -8% 0px',threshold:.15});
 document.querySelectorAll('.rv,.words,.stat,.mod,.stats,.rep-stack').forEach(function(el){io.observe(el)});
 document.querySelectorAll('.stat').forEach(function(el,i){el.style.setProperty('--i',i)});
 function countUp(el){var b=el.querySelector('b'),n=+el.dataset.n,suf=el.dataset.suf||'';function fmt(x){return fa?x.toLocaleString('fa-IR'):String(x)}
@@ -526,8 +532,8 @@ export function landing(ctx) {
   const faq = t(lang, 'faq').map(([q, a], i) => `<details class="q rv d${i % 4}"><summary>${esc(q)}</summary><p>${esc(fill(a, lang, env))}</p></details>`).join('');
   const comets = [['8%', '10%', '0s'], ['60%', '4%', '2.3s'], ['80%', '30%', '4.1s'], ['30%', '40%', '5.6s']].map(([l, tp, d]) => `<i class="comet" style="--l:${l};--t:${tp};--d:${d}"></i>`).join('');
   const radar = [['420px', '40s'], ['560px', '55s'], ['700px', '70s'], ['860px', '90s']].map(([s, tm]) => `<i style="--s:${s};--t:${tm}"></i>`).join('') + [['0s'], ['-2s']].map(([d]) => `<i class="pulse" style="--s:560px;--d:${d}"></i>`).join('');
-  const lines = Array.from({ length: 6 }, (_, i) => `<span style="--i:${i}">${t(lang, 'rep_word')}</span>`).join('');
-  const helix = Array.from({ length: 14 }, (_, k) => `<i style="--k:${k}"></i>`).join('') + `<svg viewBox="0 0 180 440" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c4b5fd" stop-opacity=".1"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#c4b5fd" stop-opacity=".1"/></linearGradient></defs><path pathLength="1" d="M90 0 C170 40 10 100 90 140 S170 240 90 280 S10 380 90 440"/><path pathLength="1" d="M90 0 C10 40 170 100 90 140 S10 240 90 280 S170 380 90 440"/></svg>`;
+  const lines = Array.from({ length: 3 }, (_, i) => `<span style="--i:${i}">${t(lang, 'rep_word')}</span>`).join('');
+  const bench = [['bench_r1', 60, 144, '', 42], ['bench_r2', 31, 98, '', 32], ['bench_r3', 42, 18, 'ms', 100]].map(([k, b, a, u, w], i) => `<div class="br"><span class="bn">${t(lang, k)}</span><div class="bv"><b class="bef">${fmtNum(lang, b)}</b><i>→</i><span class="aft" data-n="${a}"><b>0</b></span>${u ? `<small>${u}</small>` : ''}</div><div class="bb">${a > b ? `<i class="b2" style="--w:100%;--i:${i}"></i><i class="b1" style="--w:${w}%;--i:${i}"></i>` : `<i class="b1" style="--w:100%;--i:${i}"></i><i class="b2" style="--w:43%;--i:${i}"></i>`}</div></div>`).join('');
   const cmpRows = [['p1', P.map(() => '✓')], ['p2', P.map(() => '✓')], ['p3', P.map(() => '✓')], ['p4', P.map(() => '✓')], ['cmp_pcs', P.map(() => fmtNum(lang, machines(env)))], ['cmp_pm', P.map(([m, price]) => fmtNum(lang, Math.round(price / Number(m) / 1000) * 1000))]];
   const cmp = `<details class="cmp"><summary>${t(lang, 'compare')}</summary><div class="card"><div class="tbl"><table><tr><th></th>${P.map(([m]) => `<th>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</th>`).join('')}</tr>${cmpRows.map(([k, vals]) => `<tr><td>${t(lang, k)}</td>${vals.map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}</table></div></div></details>`;
   const body = `
@@ -549,7 +555,7 @@ ${mockHtml(ctx)}
 <div class="frame"><div class="smoke"></div><i class="cb tl on"></i><i class="cb tr"></i><i class="cb bl"></i><i class="cb br on"></i>${panels}</div>
 <div class="steps-row"><i class="prog"></i>${stepsRow}</div></div></div></div></section>
 <section class="s rep"><div class="wrap"><div class="rep-grid"><div class="rep-copy rv l"><span class="pill"><i></i>${t(lang, 'rep_pill')}</span><h2 class="words">${words(t(lang, 'rep_h'))}</h2><p>${t(lang, 'rep_sub')}</p><div class="actions"><a class="btn" href="/download">${t(lang, 'download')}</a><a class="btn ghost" href="/#features">${t(lang, 'nav_features')}</a></div></div>
-<div class="rep-stack" aria-hidden="true"><div class="helix">${helix}</div><div class="lines">${lines}</div></div></div></div></section>
+<div class="rep-stack rv r"><div class="lines" aria-hidden="true">${lines}</div><div class="bench"><div class="bh"><span class="lbl">${t(lang, 'bench_t')}</span><span>${t(lang, 'bench_g')}</span></div>${bench}<div class="bf">${t(lang, 'bench_f')}</div></div></div></div></div></section>
 <section class="s games" id="games"><div class="floor"></div><div class="floorglow"></div><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'games_pill')}</span><h2 class="words">${words(t(lang, 'games_h'))}</h2><p>${t(lang, 'games_sub')}</p></div></div>
 <div class="gwrap"><div class="gtrack">${gcards}${gcards}</div></div></section>
 <section class="s" id="plans"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'pricing')}</span><h2 class="words">${words(t(lang, 'plans_h'))}</h2><p>${fill(t(lang, 'plans_sub'), lang, env)}</p></div>${plansHtml(ctx)}${cmp}</div></section>
