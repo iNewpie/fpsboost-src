@@ -1,0 +1,5 @@
+Game / app icons for the landing page.
+Papirus icon theme (GPL-3.0): mc cs2 gta dc steam ps pr chrome obs spot — https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
+Simple Icons (CC0) glyphs on brand tiles: val fn rbx — https://simpleicons.org
+apex, wz: drawn here.
+server/icons.js is generated from this folder (see the header of that file).
