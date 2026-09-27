@@ -1,5 +1,5 @@
 Game / app icons for the landing page.
-*.webp: the official app / game icons supplied by the owner (Valorant, CS2, Fortnite, Apex Legends, Roblox, GTA V, League of Legends, Marvel Rivals, Discord, Photoshop, Premiere Pro, After Effects), resized to 160 px.
-Papirus icon theme (GPL-3.0): mc steam chrome obs spot — https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
+*.webp: the official app / game icons supplied by the owner (Minecraft, Valorant, CS2, Fortnite, Apex Legends, Roblox, GTA V, League of Legends, Marvel Rivals, Lunar Client, Badlion Client, CurseForge, Modrinth, Discord, Photoshop, Premiere Pro, After Effects), resized to 160 px.
+Papirus icon theme (GPL-3.0): steam chrome obs spot — https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
 wz: drawn here.
 server/icons.js is generated from this folder (see the header of that file).
