@@ -534,7 +534,75 @@ ol.terms{margin:0;padding-inline-start:20px}ol.terms li{margin:10px 0;color:#c9c
 
 @media(prefers-reduced-motion:reduce){body,.nav,.nav .brand,.nav .brand .bn>span,.links a,.navr>*,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after,.btn.big.pri{animation:none!important}
 .hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.mock,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
-.br .bb i{transform:scaleX(1)!important;transition:none!important}.lines span:nth-child(1){opacity:.45!important}.lines span:nth-child(2){opacity:.7!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}`;
+.br .bb i{transform:scaleX(1)!important;transition:none!important}.lines span:nth-child(1){opacity:.45!important}.lines span:nth-child(2){opacity:.7!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}
+/* ============================================================ polish pass — "perfect": depth, light, motion ============================================================ */
+.hint.off{animation:none;opacity:0}
+/* film grain — a fixed texture layer, GPU-composited; off on phones */
+.grain{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:1;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .8 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:grain 8s steps(7) infinite}
+@keyframes grain{0%{transform:translate(0,0)}15%{transform:translate(-3%,2%)}30%{transform:translate(2%,-4%)}45%{transform:translate(-4%,-1%)}60%{transform:translate(3%,3%)}75%{transform:translate(-1%,4%)}100%{transform:translate(0,0)}}
+/* aurora — three slow colour fields breathing behind the hero */
+.aurora{position:absolute;inset:-12% -10% auto;height:125%;z-index:-2;pointer-events:none;filter:blur(64px);opacity:.6}
+.aurora i{position:absolute;border-radius:50%;mix-blend-mode:screen;will-change:transform}
+.aurora i:nth-child(1){width:54vw;height:54vw;left:-10vw;top:-12vw;background:radial-gradient(circle,rgba(139,92,246,.6),transparent 62%);animation:auA 22s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:46vw;height:46vw;right:-12vw;top:-2vw;background:radial-gradient(circle,rgba(56,189,248,.3),transparent 62%);animation:auB 27s ease-in-out infinite alternate}
+.aurora i:nth-child(3){width:42vw;height:42vw;left:28vw;top:20vw;background:radial-gradient(circle,rgba(217,70,239,.32),transparent 62%);animation:auC 31s ease-in-out infinite alternate}
+@keyframes auA{to{transform:translate(12vw,9vw) scale(1.15)}}
+@keyframes auB{to{transform:translate(-11vw,10vw) scale(.88)}}
+@keyframes auC{to{transform:translate(-9vw,-11vw) scale(1.22)}}
+/* reading progress + the section you are in, lit in the nav */
+.sprog{position:fixed;top:0;inset-inline-start:0;height:2px;width:100%;z-index:31;transform-origin:0 50%;transform:scaleX(var(--sp,0));background:linear-gradient(90deg,#c4b5fd,#8b5cf6 60%,#6a38ee);box-shadow:0 0 12px rgba(139,92,246,.8);pointer-events:none}
+.fa .sprog{transform-origin:100% 50%}
+.links a{position:relative}
+.links a:after{content:"";position:absolute;left:10px;right:10px;bottom:3px;height:2px;border-radius:2px;background:var(--accent2);transform:scaleX(0);opacity:0;transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .3s}
+.links a.on{color:var(--text)}
+.links a.on:after,.links a:hover:after{transform:scaleX(1);opacity:1}
+/* a spotlight that follows the pointer on every card: soft inner light + a lit edge */
+.spot{position:relative;isolation:isolate;--mx:50%;--my:50%}
+.spot:before,.spot:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s}
+.spot:before{z-index:-1;background:radial-gradient(460px circle at var(--mx) var(--my),rgba(167,139,250,.13),transparent 46%)}
+.spot:after{z-index:3;padding:1px;background:radial-gradient(320px circle at var(--mx) var(--my),rgba(201,183,255,.8),rgba(139,92,246,.22) 48%,transparent 72%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.spot:hover:before,.spot:hover:after{opacity:1}
+/* the popular plan wears a rotating light on its edge */
+@property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
+.plan.pop .beam2{position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:2;background:conic-gradient(from var(--ang),transparent 0 60%,rgba(196,181,253,.12) 72%,#ece7ff 83%,rgba(196,181,253,.12) 94%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:beamSpin 5.5s linear infinite}
+@keyframes beamSpin{to{--ang:360deg}}
+.save{display:inline-flex;align-items:center;margin-inline-start:8px;font-size:11px;font-weight:700;letter-spacing:.02em;color:#cfffe1;background:rgba(95,211,141,.13);border:1px solid rgba(95,211,141,.35);border-radius:999px;padding:2px 8px;vertical-align:middle;direction:ltr}
+/* the dashboard: the chart draws itself, a live point at its head, numbers counting in */
+.m-tile b .cnt{display:inline;font:inherit;color:inherit;letter-spacing:inherit}
+.mock .p1,.mock .p2{stroke-dasharray:1000;stroke-dashoffset:1000}
+.mockwrap.in .p1{animation:draw 1.5s .2s cubic-bezier(.2,.6,.2,1) forwards}
+.mockwrap.in .p2{animation:draw 1.7s .35s cubic-bezier(.2,.6,.2,1) forwards}
+.mock .a2{opacity:0}.mockwrap.in .a2{animation:fadein 1s 1.5s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.mock .dot{fill:#efeaff;filter:drop-shadow(0 0 6px #a78bfa) drop-shadow(0 0 14px rgba(139,92,246,.9));opacity:0}
+.mockwrap.in .dot{animation:dotIn .4s 2s forwards,dotPulse 2.2s 2.4s ease-in-out infinite}
+@keyframes dotIn{to{opacity:1}}@keyframes dotPulse{50%{r:5.5}}
+/* headline: the gradient words catch a light every few seconds */
+.w.grad{background-size:220% 100%;background-position:0 0;animation:wr .6s cubic-bezier(.16,1,.3,1) forwards,gshine 7s 4s ease-in-out infinite;animation-delay:calc(.55s + var(--i)*.17s),4s}
+@keyframes gshine{0%,58%{background-position:0 0}78%{background-position:100% 0}100%{background-position:0 0}}
+/* the stats strip: a glass reflection slides across now and then */
+.stats{position:relative}
+.stats:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(100deg,transparent 0 30%,rgba(196,181,253,.07) 50%,transparent 70% 100%) no-repeat;background-size:60% 100%;background-position:-60% 0;animation:scan 7s 3s ease-in-out infinite}
+@keyframes scan{0%{background-position:-60% 0}55%,100%{background-position:170% 0}}
+/* a thread of light leads into every section */
+.s .wrap>.head:before{content:"";display:block;width:1px;height:46px;margin:0 auto 20px;background:linear-gradient(180deg,transparent,rgba(167,139,250,.7));box-shadow:0 0 10px rgba(139,92,246,.6)}
+/* game cards: tilt toward the pointer, a sheen sweeps over */
+.gcard{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px));transition:transform .25s ease-out,border-color .3s,box-shadow .3s}
+.gcard:hover{--lift:-6px}
+.gcard .shn{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 32%,rgba(255,255,255,.09) 46%,transparent 60%);transform:translateX(-130%);transition:transform .7s cubic-bezier(.2,.6,.2,1)}
+.gcard:hover .shn{transform:translateX(130%)}
+/* the main button: a light sweeps across it while it waits */
+.btn.big.pri{animation:ctaPulse 2.8s ease-out infinite,bshine 7s 5s ease-in-out infinite}
+@keyframes bshine{0%,74%{background-position:130% 0,0 0}92%,100%{background-position:-40% 0,0 0}}
+/* phones: a download bar rises once the hero is out of view */
+.mbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:25;display:none;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:rgba(14,12,24,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(167,139,250,.32);box-shadow:0 20px 50px -20px rgba(139,92,246,.85);transform:translateY(130%);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.mbar .mark{width:26px;height:26px;flex:none}
+.mbar .t{flex:1;min-width:0}.mbar .t b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mbar .t small{color:var(--muted);font-size:11.5px}
+.mbar .btn{flex:none;padding:10px 16px}
+body.past .mbar{transform:none}
+@media(max-width:820px){.mbar{display:flex}main{padding-bottom:78px}.grain{display:none}.aurora{filter:blur(40px);opacity:.5}.s .wrap>.head:before{height:34px;margin-bottom:14px}}
+@media(prefers-reduced-motion:reduce){.grain,.aurora i,.stats:after,.plan.pop .beam2,.w.grad,.btn.big.pri{animation:none!important}.mock .p1,.mock .p2{stroke-dashoffset:0}.mock .a2,.mock .dot{opacity:1;animation:none!important}.gcard{transform:none!important}}
+`;
 
 /* ============================================================ JS (landing) ============================================================ */
 const JS = `
@@ -590,6 +658,15 @@ if(location.hash){var h0=location.hash.slice(1);setTimeout(function(){jump(h0,fa
 var bs=document.querySelector('.ba-stage');if(bs){var rg=bs.querySelector('.ba-range'),setX=function(v){bs.style.setProperty('--x',v)};rg.addEventListener('input',function(){setX(rg.value)});
   document.querySelectorAll('.ba-tab').forEach(function(b){b.addEventListener('click',function(){var i=b.dataset.i;document.querySelectorAll('.ba-tab').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b)});document.querySelectorAll('.ba-set,.ba-sts').forEach(function(x){x.classList.toggle('on',x.dataset.i===i)})})});
   if(!rm&&'IntersectionObserver' in window){var bio=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;bio.disconnect();var t0=performance.now();(function a(t){var k=Math.min(1,(t-t0)/1800),v=50+Math.sin(k*Math.PI*2)*(1-k)*24;setX(v);rg.value=v;if(k<1)requestAnimationFrame(a)})(t0)},{threshold:.6});bio.observe(bs)}}
+// ---- polish: reading progress, nav scrollspy, pointer spotlight, game-card tilt, the dashboard coming alive, the phone download bar
+var sp=document.querySelector('.sprog'),secs=[].slice.call(document.querySelectorAll('section[id]')),navA=[].slice.call(document.querySelectorAll('.links a'));
+function spy(){var y=scrollY,dh=document.documentElement.scrollHeight-innerHeight;if(sp)sp.style.setProperty('--sp',(dh>0?y/dh:0).toFixed(4));var cur='';secs.forEach(function(sc){if(sc.getBoundingClientRect().top<=innerHeight*.38)cur=sc.id});navA.forEach(function(a){a.classList.toggle('on',(a.getAttribute('href')||'').split('#')[1]===cur)});document.body.classList.toggle('past',y>innerHeight*.85)}
+addEventListener('scroll',spy,{passive:true});addEventListener('resize',spy);spy();
+document.querySelectorAll('.plan,.gcard,details.q,.stat,.bench').forEach(function(el){el.classList.add('spot')});
+if(!rm){document.addEventListener('pointermove',function(e){var el=e.target.closest&&e.target.closest('.spot');if(!el)return;var r=el.getBoundingClientRect();el.style.setProperty('--mx',(e.clientX-r.left).toFixed(0)+'px');el.style.setProperty('--my',(e.clientY-r.top).toFixed(0)+'px');
+    if(el.classList.contains('gcard')){var x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;el.style.setProperty('--ry',((x-.5)*10).toFixed(2)+'deg');el.style.setProperty('--rx',((.5-y)*10).toFixed(2)+'deg')}},{passive:true});
+  document.addEventListener('pointerout',function(e){var el=e.target.closest&&e.target.closest('.gcard');if(el&&!(e.relatedTarget&&el.contains(e.relatedTarget))){el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')}})}
+var mwrap=document.querySelector('.mockwrap');if(mwrap){setTimeout(function(){mwrap.classList.add('in');mwrap.querySelectorAll('.m-tile .cnt').forEach(function(el){var raw=el.dataset.cnt,v=parseFloat(raw),dec=(raw.split('.')[1]||'').length,suf=el.dataset.suf||'';if(rm){el.textContent=raw+suf;return}var t0=performance.now();(function f(now){var p=Math.min(1,(now-t0)/1400);p=1-Math.pow(1-p,3);el.textContent=(v*p).toFixed(dec)+suf;if(p<1)requestAnimationFrame(f)})(t0)})},rm?0:3000)}
 })();`;
 
 /* ============================================================ layout ============================================================ */
@@ -600,7 +677,7 @@ export function layout(ctx, title, body, opts = {}) {
   return `<!doctype html><html lang="${lang}" dir="${fa ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(name)} · ${esc(title)}</title><meta name="description" content="${esc(t(lang, 'lead'))}"><meta name="theme-color" content="#050507">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${font}&display=swap">
-<style nonce="${nonce}">${CSS}</style></head><body class="${fa ? 'fa' : ''}"><div class="light" aria-hidden="true"></div>
+<style nonce="${nonce}">${CSS}</style></head><body class="${fa ? 'fa' : ''}"><div class="light" aria-hidden="true"></div><i class="sprog" aria-hidden="true"></i><div class="grain" aria-hidden="true"></div>
 <header class="nav"><div class="wrap"><a class="brand" href="/">${MARK}<span class="bn"><span>${esc(name)}</span></span></a>
 <nav class="links"><a href="/#features" style="--i:0">${t(lang, 'nav_features')}</a><a href="/#how" style="--i:1">${t(lang, 'nav_how')}</a><a href="/#games" style="--i:2">${t(lang, 'nav_games')}</a><a href="/#plans" style="--i:3">${t(lang, 'nav_plans')}</a><a href="/#faq" style="--i:4">${t(lang, 'nav_faq')}</a></nav>
 <div class="navr"><a class="lang" href="${esc(u.pathname + u.search)}" hreflang="${other}">${t(lang, 'lang')}</a>${user ? `<a class="btn ghost" href="/account">${t(lang, 'account')}</a>` : `<a class="lang login" href="/login">${t(lang, 'login')}</a><a class="btn" href="/download">${t(lang, 'download_short')}</a>`}</div></div></header>
@@ -670,9 +747,9 @@ function mockHtml(ctx) {
   return `<div class="mockwrap"><div class="mock" aria-hidden="true">
 <div class="m-side"><div class="b">${MARK}FPS BOOST</div>${nav}</div>
 <div class="m-main"><div class="m-top"><b>${L.dash}</b><span class="btn">${L.apply}</span></div>
-<div class="m-tiles"><div class="m-tile"><span>${L.fps}</span><b>142<em>+38</em></b></div><div class="m-tile"><span>${L.ping}</span><b>18 ms<em>−11</em></b></div><div class="m-tile"><span>${L.ft}</span><b>7.0 ms<em>−2.6</em></b></div></div>
+<div class="m-tiles"><div class="m-tile"><span>${L.fps}</span><b><span class="cnt" data-cnt="142">0</span><em>+38</em></b></div><div class="m-tile"><span>${L.ping}</span><b><span class="cnt" data-cnt="18" data-suf=" ms">0 ms</span><em>−11</em></b></div><div class="m-tile"><span>${L.ft}</span><b><span class="cnt" data-cnt="7.0" data-suf=" ms">0.0 ms</span><em>−2.6</em></b></div></div>
 <div class="m-chart"><div class="l"><span>FPS</span><span>${L.before} / ${L.after}</span></div><svg viewBox="0 0 400 110" preserveAspectRatio="none"><defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a78bfa" stop-opacity=".35"/><stop offset="1" stop-color="#a78bfa" stop-opacity="0"/></linearGradient></defs>
-<path class="a2" d="M0 60 C40 55 60 70 100 62 S160 40 200 44 S260 30 300 26 S360 22 400 18 V110 H0 Z"/><path class="p1" d="M0 84 C40 80 60 92 100 86 S160 78 200 82 S260 74 300 78 S360 72 400 74"/><path class="p2" d="M0 60 C40 55 60 70 100 62 S160 40 200 44 S260 30 300 26 S360 22 400 18"/></svg></div></div>
+<path class="a2" d="M0 60 C40 55 60 70 100 62 S160 40 200 44 S260 30 300 26 S360 22 400 18 V110 H0 Z"/><path class="p1" pathLength="1000" d="M0 84 C40 80 60 92 100 86 S160 78 200 82 S260 74 300 78 S360 72 400 74"/><path class="p2" pathLength="1000" d="M0 60 C40 55 60 70 100 62 S160 40 200 44 S260 30 300 26 S360 22 400 18"/><circle class="dot" cx="400" cy="18" r="3.5"/></svg></div></div>
 <div class="m-right"><h4>${L.act}</h4>${rows}<div class="m-preset"><b>${L.preset}</b><span>${L.pr}</span><span class="btn">${L.ap}</span></div></div>
 </div><div class="mockglow"></div></div>`;
 }
@@ -695,7 +772,7 @@ export function landing(ctx) {
     m4: `<div class="art"><div class="keys"><i>-XX:+UseG1GC</i><i>-high</i><i>raw input</i><i>-novid</i><i>priority: high</i></div></div>`,
   };
   const mods = [['m1', 'pc'], ['m2', 'net'], ['m3', 'win'], ['m4', 'game']].map(([k, ic], i) => `<div class="card mod rv ${i % 2 ? 'r' : 'l'} d${i % 4}">${arts[k]}<div class="ic">${ICONS[ic]}</div><h3>${t(lang, k)}</h3><p>${t(lang, k + 'd')}</p></div>`).join('');
-  const gcards = GAMES.map(([ab, name, k, g1, g2]) => `<div class="gcard" style="--g1:${g1};--g2:${g2}"><span class="gw">${ab}</span><i class="circ"></i><span class="gi"><img src="${iconUrl(k.slice(2))}" alt="" draggable="false"></span><b>${name}</b><span>${t(lang, k)}</span></div>`).join('');
+  const gcards = GAMES.map(([ab, name, k, g1, g2]) => `<div class="gcard" style="--g1:${g1};--g2:${g2}"><span class="gw">${ab}</span><i class="circ"></i><span class="gi"><img src="${iconUrl(k.slice(2))}" alt="" draggable="false"></span><b>${name}</b><span>${t(lang, k)}</span><i class="shn"></i></div>`).join('');
   // how it works: a timeline, one looping mini demo per step (6s cycles, CSS only; paused until revealed)
   const hwPlans = P.slice(0, 3).map(([m]) => `<span>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</span>`).join('');
   const hwToggles = [['Game DVR', 'off'], ['Power plan', 'Ultimate'], ['Nagle', 'off'], ['DNS', '1.1.1.1']].map(([k, v], i) => `<div class="hw-tg" style="--i:${i}" dir="ltr"><span>${k} · <em>${v}</em></span><i></i></div>`).join('');
@@ -719,7 +796,7 @@ ${hwToggles}<div class="hw-ok">✓ ${t(lang, 'restore_ok')}</div></div></div>`,
   const cmpRows = [['p1', P.map(() => '✓')], ['p2', P.map(() => '✓')], ['p3', P.map(() => '✓')], ['p4', P.map(() => '✓')], ['cmp_pcs', P.map(() => fmtNum(lang, machines(env)))], ['cmp_pm', P.map(([m, price]) => fmtNum(lang, Math.round(price / Number(m) / 1000) * 1000))]];
   const cmp = `<details class="cmp"><summary>${t(lang, 'compare')}</summary><div class="card"><div class="tbl"><table><tr><th></th>${P.map(([m]) => `<th>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</th>`).join('')}</tr>${cmpRows.map(([k, vals]) => `<tr><td>${t(lang, k)}</td>${vals.map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}</table></div></div></details>`;
   const body = `
-<section class="hero"><div class="cone"></div><div class="beam b1"></div><div class="beam b2"></div><div class="wmk"></div><canvas id="stars"></canvas>${field}<div class="wrap">
+<section class="hero"><div class="cone"></div><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="beam b1"></div><div class="beam b2"></div><div class="wmk"></div><canvas id="stars"></canvas>${field}<div class="wrap">
 <span class="pill"><i></i>${t(lang, 'hero_pill')}</span>
 <h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad', nw(t(lang, 'h1a')))}<br>${words(t(lang, 'h1c'), '', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')))} ${words(t(lang, 'h1d'), 'grad', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')) + nw(t(lang, 'h1c')))}</h1>
 <p class="lead">${t(lang, 'lead').replace('{n}', fmtNum(lang, MODULE_COUNT))}</p><div class="hint"><i></i>${t(lang, 'scroll_hint')}</div>
@@ -744,13 +821,16 @@ ${mockHtml(ctx)}
 <section class="s" id="plans"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'pricing')}</span><h2 class="words">${words(t(lang, 'plans_h'))}</h2><p>${fill(t(lang, 'plans_sub'), lang, env)}</p></div>${plansHtml(ctx)}${cmp}</div></section>
 <section class="s" id="faq"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'faq_pill')}</span><h2 class="words">${words(t(lang, 'faq_h'))}</h2></div><div class="faqbox"><i class="cb tl on"></i><i class="cb tr"></i><i class="cb bl"></i><i class="cb br on"></i><div class="faq">${faq}</div></div></div></section>
 <section class="cta"><div class="sky"></div>${comets}<div class="radar">${radar}</div><img class="cta-map" src="/iran.svg?v=3" alt="" aria-hidden="true"><div class="planet"></div><div class="wrap rv">${MARK}<h2>${t(lang, 'cta_h')}</h2><p>${t(lang, 'cta_sub')}</p><span class="cta-first"><i></i>${t(lang, 'cta_first')}</span><div class="actions">${regBtn(lang, 'get_started', false)}${dlBtn(lang, true)}</div></div></section>
-<div class="marq big" aria-hidden="true"><div class="discs">${discs}</div><div class="track">${track2}</div></div>`;
+<div class="marq big" aria-hidden="true"><div class="discs">${discs}</div><div class="track">${track2}</div></div>
+<div class="mbar" role="complementary">${MARK}<div class="t"><b>${t(lang, 'download')}</b><small>${t(lang, 'dl_sub')}</small></div><a class="btn" href="/download">${t(lang, 'download_short')}</a></div>`;
   return layout(ctx, t(lang, 'home'), body, { script: JS });
 }
+// how much a longer plan saves against paying month by month (the 1-month price × months) — shown as a chip when it is 5 % or more
+const save = (P, m, price) => { const one = P.find(([k]) => Number(k) === 1); if (!one || Number(m) <= 1) return ''; const pct = Math.round((1 - price / (one[1] * Number(m))) * 100); return pct >= 5 ? `<span class="save">−${pct}%</span>` : ''; };
 export function plansHtml(ctx) {
   const { env, lang, user } = ctx, P = Object.entries(prices(env)), pop = P.length > 1 ? P[1][0] : null;
-  return `<div class="plans">${P.map(([m, price], i) => `<div class="card plan${m === pop ? ' pop' : ''} rv d${i}">${m === pop ? `<i class="sweep"></i><span class="pill tag"><i></i>${t(lang, 'popular')}</span>` : ''}<h3>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</h3>
-<div class="price">${fmtNum(lang, price)}<small>${t(lang, 'toman')}</small></div>${Number(m) > 1 ? `<div class="per">${fmtNum(lang, Math.round(price / Number(m) / 1000) * 1000)} ${t(lang, 'toman')} ${t(lang, 'per_month')}</div>` : ''}
+  return `<div class="plans">${P.map(([m, price], i) => `<div class="card plan${m === pop ? ' pop' : ''} rv d${i}">${m === pop ? `<i class="sweep"></i><i class="beam2" aria-hidden="true"></i><span class="pill tag"><i></i>${t(lang, 'popular')}</span>` : ''}<h3>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</h3>
+<div class="price">${fmtNum(lang, price)}<small>${t(lang, 'toman')}</small></div>${Number(m) > 1 ? `<div class="per">${fmtNum(lang, Math.round(price / Number(m) / 1000) * 1000)} ${t(lang, 'toman')} ${t(lang, 'per_month')}${save(P, m, price)}</div>` : ''}
 <ul><li>${t(lang, 'p1')}</li><li>${t(lang, 'p2')}</li><li>${t(lang, 'p3')}</li><li>${t(lang, 'p4')}</li></ul>
 <form method="post" action="${user ? '/pay/start' : '/register'}"><input type="hidden" name="plan" value="${m}"><button class="${m === pop ? '' : 'ghost'}">${t(lang, user ? 'buy' : 'register')}</button></form></div>`).join('')}</div>`;
 }
