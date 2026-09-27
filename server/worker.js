@@ -22,10 +22,10 @@
    ============================================================ */
 import { DurableObject } from 'cloudflare:workers';
 import { ASSETS } from './assets.js';
-import { ICON_SVG } from './icons.js';
+import { ICON_SVG, ICON_IMG } from './icons.js';
 import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, adminPage, prices } from './pages.js';
 
-const BUILD = '2026-09-27a';
+const BUILD = '2026-09-27b';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
@@ -167,6 +167,8 @@ async function routeInner(request, env, base) {
   if (asset) return new Response(b64d(asset), { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=604800, immutable' } });
   const svg = ICON_SVG[p.slice(1)];
   if (svg) return new Response(svg, { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=604800, immutable' } });
+  const img = ICON_IMG[p.slice(1)];
+  if (img) return new Response(b64d(img), { headers: { 'content-type': 'image/webp', 'cache-control': 'public, max-age=604800, immutable' } });
   if (p === '/terms') return html(termsPage(ctx), 200, langCookie);
   if (p === '/health') return Response.json({ ok: true, build: BUILD });
   if (p === '/') return html(landing(ctx), 200, langCookie);

@@ -1,3 +1,4 @@
+import { ICON_IMG } from './icons.js';
 /* ============================================================
    fpsboost.ir — every HTML page. Dark violet theme (spotlight beams, glass cards, gradient headings) with a handful of
    scroll effects: word-by-word heading reveal, tokens drifting in from far out while they brighten + a particle field in the hero, the tilted app mock-up that
@@ -11,9 +12,9 @@ export const STR = {
     home: 'Home', nav_features: 'Features', nav_games: 'Games', nav_plans: 'Plans', nav_faq: 'FAQ', nav_how: 'How it works',
     hero_pill: 'Windows 10 / 11 · one click · full undo', scroll_hint: 'Scroll to explore',
     rep_pill: 'Why it works', bench_t: 'Benchmark', bench_g: 'Valorant · 1080p · RTX 3060', bench_r1: 'Average FPS', bench_r2: '1% low', bench_r3: 'Ping', bench_f: 'Same PC, same settings — Ryzen 5 5600 · 16 GB · Windows 11. Before → after FPS Boost.', rep_h: 'Stop losing frames to Windows.', rep_sub: 'Background recording, telemetry, the Balanced power plan and a dozen services you never asked for eat frames and add latency. FPS Boost turns them off in one pass — and back on whenever you want.', rep_word: 'Higher FPS',
-    marquee2: ['Let’s boost', 'Lower ping', 'Higher FPS', 'One click'], ba_pill: 'Before / after', ba_h: 'Same PC. Same game.', ba_before: 'BEFORE', ba_after: 'AFTER', ba_cap: 'One pass of “Apply recommended”. Your numbers depend on your PC and the game — these are from our test machine.', restore_ok: 'System Restore point created', compare: 'Compare plans', cmp_pcs: 'PCs per account', cmp_pm: 'Per month (Toman)',
-    h1a: 'Lower ping.', h1b: 'Higher FPS.', h1c: 'One click.',
-    lead: 'A Windows app that applies the proven PC, network, Windows and per-game tweaks for you — with a backup of every change and a one-click undo — so your games run smoother and your connection reacts faster.',
+    marquee2: ['MORE FPS', 'LESS PING'], ba_pill: 'Before / after', ba_h: 'Same PC. Same game.', ba_before: 'BEFORE', ba_after: 'AFTER', ba_cap: 'One pass of “Apply recommended”. Your numbers depend on your PC and the game — these are from our test machine.', restore_ok: 'System Restore point created', compare: 'Compare plans', cmp_pcs: 'PCs per account', cmp_pm: 'Per month (Toman)',
+    h1a: 'Boost', h1b: 'FPS.', h1c: 'Reduce Latency.',
+    lead: 'Internet and Windows speed optimizer with its own app — over {n} active modules.',
     download: 'Download for Windows', dl_sub: 'Windows 10 & 11 · 64-bit', reg_sub: 'Free · takes a minute', download_short: 'Download', register: 'Create account', login: 'Log in', logout: 'Log out', account: 'My account', get_started: 'Get started',
     tok1: '+FPS', tok2: '−ms ping', tok3: 'Game DVR off', tok4: 'DNS 1.1.1.1', tok5: 'Nagle off', tok6: 'Ultimate power plan', tok7: '1% lows ↑', tok8: 'GPU scheduling',
     st1: 'tweaks', st2: 'modules', st3: 'game presets', st4: 'undo — every change is backed up',
@@ -56,9 +57,9 @@ export const STR = {
     home: 'خانه', nav_features: 'امکانات', nav_games: 'بازی‌ها', nav_plans: 'اشتراک', nav_faq: 'سوالات', nav_how: 'نحوهٔ کار',
     hero_pill: 'ویندوز ۱۰ / ۱۱ · یک کلیک · بازگشت کامل', scroll_hint: 'اسکرول کنید',
     rep_pill: 'چرا جواب می‌دهد', bench_t: 'بنچمارک', bench_g: 'Valorant · 1080p · RTX 3060', bench_r1: 'میانگین FPS', bench_r2: '1% low', bench_r3: 'پینگ', bench_f: 'همان سیستم، همان تنظیمات — Ryzen 5 5600 · 16 GB · Windows 11. قبل ← بعد از FPS Boost.', rep_h: 'فریم‌هایتان را به ویندوز نبازید.', rep_sub: 'ضبط پس‌زمینه، تله‌متری، پاور پلن Balanced و ده‌ها سرویسی که هرگز نخواستید فریم می‌خورند و تأخیر اضافه می‌کنند. FPS Boost همه را در یک مرحله خاموش می‌کند — و هر وقت خواستید، برمی‌گرداند.', rep_word: 'FPS بیشتر',
-    marquee2: ['بوست کنیم', 'پینگ کمتر', 'FPS بیشتر', 'یک کلیک'], ba_pill: 'قبل / بعد', ba_h: 'همان سیستم. همان بازی.', ba_before: 'قبل', ba_after: 'بعد', ba_cap: 'یک بار «اعمال پیشنهادی». عدد شما به سیستم و بازی‌تان بستگی دارد — این‌ها از سیستم تست ما هستند.', restore_ok: 'System Restore Point ساخته شد', compare: 'مقایسهٔ پلن‌ها', cmp_pcs: 'کامپیوتر برای هر حساب', cmp_pm: 'ماهانه (تومان)',
-    h1a: 'پینگ کمتر.', h1b: 'FPS بیشتر.', h1c: 'با یک کلیک.',
-    lead: 'برنامه‌ای برای ویندوز که تنظیمات ثابت‌شدهٔ سیستم، شبکه، ویندوز و هر بازی را برایتان اعمال می‌کند — از هر تغییر نسخهٔ پشتیبان می‌گیرد و با یک کلیک برمی‌گرداند — تا بازی‌ها روان‌تر و اینترنت سریع‌تر واکنش نشان دهد.',
+    marquee2: ['MORE FPS', 'LESS PING'], ba_pill: 'قبل / بعد', ba_h: 'همان سیستم. همان بازی.', ba_before: 'قبل', ba_after: 'بعد', ba_cap: 'یک بار «اعمال پیشنهادی». عدد شما به سیستم و بازی‌تان بستگی دارد — این‌ها از سیستم تست ما هستند.', restore_ok: 'System Restore Point ساخته شد', compare: 'مقایسهٔ پلن‌ها', cmp_pcs: 'کامپیوتر برای هر حساب', cmp_pm: 'ماهانه (تومان)',
+    h1a: 'افزایش', h1b: 'FPS.', h1c: 'کاهش تأخیر.',
+    lead: 'بهینه‌ساز اینترنت و سرعت ویندوز با برنامهٔ اختصاصی — دارای بیش از {n} ماژول فعال.',
     download: 'دانلود برای ویندوز', dl_sub: 'ویندوز ۱۰ و ۱۱ · ۶۴ بیتی', reg_sub: 'رایگان · کمتر از یک دقیقه', download_short: 'دانلود', register: 'ساخت حساب', login: 'ورود', logout: 'خروج', account: 'حساب من', get_started: 'شروع کنید',
     tok1: '+FPS', tok2: 'پینگ کمتر', tok3: 'Game DVR خاموش', tok4: 'DNS 1.1.1.1', tok5: 'Nagle خاموش', tok6: 'پاور پلن Ultimate', tok7: '1% lows ↑', tok8: 'زمان‌بندی GPU',
     st1: 'تنظیم', st2: 'ماژول', st3: 'پریست بازی', st4: 'بازگشت — از هر تغییر پشتیبان گرفته می‌شود',
@@ -465,7 +466,7 @@ function onScroll(){var y=scrollY;if(hint)hint.classList.toggle('off',y>120);if(
 addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
 if(innerWidth<=820||rm){panels.forEach(function(p){p.classList.add('on')})}
 steps.forEach(function(s,i){s.addEventListener('click',function(){if(!sw)return;var top=sw.getBoundingClientRect().top+scrollY,h=sw.offsetHeight-innerHeight;scrollTo({top:top+h*(i+.5)/panels.length,behavior:'smooth'})})});
-function band(tr,speed,dir){if(!tr||rm)return;var half=tr.scrollWidth/2,o0=0;(function m(){o0+=speed;var o=((o0+scrollY*0.7*dir)%half+half)%half;tr.style.transform='translateX('+((rtl?1:-1)*o)+'px)';requestAnimationFrame(m)})()}
+function band(tr,speed,dir){if(!tr||rm)return;var half=tr.scrollWidth/2,o0=0;(function m(){o0+=speed;var o=((o0*dir)%half+half)%half;tr.style.transform='translateX('+((rtl?1:-1)*o)+'px)';requestAnimationFrame(m)})()}
 band(track,0.5,1);band(track2,0.4,-1);
 })();`;
 
@@ -499,6 +500,10 @@ const ICONS = {
   win: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5.5 11 4.4v7.1H3zM12 4.2 21 3v8.5h-9zM3 12.5h8v7.1L3 18.5zM12 12.5h9V21l-9-1.2z"/></svg>',
   game: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12a4 4 0 0 1 4 4v2a4 4 0 0 1-7 2.6L14 16h-4l-1 .6A4 4 0 0 1 2 14v-2a4 4 0 0 1 4-4z"/><path d="M7 11v3M5.5 12.5h3M16.5 11.5h.01M18.5 13.5h.01"/></svg>',
 };
+// the app's modules: 16 tweaks (app/tweaks/manifest.js) + 4 tools (app/src/tools.js)
+const MODULE_COUNT = 20;
+// owner-supplied icons are .webp, the rest .svg (server/icons.js)
+const iconUrl = (k) => `/i/${k}.${ICON_IMG[`i/${k}.webp`] ? 'webp' : 'svg'}?v=2`;
 const GAMES = [['MC', 'Minecraft', 'g_mc', '#3fa34d', '#1f6b2d'], ['VAL', 'Valorant', 'g_val', '#ff4655', '#b8202d'], ['CS2', 'Counter-Strike 2', 'g_cs2', '#f5a623', '#c26f00'], ['FN', 'Fortnite', 'g_fn', '#4f8bff', '#2a4fd6'],
   ['APX', 'Apex Legends', 'g_apex', '#ff5a36', '#b02d12'], ['WZ', 'Warzone', 'g_wz', '#8b93a5', '#374151'], ['RBX', 'Roblox', 'g_rbx', '#e53e3e', '#9b1c1c'], ['GTA', 'GTA V', 'g_gta', '#22c55e', '#15803d']];
 
@@ -521,13 +526,13 @@ export function landing(ctx) {
   const { env, lang } = ctx, fa = lang === 'fa', P = Object.entries(prices(env));
   // the token field: numbers + app tiles with a home position (% of the field), depth z, m = also shown on phones, tilt = outline card
   // real game / app icons, served from /i/<key>.svg (server/icons.js)
-  const APP = k => `<img src="/i/${k}.svg?v=1" alt="" draggable="false">`;
+  const APP = k => `<img src="${iconUrl(k)}" alt="" draggable="false">`;
   const NUMS = [['144', 'FPS', 1, 12, 22, 1, [28, 7], -14], ['18', 'ms', 1, 91, 37, 1, [74, 7], 12], ['+38', 'FPS', 1, 20, 62, .8, 0], ['−11', 'ms', 1, 80, 68, .8, 0], ['240', 'Hz', 0, 6, 44, .6, 0], ['7.0', 'ms', 0, 92, 50, .6, 0], ['98', '1% LOW', 0, 88, 12, .7, 0], ['60→144', '', 0, 30, 88, .55, 0]];
-  const TILES = [['val', 8, 10, 1, [10, 6]], ['mc', 88, 20, 1, [90, 6]], ['cs2', 4, 76, .8, 0], ['fn', 94, 82, .9, 0], ['apex', 20, 44, .6, 0], ['dc', 76, 10, .9, 0], ['steam', 14, 92, .7, 0], ['ps', 78, 90, .8, 0], ['pr', 96, 64, .6, 0], ['chrome', 22, 6, .55, 0], ['gta', 80, 46, .7, 0], ['rbx', 8, 30, .6, 0], ['obs', 84, 76, .55, 0], ['spot', 26, 96, .5, 0]];
+  const TILES = [['val', 8, 10, 1, [10, 6]], ['mc', 88, 20, 1, [90, 6]], ['cs2', 4, 76, .8, 0], ['fn', 94, 82, .9, 0], ['apex', 20, 44, .6, 0], ['dc', 76, 10, .9, 0], ['steam', 14, 92, .7, 0], ['ps', 78, 90, .8, 0], ['pr', 96, 64, .6, 0], ['chrome', 22, 6, .55, 0], ['gta', 80, 46, .7, 0], ['rbx', 8, 30, .6, 0], ['obs', 84, 76, .55, 0], ['spot', 26, 96, .5, 0], ['lol', 3, 58, .65, 0], ['rivals', 97, 8, .6, 0], ['ae', 66, 97, .55, 0]];
   const field = `<div class="field" aria-hidden="true">${NUMS.map(([n, u, good, x, y, z, m, tilt]) => `<div class="body num${good ? ' good' : ''}${m ? ' m' : ''}${tilt ? ' card' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${tilt ? ` data-tilt="${tilt}"` : ''}${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} style="--z:${z}">${n}${u ? `<small>${u}</small>` : ''}</div>`).join('')}${TILES.map(([k, x, y, z, m]) => `<div class="body app${m ? ' m' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} >${APP(k)}</div>`).join('')}</div>`;
   const stats = [[20, '+', 'st1'], [4, '', 'st2'], [8, '', 'st3'], [100, '%', 'st4']].map(([v, s, k]) => `<div class="stat" data-n="${v}" data-suf="${s}"><b>0</b><span>${t(lang, k)}</span></div>`).join('');
   const mq = t(lang, 'marquee'); const track = [...mq, ...mq].map(w => `<span>${esc(w)}</span><em>✦</em>`).join('');
-  const mq2 = t(lang, 'marquee2'); const track2 = [...mq2, ...mq2].map(w => `<span>${esc(w)}</span><em>✦</em>`).join('');
+  const mq2 = t(lang, 'marquee2'); const track2 = [...mq2, ...mq2, ...mq2, ...mq2].map(w => `<span>${esc(w)}</span><em>★</em>`).join('');
   const discs = [['-520px', '520px', '30deg', '0s'], ['-300px', '620px', '55deg', '-3s'], ['-80px', '680px', '70deg', '-6s'], ['160px', '640px', '50deg', '-9s'], ['400px', '560px', '35deg', '-12s']].map(([x, s, a, d]) => `<i class="disc" style="--x:${x};--s:${s};--a:${a};--d:${d}"></i>`).join('');
   const arts = {
     m1: `<div class="art"><span class="lbl" style="top:14px">FPS</span><div class="bar" style="top:34px;--w:52%"><i></i></div><span class="lbl" style="top:58px">1% low</span><div class="bar" style="top:78px;--w:84%"><i></i></div></div>`,
@@ -536,7 +541,7 @@ export function landing(ctx) {
     m4: `<div class="art"><div class="keys"><i>-XX:+UseG1GC</i><i>-high</i><i>raw input</i><i>-novid</i><i>priority: high</i></div></div>`,
   };
   const mods = [['m1', 'pc'], ['m2', 'net'], ['m3', 'win'], ['m4', 'game']].map(([k, ic], i) => `<div class="card mod rv ${i % 2 ? 'r' : 'l'} d${i % 4}">${arts[k]}<div class="ic">${ICONS[ic]}</div><h3>${t(lang, k)}</h3><p>${t(lang, k + 'd')}</p></div>`).join('');
-  const gcards = GAMES.map(([ab, name, k, g1, g2]) => `<div class="gcard" style="--g1:${g1};--g2:${g2}"><span class="gw">${ab}</span><i class="circ"></i><span class="gi"><img src="/i/${k.slice(2)}.svg?v=1" alt="" draggable="false"></span><b>${name}</b><span>${t(lang, k)}</span></div>`).join('');
+  const gcards = GAMES.map(([ab, name, k, g1, g2]) => `<div class="gcard" style="--g1:${g1};--g2:${g2}"><span class="gw">${ab}</span><i class="circ"></i><span class="gi"><img src="${iconUrl(k.slice(2))}" alt="" draggable="false"></span><b>${name}</b><span>${t(lang, k)}</span></div>`).join('');
   // the pinned stage: three panels, one per step
   const pop = P[1] || P[0] || ['3', 390000];
   const stack = P.slice(0, 3).reverse().map(([m, price], i) => `<div class="sc" style="--dx:${(i - 1) * 26}px;--dy:${(2 - i) * -14}px;--rr:${(i - 1) * 6}deg"><b>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</b><span>${fmtNum(lang, price)} ${t(lang, 'toman')}</span><br><span class="btn">${t(lang, 'buy')}</span></div>`).join('');
@@ -558,7 +563,7 @@ export function landing(ctx) {
 <section class="hero"><div class="cone"></div><div class="beam b1"></div><div class="beam b2"></div><div class="wmk"></div><canvas id="stars"></canvas>${field}<div class="wrap">
 <span class="pill"><i></i>${t(lang, 'hero_pill')}</span>
 <h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad', nw(t(lang, 'h1a')))}<br>${words(t(lang, 'h1c'), '', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')))}</h1>
-<p class="lead">${t(lang, 'lead')}</p><div class="hint"><i></i>${t(lang, 'scroll_hint')}</div>
+<p class="lead">${t(lang, 'lead').replace('{n}', fmtNum(lang, MODULE_COUNT))}</p><div class="hint"><i></i>${t(lang, 'scroll_hint')}</div>
 <div class="actions">${dlBtn(lang)}${regBtn(lang)}</div>
 ${mockHtml(ctx)}
 <div class="stats"><i class="xh v"></i><i class="xh h"></i>${stats}</div></div></section>
