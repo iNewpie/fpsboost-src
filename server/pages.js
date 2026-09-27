@@ -25,7 +25,7 @@ export const STR = {
     m3: 'Windows optimization', m3d: 'Game DVR & Game Bar, Xbox services, telemetry, startup apps, temp files, notifications and the other things Windows runs while you play.',
     m4: 'Game optimizations', m4d: 'Presets per game — launch options, config values and the process priority that fits each title. Minecraft, Valorant, CS2 and more.',
     games_pill: 'Game presets', games_h: 'One preset per game.', games_sub: 'Each preset bundles the tweaks that matter for that title. Apply it before you play, revert it when you are done.',
-    g_mc: 'JVM flags, RAM allocation, priority', g_val: 'Raw input, priority, network', g_cs2: 'Launch options, priority', g_fn: 'Priority, Game Mode', g_apex: 'Launch options, network', g_wz: 'Priority, shader cache', g_rbx: 'Priority, background apps', g_gta: 'Priority, Game Mode', g_lol: 'Priority, network', g_rivals: 'Priority, shader cache', g_lunar: 'JVM flags, RAM allocation', g_blc: 'JVM flags, RAM, priority', g_cf: 'Modpack RAM, JVM flags', g_modrinth: 'Modpack RAM, JVM flags', f_games: 'Game presets',
+    g_mc: 'JVM flags, RAM allocation, priority', g_val: 'Raw input, priority, network', g_cs2: 'Launch options, priority', g_fn: 'Priority, Game Mode', g_apex: 'Launch options, network', g_wz: 'Priority, shader cache', g_rbx: 'Priority, background apps', g_gta: 'Priority, Game Mode', g_lol: 'Priority, network', g_rivals: 'Priority, shader cache', g_lunar: 'JVM flags, RAM allocation', g_blc: 'JVM flags, RAM, priority', g_cf: 'Modpack RAM, JVM flags', g_modrinth: 'Modpack RAM, JVM flags', f_badges: 'Trust badges', badge_enamad: 'eNamad', badge_zarinpal: 'Zarinpal', badge_soon: 'coming soon', made_by: 'Made by {name}', made_name: 'Hossein Danesh',
     how_pill: 'How it works', how_h: 'Up and running in three steps.', how_sub: 'No settings to study. The app does the work and keeps a way back.',
     how1: 'Create an account and pick a plan', how1d: 'Your username works on the website and inside the app, on up to {n} PCs.',
     how2: 'Download the app and log in', how2d: 'A small installer for Windows 10 / 11. It asks for administrator rights because it changes Windows settings.',
@@ -42,7 +42,7 @@ export const STR = {
       ['Does it need an internet connection?', 'Only to log in and to check the subscription once a day. It keeps working for 7 days offline.'],
       ['Can I get a refund?', 'If the app does not run on your PC and support cannot fix it, you get the money back within 7 days of the purchase.'],
     ],
-    cta_h: 'Ready when you are.', cta_sub: 'Create an account, download the app, press one button.',
+    cta_first: 'A first in Iran', cta_h: 'Ready when you are.', cta_sub: 'Create an account, download the app, press one button.',
     f_product: 'Product', f_account: 'Account', f_legal: 'Legal & support', terms: 'Terms & refunds', support: 'Support', rights: 'All rights reserved.',
     username: 'Username', password: 'Password', subscription: 'Subscription', active_until: 'Active until', expired: 'Expired', no_sub: 'No active subscription',
     devices: 'Devices', devices_hint: 'The app works on up to {n} PCs per account. Reset if you changed your PC.', reset_devices: 'Reset devices', payments: 'Payments', none: 'none yet',
@@ -70,7 +70,7 @@ export const STR = {
     m3: 'بهینه‌سازی ویندوز', m3d: 'Game DVR و Game Bar، سرویس‌های Xbox، تله‌متری، برنامه‌های استارتاپ، فایل‌های موقت، نوتیفیکیشن‌ها و بقیهٔ چیزهایی که ویندوز حین بازی اجرا می‌کند.',
     m4: 'بهینه‌سازی بازی‌ها', m4d: 'پریست مخصوص هر بازی — گزینه‌های اجرا، مقادیر کانفیگ و اولویت پردازشی مناسب همان بازی. ماینکرفت، ولورانت، CS2 و بیشتر.',
     games_pill: 'پریست بازی‌ها', games_h: 'برای هر بازی یک پریست.', games_sub: 'هر پریست تنظیماتی را که برای همان بازی مهم است یکجا جمع می‌کند. قبل از بازی اعمال کنید، بعدش برگردانید.',
-    g_mc: 'فلگ‌های JVM، تخصیص رم، اولویت', g_val: 'Raw input، اولویت، شبکه', g_cs2: 'گزینه‌های اجرا، اولویت', g_fn: 'اولویت، Game Mode', g_apex: 'گزینه‌های اجرا، شبکه', g_wz: 'اولویت، کش شیدر', g_rbx: 'اولویت، برنامه‌های پس‌زمینه', g_gta: 'اولویت، Game Mode', g_lol: 'اولویت، شبکه', g_rivals: 'اولویت، کش شیدر', g_lunar: 'فلگ‌های JVM، تخصیص رم', g_blc: 'فلگ‌های JVM، رم، اولویت', g_cf: 'رم مادپک، فلگ‌های JVM', g_modrinth: 'رم مادپک، فلگ‌های JVM', f_games: 'پریست بازی‌ها',
+    g_mc: 'فلگ‌های JVM، تخصیص رم، اولویت', g_val: 'Raw input، اولویت، شبکه', g_cs2: 'گزینه‌های اجرا، اولویت', g_fn: 'اولویت، Game Mode', g_apex: 'گزینه‌های اجرا، شبکه', g_wz: 'اولویت، کش شیدر', g_rbx: 'اولویت، برنامه‌های پس‌زمینه', g_gta: 'اولویت، Game Mode', g_lol: 'اولویت، شبکه', g_rivals: 'اولویت، کش شیدر', g_lunar: 'فلگ‌های JVM، تخصیص رم', g_blc: 'فلگ‌های JVM، رم، اولویت', g_cf: 'رم مادپک، فلگ‌های JVM', g_modrinth: 'رم مادپک، فلگ‌های JVM', f_badges: 'نمادها', badge_enamad: 'اینماد', badge_zarinpal: 'زرین‌پال', badge_soon: 'به‌زودی', made_by: 'ساخته‌شده توسط {name}', made_name: 'حسین دانش',
     how_pill: 'نحوهٔ کار', how_h: 'در سه قدم آماده است.', how_sub: 'لازم نیست تنظیمات را یاد بگیرید. برنامه کار را انجام می‌دهد و راه برگشت را نگه می‌دارد.',
     how1: 'حساب بسازید و یک پلن انتخاب کنید', how1d: 'نام کاربری شما هم در سایت و هم داخل برنامه کار می‌کند، روی حداکثر {n} کامپیوتر.',
     how2: 'برنامه را دانلود کنید و وارد شوید', how2d: 'یک نصب‌کنندهٔ کوچک برای ویندوز ۱۰ / ۱۱. چون تنظیمات ویندوز را تغییر می‌دهد، دسترسی Administrator می‌خواهد.',
@@ -87,7 +87,7 @@ export const STR = {
       ['به اینترنت نیاز دارد؟', 'فقط برای ورود و بررسی روزانهٔ اشتراک. تا ۷ روز بدون اینترنت هم کار می‌کند.'],
       ['می‌توانم پولم را پس بگیرم؟', 'اگر برنامه روی کامپیوتر شما اجرا نشود و پشتیبانی نتواند حلش کند، تا ۷ روز پس از خرید مبلغ برگردانده می‌شود.'],
     ],
-    cta_h: 'هر وقت آماده بودید.', cta_sub: 'حساب بسازید، برنامه را دانلود کنید، یک دکمه را بزنید.',
+    cta_first: 'اولین بار در ایران', cta_h: 'هر وقت آماده بودید.', cta_sub: 'حساب بسازید، برنامه را دانلود کنید، یک دکمه را بزنید.',
     f_product: 'محصول', f_account: 'حساب', f_legal: 'قوانین و پشتیبانی', terms: 'قوانین و بازگشت وجه', support: 'پشتیبانی', rights: 'تمام حقوق محفوظ است.',
     username: 'نام کاربری', password: 'رمز عبور', subscription: 'اشتراک', active_until: 'فعال تا', expired: 'منقضی شده', no_sub: 'اشتراک فعالی ندارید',
     devices: 'دستگاه‌ها', devices_hint: 'برنامه روی حداکثر {n} کامپیوتر برای هر حساب کار می‌کند. اگر کامپیوترتان عوض شد ریست کنید.', reset_devices: 'ریست دستگاه‌ها', payments: 'پرداخت‌ها', none: 'هنوز چیزی نیست',
@@ -106,6 +106,8 @@ export function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c
 
 // the mark: /logo.png (white chevrons, served by the worker) used as a CSS mask so it can take any gradient
 const MARK = '<span class="mark" aria-hidden="true"></span>';
+// footer trust badges: paste the <a><img></a> snippet eNamad / Zarinpal give after approval; while empty a labelled slot is shown
+const BADGE_ENAMAD = '', BADGE_ZARINPAL = '';
 
 /* the big two-line call-to-action buttons (hero + closing CTA): icon chip, label + caption, trailing arrow */
 const ICO = {
@@ -433,7 +435,10 @@ details.q p{margin:0 0 16px;color:var(--muted);font-size:14px;animation:up .4s b
 .radar i:nth-child(even){animation-direction:reverse;border-style:dotted;border-color:rgba(196,181,253,.28)}
 .radar i.pulse{border:1px solid rgba(196,181,253,.6);animation:pulse 4s ease-out infinite;animation-delay:var(--d)}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%{transform:scale(.2);opacity:.9}100%{transform:scale(1.6);opacity:0}}
-.cta .mark{width:70px;height:46px;margin:0 auto 18px;animation:float 6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(167,139,250,.8))}.cta h2{margin-bottom:10px}.cta p{color:var(--muted);margin:0 0 24px}
+.cta .mark{width:70px;height:46px;margin:0 auto 18px;animation:float 6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(167,139,250,.8))}.cta h2{margin-bottom:10px}.cta p{color:var(--muted);margin:0 0 14px}
+.cta-map{position:absolute;left:50%;top:44%;width:min(520px,78vw);transform:translate(-50%,-50%);z-index:-1;opacity:.24;pointer-events:none;filter:drop-shadow(0 0 40px rgba(139,92,246,.55));-webkit-mask:radial-gradient(closest-side,#000 70%,transparent);mask:radial-gradient(closest-side,#000 70%,transparent)}
+.cta-first{display:inline-flex;align-items:center;gap:8px;margin:0 0 26px;padding:6px 14px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--accent3);background:rgba(139,92,246,.1);border:1px solid rgba(167,139,250,.3)}
+.cta-first i{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 10px var(--accent2)}
 .planet{position:absolute;left:50%;top:100%;width:220vw;height:220vw;max-width:2600px;max-height:2600px;margin-top:-190px;transform:translateX(-50%);border-radius:50%;background:#040406;z-index:-1;
 box-shadow:0 -1px 0 1px rgba(233,227,255,.95),0 -8px 24px rgba(196,181,253,.7),0 -40px 120px rgba(139,92,246,.55),0 -120px 260px rgba(109,40,217,.35)}
 @media(max-width:700px){.planet{margin-top:-120px}}
@@ -444,10 +449,14 @@ box-shadow:0 -1px 0 1px rgba(233,227,255,.95),0 -8px 24px rgba(196,181,253,.7),0
 
 /* footer */
 footer{border-top:1px solid rgba(255,255,255,.05);padding:44px 0 30px;font-size:13.5px;color:var(--muted);position:relative;z-index:1;background:var(--bg)}
-.fcols{display:grid;grid-template-columns:1.3fr 1fr 2fr 1fr 1fr;gap:24px}
-.fgame>div{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.fcols .fgame a{display:flex;align-items:center;gap:8px;white-space:nowrap}.fgame img{width:16px;height:16px;flex:none;border-radius:4px}.fcols h4{color:var(--text);font-size:13px;margin:0 0 12px;font-weight:600}.fcols a{display:block;color:var(--muted);margin:6px 0}.fcols a:hover{color:var(--text)}
+.fcols{display:grid;grid-template-columns:1.4fr 1fr 1.3fr 1fr 1fr;gap:24px}
+.fbadges{display:flex;gap:10px;flex-wrap:wrap}.fbadges img{height:84px;width:auto;display:block;border-radius:10px}.fbadges a{margin:0}
+.fslot{width:88px;height:84px;border:1px dashed rgba(255,255,255,.14);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(255,255,255,.02);font-size:12px}.fslot b{color:var(--text);font-weight:600;font-size:12.5px}.fslot small{font-size:11px;opacity:.75}
+footer .credit{margin-top:14px}footer .credit .who{display:inline;margin:0;white-space:nowrap;color:var(--text);font-weight:700;position:relative;padding:0 2px;transition:color .2s}
+footer .credit .who:after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));transform:scaleX(0);transform-origin:right;transition:transform .3s cubic-bezier(.22,.61,.36,1)}[dir=rtl] footer .credit .who:after{transform-origin:left}
+footer .credit .who:hover{color:var(--accent3)}footer .credit .who:hover:after{transform:scaleX(1)}.fcols h4{color:var(--text);font-size:13px;margin:0 0 12px;font-weight:600}.fcols a{display:block;color:var(--muted);margin:6px 0}.fcols a:hover{color:var(--text)}
 .fbot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:34px;padding-top:18px;border-top:1px solid rgba(255,255,255,.05);font-size:12.5px;color:var(--dim)}
-@media(max-width:760px){.fcols{grid-template-columns:1fr 1fr}.fcols .fgame{grid-column:1/-1}}
+@media(max-width:760px){.fcols{grid-template-columns:1fr 1fr}.fcols .fbad{grid-column:1/-1}}
 
 /* inner pages */
 .page{padding:50px 0 80px}.page .head{margin-bottom:26px}
@@ -526,9 +535,9 @@ export function layout(ctx, title, body, opts = {}) {
 <nav class="links"><a href="/#features" style="--i:0">${t(lang, 'nav_features')}</a><a href="/#how" style="--i:1">${t(lang, 'nav_how')}</a><a href="/#games" style="--i:2">${t(lang, 'nav_games')}</a><a href="/#plans" style="--i:3">${t(lang, 'nav_plans')}</a><a href="/#faq" style="--i:4">${t(lang, 'nav_faq')}</a></nav>
 <div class="navr"><a class="lang" href="${esc(u.pathname + u.search)}" hreflang="${other}">${t(lang, 'lang')}</a>${user ? `<a class="btn ghost" href="/account">${t(lang, 'account')}</a>` : `<a class="lang login" href="/login">${t(lang, 'login')}</a><a class="btn" href="/download">${t(lang, 'download_short')}</a>`}</div></div></header>
 <main>${body}</main>
-<footer><div class="wrap"><div class="fcols"><div><a class="brand" href="/">${MARK}${esc(name)}</a><p class="muted" style="max-width:300px;margin:12px 0 0">${t(lang, 'cta_sub')}</p></div>
+<footer><div class="wrap"><div class="fcols"><div><a class="brand" href="/">${MARK}${esc(name)}</a><p class="muted" style="max-width:300px;margin:12px 0 0">${t(lang, 'cta_sub')}</p><div class="credit">${t(lang, 'made_by').replace('{name}', `<a class="who" href="https://waish.ir" target="_blank" rel="noopener" title="waish.ir">${t(lang, 'made_name')}</a>`)}</div></div>
 <div><h4>${t(lang, 'f_product')}</h4><a href="/download">${t(lang, 'download')}</a><a href="/#features">${t(lang, 'nav_features')}</a><a href="/#games">${t(lang, 'nav_games')}</a><a href="/#plans">${t(lang, 'nav_plans')}</a></div>
-<div class="fgame"><h4>${t(lang, 'f_games')}</h4><div>${GAMES.map(([, name, k]) => `<a href="/#games"><img src="${iconUrl(k.slice(2))}" alt="" width="16" height="16" loading="lazy">${name}</a>`).join('')}</div></div>
+<div class="fbad"><h4>${t(lang, 'f_badges')}</h4><div class="fbadges">${BADGE_ENAMAD || `<span class="fslot"><b>${t(lang, 'badge_enamad')}</b><small>${t(lang, 'badge_soon')}</small></span>`}${BADGE_ZARINPAL || `<span class="fslot"><b>${t(lang, 'badge_zarinpal')}</b><small>${t(lang, 'badge_soon')}</small></span>`}</div></div>
 <div><h4>${t(lang, 'f_account')}</h4>${user ? `<a href="/account">${t(lang, 'account')}</a><a href="/logout">${t(lang, 'logout')}</a>` : `<a href="/login">${t(lang, 'login')}</a><a href="/register">${t(lang, 'register')}</a>`}</div>
 <div><h4>${t(lang, 'f_legal')}</h4><a href="/terms">${t(lang, 'terms')}</a><a href="/#faq">${t(lang, 'nav_faq')}</a>${env.SUPPORT ? `<div>${t(lang, 'support')}: ${supportLink(env.SUPPORT)}</div>` : ''}</div></div>
 <div class="fbot"><span>© ${new Date().getFullYear()} ${esc(name)} · ${t(lang, 'rights')}</span><span>fpsboost.ir</span></div></div></footer>
@@ -660,7 +669,7 @@ ${mockHtml(ctx)}
 <div class="gwrap"><div class="gtrack">${gcards}${gcards}</div></div></section>
 <section class="s" id="plans"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'pricing')}</span><h2 class="words">${words(t(lang, 'plans_h'))}</h2><p>${fill(t(lang, 'plans_sub'), lang, env)}</p></div>${plansHtml(ctx)}${cmp}</div></section>
 <section class="s" id="faq"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'faq_pill')}</span><h2 class="words">${words(t(lang, 'faq_h'))}</h2></div><div class="faqbox"><i class="cb tl on"></i><i class="cb tr"></i><i class="cb bl"></i><i class="cb br on"></i><div class="faq">${faq}</div></div></div></section>
-<section class="cta"><div class="sky"></div>${comets}<div class="radar">${radar}</div><div class="planet"></div><div class="wrap rv">${MARK}<h2>${t(lang, 'cta_h')}</h2><p>${t(lang, 'cta_sub')}</p><div class="actions">${regBtn(lang, 'get_started', false)}${dlBtn(lang, true)}</div></div></section>
+<section class="cta"><div class="sky"></div>${comets}<div class="radar">${radar}</div><img class="cta-map" src="/iran.png" alt="" aria-hidden="true"><div class="planet"></div><div class="wrap rv">${MARK}<h2>${t(lang, 'cta_h')}</h2><p>${t(lang, 'cta_sub')}</p><span class="cta-first"><i></i>${t(lang, 'cta_first')}</span><div class="actions">${regBtn(lang, 'get_started', false)}${dlBtn(lang, true)}</div></div></section>
 <div class="marq big" aria-hidden="true"><div class="discs">${discs}</div><div class="track">${track2}</div></div>`;
   return layout(ctx, t(lang, 'home'), body, { script: JS });
 }
