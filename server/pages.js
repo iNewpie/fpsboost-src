@@ -1,4 +1,4 @@
-import { ICON_IMG } from './icons.js';
+import { ICON_IMG, ICON_SVG } from './icons.js';
 /* ============================================================
    fpsboost.ir — every HTML page. Dark violet theme (spotlight beams, glass cards, gradient headings) with a handful of
    scroll effects: word-by-word heading reveal, tokens drifting in from far out while they brighten + a particle field in the hero, the tilted app mock-up that
@@ -507,7 +507,10 @@ const ICONS = {
 // the app's modules: 16 tweaks (app/tweaks/manifest.js) + 4 tools (app/src/tools.js)
 const MODULE_COUNT = 20;
 // owner-supplied icons are .webp, the rest .svg (server/icons.js)
-const iconUrl = (k) => `/i/${k}.${ICON_IMG[`i/${k}.webp`] ? 'webp' : 'svg'}?v=2`;
+// ?v = a hash of the icon itself, so a replaced logo gets a new URL (the files are served immutable for a week)
+const ICON_VER = {};
+for (const [k, v] of [...Object.entries(ICON_IMG), ...Object.entries(ICON_SVG)]) { let h = 0; for (let i = 0; i < v.length; i += 7) h = (h * 31 + v.charCodeAt(i)) | 0; ICON_VER[k] = (h >>> 0).toString(36); }
+const iconUrl = (k) => { const f = `i/${k}.${ICON_IMG[`i/${k}.webp`] ? 'webp' : 'svg'}`; return `/${f}?v=${ICON_VER[f]}`; };
 const GAMES = [['MC', 'Minecraft', 'g_mc', '#3fa34d', '#1f6b2d'], ['VAL', 'Valorant', 'g_val', '#ff4655', '#b8202d'], ['CS2', 'Counter-Strike 2', 'g_cs2', '#f5a623', '#c26f00'], ['FN', 'Fortnite', 'g_fn', '#4f8bff', '#2a4fd6'],
   ['APX', 'Apex Legends', 'g_apex', '#ff5a36', '#b02d12'], ['WZ', 'Warzone', 'g_wz', '#8b93a5', '#374151'], ['RBX', 'Roblox', 'g_rbx', '#e53e3e', '#9b1c1c'], ['GTA', 'GTA V', 'g_gta', '#22c55e', '#15803d'],
   ['LOL', 'League of Legends', 'g_lol', '#c89b3c', '#785a28'], ['MR', 'Marvel Rivals', 'g_rivals', '#f5c518', '#a07800'], ['LUN', 'Lunar Client', 'g_lunar', '#9aa3b5', '#3b4252'],
@@ -534,7 +537,7 @@ export function landing(ctx) {
   // real game / app icons, served from /i/<key>.svg (server/icons.js)
   const APP = k => `<img src="${iconUrl(k)}" alt="" draggable="false">`;
   const NUMS = [['144', 'FPS', 1, 12, 22, 1, [28, 7], -14], ['18', 'ms', 1, 91, 37, 1, [74, 7], 12], ['+38', 'FPS', 1, 20, 62, .8, 0], ['−11', 'ms', 1, 80, 68, .8, 0], ['240', 'Hz', 0, 6, 44, .6, 0], ['7.0', 'ms', 0, 92, 50, .6, 0], ['98', '1% LOW', 0, 88, 12, .7, 0], ['60→144', '', 0, 30, 88, .55, 0]];
-  const TILES = [['val', 8, 10, 1, [10, 6]], ['mc', 88, 20, 1, [90, 6]], ['cs2', 4, 76, .8, 0], ['fn', 94, 82, .9, 0], ['apex', 20, 44, .6, 0], ['dc', 76, 10, .9, 0], ['steam', 14, 92, .7, 0], ['ps', 78, 90, .8, 0], ['pr', 96, 64, .6, 0], ['chrome', 22, 6, .55, 0], ['gta', 80, 46, .7, 0], ['rbx', 8, 30, .6, 0], ['obs', 84, 76, .55, 0], ['spot', 26, 96, .5, 0], ['lol', 3, 58, .65, 0], ['rivals', 97, 8, .6, 0], ['ae', 66, 97, .55, 0]];
+  const TILES = [['val', 8, 10, 1, [10, 6]], ['mc', 88, 20, 1, [90, 6]], ['cs2', 4, 76, .8, 0], ['fn', 94, 82, .9, 0], ['apex', 20, 44, .6, 0], ['dc', 76, 10, .9, 0], ['steam', 14, 92, .7, 0], ['ps', 78, 90, .8, 0], ['pr', 96, 64, .6, 0], ['chrome', 22, 6, .55, 0], ['gta', 80, 46, .7, 0], ['rbx', 8, 30, .6, 0], ['obs', 84, 76, .55, 0], ['spot', 26, 96, .5, 0], ['lol', 3, 58, .65, 0], ['rivals', 97, 8, .6, 0], ['ae', 66, 97, .55, 0], ['lunar', 34, 13, .55, 0], ['cf', 64, 13, .55, 0], ['blc', 96, 40, .6, 0], ['modrinth', 90, 97, .55, 0]];
   const field = `<div class="field" aria-hidden="true">${NUMS.map(([n, u, good, x, y, z, m, tilt]) => `<div class="body num${good ? ' good' : ''}${m ? ' m' : ''}${tilt ? ' card' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${tilt ? ` data-tilt="${tilt}"` : ''}${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} style="--z:${z}">${n}${u ? `<small>${u}</small>` : ''}</div>`).join('')}${TILES.map(([k, x, y, z, m]) => `<div class="body app${m ? ' m' : ''}" data-x="${x}" data-y="${y}" data-z="${z}"${m ? ` data-mx="${m[0]}" data-my="${m[1]}"` : ''} >${APP(k)}</div>`).join('')}</div>`;
   const stats = [[20, '+', 'st1'], [4, '', 'st2'], [GAMES.length, '', 'st3'], [100, '%', 'st4']].map(([v, s, k]) => `<div class="stat" data-n="${v}" data-suf="${s}"><b>0</b><span>${t(lang, k)}</span></div>`).join('');
   const mq = t(lang, 'marquee'); const track = [...mq, ...mq].map(w => `<span>${esc(w)}</span><em>✦</em>`).join('');
