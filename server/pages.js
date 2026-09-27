@@ -500,8 +500,8 @@ details.q p{margin:0 0 16px;color:var(--muted);font-size:14px;animation:up .4s b
 .radar i:nth-child(even){animation-direction:reverse;border-style:dotted;border-color:rgba(196,181,253,.28)}
 .radar i.pulse{border:1px solid rgba(196,181,253,.6);animation:pulse 4s ease-out infinite;animation-delay:var(--d)}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%{transform:scale(.2);opacity:.9}100%{transform:scale(1.6);opacity:0}}
-.cta .mark{width:70px;height:46px;margin:0 auto 18px;animation:float 6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(167,139,250,.8))}.cta h2{margin-bottom:10px}.cta p{color:var(--muted);margin:0 0 14px}
-.cta-map{position:absolute;left:50%;top:44%;width:min(520px,78vw);transform:translate(-50%,-50%);z-index:-1;opacity:.24;pointer-events:none;filter:drop-shadow(0 0 40px rgba(139,92,246,.55));-webkit-mask:radial-gradient(closest-side,#000 70%,transparent);mask:radial-gradient(closest-side,#000 70%,transparent)}
+.cta .mark{width:70px;height:46px;margin:0 auto 18px;animation:float 6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(167,139,250,.8))}.cta h2{margin-bottom:10px}.cta p{color:var(--muted);margin:0 0 14px;text-shadow:0 0 12px #07060b,0 0 4px #07060b}.cta h2{text-shadow:0 0 24px #07060b}
+.cta-map{position:absolute;left:50%;top:44%;width:min(400px,64vw);height:auto;transform:translate(-50%,-50%);z-index:-1;opacity:.5;pointer-events:none;filter:drop-shadow(0 0 30px rgba(139,92,246,.5))}
 .cta-first{display:inline-flex;align-items:center;gap:8px;margin:0 0 26px;padding:6px 14px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--accent3);background:rgba(139,92,246,.1);border:1px solid rgba(167,139,250,.3)}
 .cta-first i{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 10px var(--accent2)}
 .planet{position:absolute;left:50%;top:100%;width:220vw;height:220vw;max-width:2600px;max-height:2600px;margin-top:-190px;transform:translateX(-50%);border-radius:50%;background:#040406;z-index:-1;
@@ -743,7 +743,7 @@ ${mockHtml(ctx)}
 <div class="gwrap"><div class="gtrack">${gcards}${gcards}</div></div></section>
 <section class="s" id="plans"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'pricing')}</span><h2 class="words">${words(t(lang, 'plans_h'))}</h2><p>${fill(t(lang, 'plans_sub'), lang, env)}</p></div>${plansHtml(ctx)}${cmp}</div></section>
 <section class="s" id="faq"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'faq_pill')}</span><h2 class="words">${words(t(lang, 'faq_h'))}</h2></div><div class="faqbox"><i class="cb tl on"></i><i class="cb tr"></i><i class="cb bl"></i><i class="cb br on"></i><div class="faq">${faq}</div></div></div></section>
-<section class="cta"><div class="sky"></div>${comets}<div class="radar">${radar}</div><img class="cta-map" src="/iran.png" alt="" aria-hidden="true"><div class="planet"></div><div class="wrap rv">${MARK}<h2>${t(lang, 'cta_h')}</h2><p>${t(lang, 'cta_sub')}</p><span class="cta-first"><i></i>${t(lang, 'cta_first')}</span><div class="actions">${regBtn(lang, 'get_started', false)}${dlBtn(lang, true)}</div></div></section>
+<section class="cta"><div class="sky"></div>${comets}<div class="radar">${radar}</div><img class="cta-map" src="/iran.svg?v=3" alt="" aria-hidden="true"><div class="planet"></div><div class="wrap rv">${MARK}<h2>${t(lang, 'cta_h')}</h2><p>${t(lang, 'cta_sub')}</p><span class="cta-first"><i></i>${t(lang, 'cta_first')}</span><div class="actions">${regBtn(lang, 'get_started', false)}${dlBtn(lang, true)}</div></div></section>
 <div class="marq big" aria-hidden="true"><div class="discs">${discs}</div><div class="track">${track2}</div></div>`;
   return layout(ctx, t(lang, 'home'), body, { script: JS });
 }

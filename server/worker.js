@@ -21,11 +21,11 @@
    on failed logins; usernames and password lengths are bounded before any hashing. Pages live in pages.js.
    ============================================================ */
 import { DurableObject } from 'cloudflare:workers';
-import { ASSETS } from './assets.js';
+import { ASSETS, MAP_SVG } from './assets.js';
 import { ICON_SVG, ICON_IMG } from './icons.js';
 import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, adminPage, prices } from './pages.js';
 
-const BUILD = '2026-09-27g';
+const BUILD = '2026-09-27h';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
@@ -165,6 +165,7 @@ async function routeInner(request, env, base) {
   if (p === '/download') return redirect(env.DOWNLOAD_URL || '/');
   const asset = ASSETS[p === '/favicon.ico' ? 'favicon.png' : p.slice(1)];
   if (asset) return new Response(b64d(asset), { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=604800, immutable' } });
+  if (p === '/iran.svg') return new Response(MAP_SVG, { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=604800' } });
   const svg = ICON_SVG[p.slice(1)];
   if (svg) return new Response(svg, { headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=604800, immutable' } });
   const img = ICON_IMG[p.slice(1)];
