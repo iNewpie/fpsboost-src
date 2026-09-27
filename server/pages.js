@@ -14,7 +14,7 @@ export const STR = {
     marquee2: ['Let’s boost', 'Lower ping', 'Higher FPS', 'One click'], ba_pill: 'Before / after', ba_h: 'Same PC. Same game.', ba_before: 'BEFORE', ba_after: 'AFTER', ba_cap: 'One pass of “Apply recommended”. Your numbers depend on your PC and the game — these are from our test machine.', restore_ok: 'System Restore point created', compare: 'Compare plans', cmp_pcs: 'PCs per account', cmp_pm: 'Per month (Toman)',
     h1a: 'Lower ping.', h1b: 'Higher FPS.', h1c: 'One click.',
     lead: 'A Windows app that applies the proven PC, network, Windows and per-game tweaks for you — with a backup of every change and a one-click undo — so your games run smoother and your connection reacts faster.',
-    download: 'Download for Windows', download_short: 'Download', register: 'Create account', login: 'Log in', logout: 'Log out', account: 'My account', get_started: 'Get started',
+    download: 'Download for Windows', dl_sub: 'Windows 10 & 11 · 64-bit', reg_sub: 'Free · takes a minute', download_short: 'Download', register: 'Create account', login: 'Log in', logout: 'Log out', account: 'My account', get_started: 'Get started',
     tok1: '+FPS', tok2: '−ms ping', tok3: 'Game DVR off', tok4: 'DNS 1.1.1.1', tok5: 'Nagle off', tok6: 'Ultimate power plan', tok7: '1% lows ↑', tok8: 'GPU scheduling',
     st1: 'tweaks', st2: 'modules', st3: 'game presets', st4: 'undo — every change is backed up',
     marquee: ['PC optimization', 'Network optimization', 'Windows optimization', 'Game presets'],
@@ -59,7 +59,7 @@ export const STR = {
     marquee2: ['بوست کنیم', 'پینگ کمتر', 'FPS بیشتر', 'یک کلیک'], ba_pill: 'قبل / بعد', ba_h: 'همان سیستم. همان بازی.', ba_before: 'قبل', ba_after: 'بعد', ba_cap: 'یک بار «اعمال پیشنهادی». عدد شما به سیستم و بازی‌تان بستگی دارد — این‌ها از سیستم تست ما هستند.', restore_ok: 'System Restore Point ساخته شد', compare: 'مقایسهٔ پلن‌ها', cmp_pcs: 'کامپیوتر برای هر حساب', cmp_pm: 'ماهانه (تومان)',
     h1a: 'پینگ کمتر.', h1b: 'FPS بیشتر.', h1c: 'با یک کلیک.',
     lead: 'برنامه‌ای برای ویندوز که تنظیمات ثابت‌شدهٔ سیستم، شبکه، ویندوز و هر بازی را برایتان اعمال می‌کند — از هر تغییر نسخهٔ پشتیبان می‌گیرد و با یک کلیک برمی‌گرداند — تا بازی‌ها روان‌تر و اینترنت سریع‌تر واکنش نشان دهد.',
-    download: 'دانلود برای ویندوز', download_short: 'دانلود', register: 'ساخت حساب', login: 'ورود', logout: 'خروج', account: 'حساب من', get_started: 'شروع کنید',
+    download: 'دانلود برای ویندوز', dl_sub: 'ویندوز ۱۰ و ۱۱ · ۶۴ بیتی', reg_sub: 'رایگان · کمتر از یک دقیقه', download_short: 'دانلود', register: 'ساخت حساب', login: 'ورود', logout: 'خروج', account: 'حساب من', get_started: 'شروع کنید',
     tok1: '+FPS', tok2: 'پینگ کمتر', tok3: 'Game DVR خاموش', tok4: 'DNS 1.1.1.1', tok5: 'Nagle خاموش', tok6: 'پاور پلن Ultimate', tok7: '1% lows ↑', tok8: 'زمان‌بندی GPU',
     st1: 'تنظیم', st2: 'ماژول', st3: 'پریست بازی', st4: 'بازگشت — از هر تغییر پشتیبان گرفته می‌شود',
     marquee: ['بهینه‌سازی سیستم', 'بهینه‌سازی شبکه', 'بهینه‌سازی ویندوز', 'پریست بازی‌ها'],
@@ -105,6 +105,17 @@ export function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c
 
 // the mark: /logo.png (white chevrons, served by the worker) used as a CSS mask so it can take any gradient
 const MARK = '<span class="mark" aria-hidden="true"></span>';
+
+/* the big two-line call-to-action buttons (hero + closing CTA): icon chip, label + caption, trailing arrow */
+const ICO = {
+  win: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.1 10.4 4v7.3H3zM11.4 3.9 21 2.5v8.8h-9.6zM3 12.7h7.4V20L3 18.9zM11.4 12.7H21v8.8l-9.6-1.4z"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9.5" cy="8" r="3.6"/><path d="M3 20c.6-3.6 3.3-5.6 6.5-5.6s5.9 2 6.5 5.6M19 8v6M16 11h6"/></svg>',
+  down: '<svg class="go dn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6.5 10.5 12 16l5.5-5.5M5 20h14"/></svg>',
+  fwd: '<svg class="go fw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+};
+const bigBtn = (href, cls, icon, label, sub, go) => `<a class="btn big${cls}" href="${href}"><span class="ic">${ICO[icon]}</span><span class="tx"><b>${label}</b><small>${sub}</small></span>${ICO[go]}</a>`;
+const dlBtn = (lang, ghost) => bigBtn('/download', ghost ? ' ghost' : ' pri', 'win', t(lang, 'download'), t(lang, 'dl_sub'), 'down');
+const regBtn = (lang, key = 'register', ghost = true) => bigBtn('/register', ghost ? ' ghost' : ' pri', 'user', t(lang, key), t(lang, 'reg_sub'), 'fwd');
 // SUPPORT: an email, a https:// link or a @telegram handle
 export function supportLink(v) {
   const href = v.includes('@') && !v.startsWith('@') ? 'mailto:' + v : v.startsWith('@') ? 'https://t.me/' + v.slice(1) : v;
@@ -130,6 +141,19 @@ box-shadow:0 0 0 1px rgba(255,255,255,.1) inset,0 10px 30px -10px rgba(139,92,24
 .btn:after,button:after{content:"";position:absolute;top:-40%;bottom:-40%;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);transition:left .6s}
 .btn:hover:after,button:hover:after{left:130%}.btn:hover,button:hover{box-shadow:0 0 0 1px rgba(255,255,255,.16) inset,0 16px 40px -10px rgba(139,92,246,1)}
 .btn.ghost,button.ghost{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);box-shadow:none}.btn.ghost:hover,button.ghost:hover{background:rgba(255,255,255,.08);border-color:var(--line2);box-shadow:0 0 30px -10px rgba(139,92,246,.7)}
+.btn.big{gap:12px;min-height:60px;padding-block:10px;padding-inline:10px 18px;border-radius:17px;text-align:start;text-decoration:none}
+.btn.big .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:rgba(255,255,255,.17);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.btn.big .ic svg{width:19px;height:19px}.btn.big:hover .ic{transform:rotate(-6deg) scale(1.06)}
+.btn.big .tx{display:flex;flex-direction:column;line-height:1.3}.btn.big .tx b{font-size:15.5px;font-weight:700;letter-spacing:-.1px}.btn.big .tx small{font-size:11.5px;font-weight:500;opacity:.74;margin-top:2px}
+.btn.big .go{width:18px;height:18px;margin-inline-start:8px;opacity:.8;transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .25s}.btn.big:hover .go{opacity:1}
+.btn.big:hover .go.dn{transform:translateY(3px)}.btn.big:hover .go.fw{transform:translateX(4px)}[dir=rtl] .btn.big .go.fw{transform:scaleX(-1)}[dir=rtl] .btn.big:hover .go.fw{transform:scaleX(-1) translateX(4px)}
+.btn.big.pri{background:linear-gradient(135deg,#a585ff 0%,#8b5cf6 42%,#6a38ee 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.38),0 18px 44px -14px rgba(139,92,246,.95);animation:ctaPulse 2.8s ease-out infinite}
+.btn.big.pri:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 0 rgba(255,255,255,.45),0 22px 54px -12px rgba(139,92,246,1)}
+@keyframes ctaPulse{0%{outline:0 solid rgba(167,139,250,.45);outline-offset:0}75%,100%{outline:10px solid rgba(167,139,250,0);outline-offset:2px}}
+.btn.big.ghost{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.13);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.btn.big.ghost .ic{background:rgba(139,92,246,.18);color:var(--accent3);box-shadow:inset 0 0 0 1px rgba(167,139,250,.28)}
+.btn.big.ghost:hover{border-color:rgba(167,139,250,.45);background:linear-gradient(180deg,rgba(139,92,246,.14),rgba(139,92,246,.05))}
+@media(max-width:560px){.actions .btn.big{width:100%;max-width:360px}.actions .btn.big .go{margin-inline-start:auto}}
 button.sm{padding:6px 12px;font-size:12.5px}button.danger{background:#3a1c22;border:1px solid #5a2a33;color:#ffb3b3;box-shadow:none}
 input,select{background:rgba(255,255,255,.03);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px;width:100%;font-family:inherit;outline:0;transition:border-color .2s,box-shadow .2s}
 input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,92,246,.18)}
@@ -392,7 +416,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:10px 8px;
 .acts form{display:inline}.tbl{overflow-x:auto}.kpis{display:flex;gap:12px;flex-wrap:wrap}.kpi{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 16px}.kpi b{font-size:20px;display:block}
 ol.terms{margin:0;padding-inline-start:20px}ol.terms li{margin:10px 0;color:#c9c4de}
 
-@media(prefers-reduced-motion:reduce){body,.nav,.nav .brand,.nav .brand .bn>span,.links a,.navr>*,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after{animation:none!important}
+@media(prefers-reduced-motion:reduce){body,.nav,.nav .brand,.nav .brand .bn>span,.links a,.navr>*,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after,.btn.big.pri{animation:none!important}
 .hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.mock,.ba-card,.ba-w,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
 .br .bb i{transform:scaleX(1)!important;transition:none!important}.lines span:nth-child(1){opacity:.45!important}.lines span:nth-child(2){opacity:.7!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}`;
 
@@ -535,7 +559,7 @@ export function landing(ctx) {
 <span class="pill"><i></i>${t(lang, 'hero_pill')}</span>
 <h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad', nw(t(lang, 'h1a')))}<br>${words(t(lang, 'h1c'), '', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')))}</h1>
 <p class="lead">${t(lang, 'lead')}</p><div class="hint"><i></i>${t(lang, 'scroll_hint')}</div>
-<div class="actions"><a class="btn" href="/download">${t(lang, 'download')}</a><a class="btn ghost" href="/register">${t(lang, 'register')}</a></div>
+<div class="actions">${dlBtn(lang)}${regBtn(lang)}</div>
 ${mockHtml(ctx)}
 <div class="stats"><i class="xh v"></i><i class="xh h"></i>${stats}</div></div></section>
 <div class="marq" aria-hidden="true"><div class="track">${track}</div></div>
@@ -554,7 +578,7 @@ ${mockHtml(ctx)}
 <div class="gwrap"><div class="gtrack">${gcards}${gcards}</div></div></section>
 <section class="s" id="plans"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'pricing')}</span><h2 class="words">${words(t(lang, 'plans_h'))}</h2><p>${fill(t(lang, 'plans_sub'), lang, env)}</p></div>${plansHtml(ctx)}${cmp}</div></section>
 <section class="s" id="faq"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'faq_pill')}</span><h2 class="words">${words(t(lang, 'faq_h'))}</h2></div><div class="faqbox"><i class="cb tl on"></i><i class="cb tr"></i><i class="cb bl"></i><i class="cb br on"></i><div class="faq">${faq}</div></div></div></section>
-<section class="cta"><div class="sky"></div>${comets}<div class="radar">${radar}</div><div class="planet"></div><div class="wrap rv">${MARK}<h2>${t(lang, 'cta_h')}</h2><p>${t(lang, 'cta_sub')}</p><div class="actions"><a class="btn" href="/register">${t(lang, 'get_started')}</a><a class="btn ghost" href="/download">${t(lang, 'download')}</a></div></div></section>
+<section class="cta"><div class="sky"></div>${comets}<div class="radar">${radar}</div><div class="planet"></div><div class="wrap rv">${MARK}<h2>${t(lang, 'cta_h')}</h2><p>${t(lang, 'cta_sub')}</p><div class="actions">${regBtn(lang, 'get_started', false)}${dlBtn(lang, true)}</div></div></section>
 <div class="marq big" aria-hidden="true"><div class="discs">${discs}</div><div class="track">${track2}</div></div>`;
   return layout(ctx, t(lang, 'home'), body, { script: JS });
 }
