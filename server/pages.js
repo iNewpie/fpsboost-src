@@ -26,7 +26,7 @@ export const STR = {
     m4: 'Game optimizations', m4d: 'Presets per game — launch options, config values and the process priority that fits each title. Minecraft, Valorant, CS2 and more.',
     games_pill: 'Game presets', games_h: 'One preset per game.', games_sub: 'Each preset bundles the tweaks that matter for that title. Apply it before you play, revert it when you are done.',
     g_mc: 'JVM flags, RAM allocation, priority', g_val: 'Raw input, priority, network', g_cs2: 'Launch options, priority', g_fn: 'Priority, Game Mode', g_apex: 'Launch options, network', g_wz: 'Priority, shader cache', g_rbx: 'Priority, background apps', g_gta: 'Priority, Game Mode', g_lol: 'Priority, network', g_rivals: 'Priority, shader cache', g_lunar: 'JVM flags, RAM allocation', g_blc: 'JVM flags, RAM, priority', g_cf: 'Modpack RAM, JVM flags', g_modrinth: 'Modpack RAM, JVM flags', f_badges: 'Trust badges', badge_enamad: 'eNamad', badge_zarinpal: 'Zarinpal', badge_soon: 'coming soon', made_by: 'Made by {name}', made_name: 'Hossein Danesh',
-    how_pill: 'How it works', how_h: 'Up and running in three steps.', how_sub: 'No settings to study. The app does the work and keeps a way back.',
+    how_pill: 'How it works', how_h: 'Up and running in three steps.', hw_user: 'Username', hw_plan: 'Plan', hw_done: 'Account ready', hw_downloading: 'Downloading', hw_in: 'Signed in', hw_apply: 'Apply recommended', how_sub: 'No settings to study. The app does the work and keeps a way back.',
     how1: 'Create an account and pick a plan', how1d: 'Your username works on the website and inside the app, on up to {n} PCs.',
     how2: 'Download the app and log in', how2d: 'A small installer for Windows 10 / 11. It asks for administrator rights because it changes Windows settings.',
     how3: 'Press “Apply recommended”', how3d: 'A System Restore point is created first. Every change is backed up and can be undone with one click.',
@@ -71,7 +71,7 @@ export const STR = {
     m4: 'بهینه‌سازی بازی‌ها', m4d: 'پریست مخصوص هر بازی — گزینه‌های اجرا، مقادیر کانفیگ و اولویت پردازشی مناسب همان بازی. ماینکرفت، ولورانت، CS2 و بیشتر.',
     games_pill: 'پریست بازی‌ها', games_h: 'برای هر بازی یک پریست.', games_sub: 'هر پریست تنظیماتی را که برای همان بازی مهم است یکجا جمع می‌کند. قبل از بازی اعمال کنید، بعدش برگردانید.',
     g_mc: 'فلگ‌های JVM، تخصیص رم، اولویت', g_val: 'Raw input، اولویت، شبکه', g_cs2: 'گزینه‌های اجرا، اولویت', g_fn: 'اولویت، Game Mode', g_apex: 'گزینه‌های اجرا، شبکه', g_wz: 'اولویت، کش شیدر', g_rbx: 'اولویت، برنامه‌های پس‌زمینه', g_gta: 'اولویت، Game Mode', g_lol: 'اولویت، شبکه', g_rivals: 'اولویت، کش شیدر', g_lunar: 'فلگ‌های JVM، تخصیص رم', g_blc: 'فلگ‌های JVM، رم، اولویت', g_cf: 'رم مادپک، فلگ‌های JVM', g_modrinth: 'رم مادپک، فلگ‌های JVM', f_badges: 'نمادها', badge_enamad: 'اینماد', badge_zarinpal: 'زرین‌پال', badge_soon: 'به‌زودی', made_by: 'ساخته‌شده توسط {name}', made_name: 'حسین دانش',
-    how_pill: 'نحوهٔ کار', how_h: 'در سه قدم آماده است.', how_sub: 'لازم نیست تنظیمات را یاد بگیرید. برنامه کار را انجام می‌دهد و راه برگشت را نگه می‌دارد.',
+    how_pill: 'نحوهٔ کار', how_h: 'در سه قدم آماده است.', hw_user: 'نام کاربری', hw_plan: 'پلن', hw_done: 'حساب آماده است', hw_downloading: 'در حال دانلود', hw_in: 'وارد شدید', hw_apply: 'اعمال پیشنهادی', how_sub: 'لازم نیست تنظیمات را یاد بگیرید. برنامه کار را انجام می‌دهد و راه برگشت را نگه می‌دارد.',
     how1: 'حساب بسازید و یک پلن انتخاب کنید', how1d: 'نام کاربری شما هم در سایت و هم داخل برنامه کار می‌کند، روی حداکثر {n} کامپیوتر.',
     how2: 'برنامه را دانلود کنید و وارد شوید', how2d: 'یک نصب‌کنندهٔ کوچک برای ویندوز ۱۰ / ۱۱. چون تنظیمات ویندوز را تغییر می‌دهد، دسترسی Administrator می‌خواهد.',
     how3: '«اعمال پیشنهادی» را بزنید', how3d: 'اول یک System Restore Point ساخته می‌شود. از هر تغییر پشتیبان گرفته می‌شود و با یک کلیک برمی‌گردد.',
@@ -319,6 +319,71 @@ section.s{padding:110px 0 0}.s .head{text-align:center;max-width:640px;margin:0 
 .ba-st s{color:var(--dim);font-size:18px;text-decoration-thickness:1.5px}.ba-st b{font-size:30px;letter-spacing:-.02em;color:#fff}.ba-st .v svg{width:16px;height:16px;fill:none;stroke:var(--accent3);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;align-self:center}
 .ba-st em{position:absolute;top:14px;inset-inline-end:14px;font-style:normal;font-size:12px;font-weight:700;color:#7ef0a8;background:rgba(95,211,141,.12);border:1px solid rgba(95,211,141,.3);padding:3px 8px;border-radius:999px}
 .ba-cap{text-align:center;color:var(--muted);margin:16px 0 0;font-size:13.5px}
+.hw-tl{--dir:1;position:relative;display:grid;gap:80px;max-width:1040px;margin:36px auto 0;padding:10px 0 30px}[dir=rtl] .hw-tl{--dir:-1}
+.hw-spine{position:absolute;top:0;bottom:0;inset-inline-start:calc(50% - 1px);width:2px;background:rgba(255,255,255,.07);border-radius:2px}
+.hw-spine b{position:absolute;left:0;right:0;top:0;height:calc(var(--hp,0) * 100%);background:linear-gradient(180deg,var(--accent3),var(--accent));box-shadow:0 0 16px var(--accent);border-radius:2px}
+.hw-spine b:after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#fff;box-shadow:0 0 14px 4px var(--accent2)}
+.hw-step{display:grid;grid-template-columns:1fr 64px 1fr;align-items:center;gap:36px;position:relative}
+.hw-txt,.hw-orb,.hw-demo{grid-row:1}.hw-txt{grid-column:1;text-align:end}.hw-orb{grid-column:2}.hw-demo{grid-column:3}
+.hw-step.s2 .hw-txt{grid-column:3;text-align:start}.hw-step.s2 .hw-demo{grid-column:1}
+.hw-txt .lbl{color:var(--accent2)}.hw-txt h3{font-size:24px;margin:10px 0 8px;letter-spacing:-.01em}.hw-txt p{color:var(--muted);margin:0;font-size:15px;line-height:1.75}
+.hw-step.rv{transform:none}.hw-txt,.hw-demo{--dx:44px;opacity:0;transform:translateX(calc(var(--dx) * var(--dir)));transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
+.hw-txt{--dx:-44px}.hw-step.s2 .hw-txt{--dx:44px}.hw-step.s2 .hw-demo{--dx:-44px}.hw-demo{transition-delay:.15s}
+.hw-step.in .hw-txt,.hw-step.in .hw-demo{opacity:1;transform:none}
+.hw-orb{position:relative;z-index:1;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#0c0a14;border:1px solid rgba(255,255,255,.12);transition:background .6s,border-color .6s,box-shadow .6s,transform .6s cubic-bezier(.34,1.56,.64,1)}
+.hw-orb b{font-size:22px;color:var(--dim);transition:color .6s}
+.hw-orb:after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--accent2);opacity:0}
+.hw-step.lit .hw-orb{transform:scale(1.08);border-color:var(--accent2);background:radial-gradient(circle at 30% 30%,#a585ff,#6a38ee);box-shadow:0 0 0 6px rgba(139,92,246,.12),0 0 38px rgba(139,92,246,.75)}
+.hw-step.lit .hw-orb b{color:#fff}.hw-step.lit .hw-orb:after{animation:hwRing 2.4s ease-out infinite}
+@keyframes hwRing{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+.hw-demo{position:relative;min-height:260px;display:grid;place-items:center;align-content:center;gap:14px}
+.hw-demo:before{content:"";position:absolute;inset:8% 10%;z-index:-1;background:radial-gradient(closest-side,rgba(139,92,246,.28),transparent);filter:blur(18px)}
+.hw-win,.hw-dl{position:relative;width:min(320px,100%);background:linear-gradient(180deg,#16121f,#0d0b14);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 30px 70px -30px rgba(139,92,246,.65)}
+.hw-win{padding:0 16px 18px}
+.hw-bar{display:flex;align-items:center;gap:6px;height:36px;margin:0 -16px 10px;padding:0 12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.hw-bar i{width:9px;height:9px;border-radius:50%;background:#2a2740}.hw-bar i:nth-child(1){background:#ff5f56}.hw-bar i:nth-child(2){background:#ffbd2e}.hw-bar i:nth-child(3){background:#27c93f}
+.hw-bar span{margin-inline-start:auto;font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim)}
+.hw-win label{display:block;font-size:11.5px;color:var(--dim);margin:10px 0 6px}
+.hw-field{height:36px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:1px;padding:0 10px;font:500 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#fff}
+.hw-app .hw-field{margin-top:8px}
+.hw-type{display:inline-block;overflow:hidden;white-space:nowrap;width:0;line-height:1.5;padding-bottom:1px;vertical-align:middle;animation:hwType 6s steps(8) infinite}
+@keyframes hwType{0%,8%{width:0}30%,100%{width:8ch}}
+.hw-caret{width:1.5px;height:16px;background:var(--accent3);animation:hwBlink 1s steps(1) infinite}@keyframes hwBlink{50%{opacity:0}}
+.hw-plans{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.hw-plans span{position:relative;z-index:1;text-align:center;font-size:12px;padding:7px 0;color:#d9d4ea}
+.hw-sel{position:absolute;top:3px;bottom:3px;inset-inline-start:3px;width:calc((100% - 6px) / 3);border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#6a38ee);box-shadow:0 6px 16px -6px rgba(139,92,246,.9);animation:hwSel 6s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes hwSel{0%,32%{transform:translateX(0)}40%,52%{transform:translateX(calc(200% * var(--dir)))}60%,100%{transform:translateX(calc(100% * var(--dir)))}}
+.hw-btn{margin-top:14px;height:38px;border-radius:10px;display:grid;place-items:center;font-weight:600;font-size:13.5px;color:#fff;background:linear-gradient(135deg,#a585ff,#6a38ee);animation:hwPress 6s infinite}
+@keyframes hwPress{0%,68%{transform:none;filter:none}71%{transform:scale(.95);filter:brightness(1.35)}75%,100%{transform:none;filter:none}}
+.hw-ok{position:absolute;left:50%;bottom:-15px;opacity:0;padding:6px 13px;border-radius:999px;font-size:12px;font-weight:700;color:#0b1f14;background:#7ef0a8;box-shadow:0 10px 30px -8px rgba(126,240,168,.7);white-space:nowrap;animation:hwOk 6s cubic-bezier(.34,1.56,.64,1) infinite}
+@keyframes hwOk{0%,74%{opacity:0;transform:translate(-50%,10px) scale(.8)}80%,94%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,0) scale(1)}}
+.hw-dl{padding:14px}.hw-file{display:flex;gap:12px;align-items:center}
+.hw-file>i{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-style:normal;background:rgba(139,92,246,.18);color:var(--accent3);box-shadow:inset 0 0 0 1px rgba(167,139,250,.3)}
+.hw-file b{display:block;font-size:13px}.hw-file small{font-size:11.5px;color:var(--dim)}
+.hw-prog{height:6px;border-radius:3px;background:rgba(255,255,255,.07);margin-top:12px;overflow:hidden}
+.hw-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));box-shadow:0 0 10px var(--accent2);transform-origin:0 50%;animation:hwProg 6s cubic-bezier(.4,0,.2,1) infinite}[dir=rtl] .hw-prog i{transform-origin:100% 50%}
+@keyframes hwProg{0%{transform:scaleX(0)}40%,100%{transform:scaleX(1)}}
+@property --pc{syntax:'<integer>';inherits:false;initial-value:0}@property --fps{syntax:'<integer>';inherits:false;initial-value:60}
+.hw-pc{animation:hwPc 6s cubic-bezier(.4,0,.2,1) infinite;counter-reset:pc var(--pc)}.hw-pc:after{content:counter(pc) "%"}@keyframes hwPc{0%{--pc:0}40%,100%{--pc:100}}
+.hw-app{animation:hwApp 6s cubic-bezier(.22,1,.36,1) infinite}@keyframes hwApp{0%,40%{opacity:.2;transform:translateY(16px) scale(.96)}50%,100%{opacity:1;transform:none}}
+.hw-app .hw-type{animation-name:hwType2}@keyframes hwType2{0%,50%{width:0}64%,100%{width:8ch}}
+.hw-gauge{position:relative;width:170px;margin:6px auto 8px;text-align:center}.hw-gauge svg{display:block;width:100%}
+.hw-gauge path{fill:none;stroke-width:9;stroke-linecap:round}.hw-gauge .tr{stroke:rgba(255,255,255,.08)}
+.hw-gauge .fl{stroke:var(--accent2);stroke-dasharray:100;stroke-dashoffset:58;filter:drop-shadow(0 0 6px rgba(167,139,250,.85));animation:hwGauge 6s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes hwGauge{0%,10%{stroke-dashoffset:58}55%,100%{stroke-dashoffset:3}}
+.hw-fps{position:absolute;left:0;right:0;top:40%;font-size:30px;font-weight:700;color:#fff;letter-spacing:-.02em;animation:hwFps 6s cubic-bezier(.22,1,.36,1) infinite;counter-reset:fps var(--fps)}.hw-fps:after{content:counter(fps)}
+@keyframes hwFps{0%,10%{--fps:60}55%,100%{--fps:144}}
+.hw-gauge small{position:absolute;left:0;right:0;bottom:0;font-size:11px;color:var(--dim)}
+.hw-tg{display:flex;justify-content:space-between;align-items:center;height:34px;padding:0 10px;margin-top:6px;border-radius:9px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);font-size:12.5px}
+.hw-tg em{font-style:normal;color:var(--dim)}
+.hw-tg i{position:relative;width:30px;height:17px;border-radius:9px;background:#2a2740;animation:hwTgBg 6s infinite;animation-delay:calc(var(--i) * .35s)}
+.hw-tg i:after{content:"";position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#8b86a0;animation:hwTgK 6s cubic-bezier(.34,1.56,.64,1) infinite;animation-delay:calc(var(--i) * .35s)}
+@keyframes hwTgBg{0%,12%{background:#2a2740}16%,90%{background:#8b5cf6}96%,100%{background:#2a2740}}
+@keyframes hwTgK{0%,12%{transform:none;background:#8b86a0}16%,90%{transform:translateX(13px);background:#fff}96%,100%{transform:none;background:#8b86a0}}
+.hw-step:not(.in) .hw-demo *,.hw-step:not(.in) .hw-demo *:after{animation-play-state:paused}
+@media(max-width:820px){.hw-tl{gap:56px}.hw-spine{inset-inline-start:31px}.hw-step{grid-template-columns:64px 1fr;gap:18px 18px;align-items:start}
+.hw-step .hw-orb,.hw-step.s2 .hw-orb{grid-column:1;grid-row:1}.hw-step .hw-txt,.hw-step.s2 .hw-txt{grid-column:2;grid-row:1;text-align:start;--dx:24px}.hw-step .hw-demo,.hw-step.s2 .hw-demo{grid-column:2;grid-row:2;--dx:24px;min-height:0;padding-bottom:18px}.hw-txt h3{font-size:20px}}
+@media(prefers-reduced-motion:reduce){.hw-demo *,.hw-demo *:after,.hw-orb:after{animation:none!important}.hw-txt,.hw-demo{opacity:1!important;transform:none!important}.hw-type{width:8ch}.hw-sel{transform:translateX(calc(100% * var(--dir)))}.hw-prog i{transform:none}.hw-pc:after{content:"100%"}.hw-ok{opacity:1;transform:translate(-50%,0)}.hw-gauge .fl{stroke-dashoffset:3}.hw-fps:after{content:"144"}.hw-tg i{background:#8b5cf6}.hw-tg i:after{transform:translateX(13px);background:#fff}}
 @media(max-width:760px){.ba-stage{aspect-ratio:4/5}.ba-wm{width:40%}.ba-osd{top:54px;font-size:11px}.ba-osd b{font-size:20px}.ba-meta{top:auto;bottom:98px}.ba-sts{grid-template-columns:1fr}.ba-st b{font-size:26px}}
 
 
@@ -517,6 +582,11 @@ if(innerWidth<=820||rm){panels.forEach(function(p){p.classList.add('on')})}
 steps.forEach(function(s,i){s.addEventListener('click',function(){if(!sw)return;var top=sw.getBoundingClientRect().top+scrollY,h=sw.offsetHeight-innerHeight;scrollTo({top:top+h*(i+.5)/panels.length,behavior:'smooth'})})});
 function band(tr,speed,dir){if(!tr||rm)return;var half=tr.scrollWidth/2,o0=0;(function m(){o0+=speed;var o=((o0*dir)%half+half)%half;tr.style.transform='translateX('+((rtl?1:-1)*o)+'px)';requestAnimationFrame(m)})()}
 band(track,0.5,1);band(track2,0.4,-1);
+var hw=document.querySelector('.hw-tl');if(hw){var hwStep=function(){var r=hw.getBoundingClientRect(),p=Math.min(1,Math.max(0,(innerHeight*.6-r.top)/r.height));hw.style.setProperty('--hp',p.toFixed(3));hw.querySelectorAll('.hw-step').forEach(function(s){var o=s.querySelector('.hw-orb').getBoundingClientRect();s.classList.toggle('lit',o.top+o.height/2<innerHeight*.6)})};addEventListener('scroll',hwStep,{passive:true});addEventListener('resize',hwStep);hwStep()}
+// in-page links scroll without leaving #section in the address bar
+var jump=function(id,smooth){var el=id&&document.getElementById(id);if(!el)return false;el.scrollIntoView({behavior:smooth&&!rm?'smooth':'auto',block:'start'});history.replaceState(null,'',location.pathname+location.search);return true};
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"],a[href^="/#"]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey)return;var id=a.getAttribute('href').split('#')[1];if(jump(id,true))e.preventDefault()});
+if(location.hash){var h0=location.hash.slice(1);setTimeout(function(){jump(h0,false)},60)}
 var bs=document.querySelector('.ba-stage');if(bs){var rg=bs.querySelector('.ba-range'),setX=function(v){bs.style.setProperty('--x',v)};rg.addEventListener('input',function(){setX(rg.value)});
   document.querySelectorAll('.ba-tab').forEach(function(b){b.addEventListener('click',function(){var i=b.dataset.i;document.querySelectorAll('.ba-tab').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b)});document.querySelectorAll('.ba-set,.ba-sts').forEach(function(x){x.classList.toggle('on',x.dataset.i===i)})})});
   if(!rm&&'IntersectionObserver' in window){var bio=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;bio.disconnect();var t0=performance.now();(function a(t){var k=Math.min(1,(t-t0)/1800),v=50+Math.sin(k*Math.PI*2)*(1-k)*24;setX(v);rg.value=v;if(k<1)requestAnimationFrame(a)})(t0)},{threshold:.6});bio.observe(bs)}}
@@ -626,16 +696,21 @@ export function landing(ctx) {
   };
   const mods = [['m1', 'pc'], ['m2', 'net'], ['m3', 'win'], ['m4', 'game']].map(([k, ic], i) => `<div class="card mod rv ${i % 2 ? 'r' : 'l'} d${i % 4}">${arts[k]}<div class="ic">${ICONS[ic]}</div><h3>${t(lang, k)}</h3><p>${t(lang, k + 'd')}</p></div>`).join('');
   const gcards = GAMES.map(([ab, name, k, g1, g2]) => `<div class="gcard" style="--g1:${g1};--g2:${g2}"><span class="gw">${ab}</span><i class="circ"></i><span class="gi"><img src="${iconUrl(k.slice(2))}" alt="" draggable="false"></span><b>${name}</b><span>${t(lang, k)}</span></div>`).join('');
-  // the pinned stage: three panels, one per step
-  const pop = P[1] || P[0] || ['3', 390000];
-  const stack = P.slice(0, 3).reverse().map(([m, price], i) => `<div class="sc" style="--dx:${(i - 1) * 26}px;--dy:${(2 - i) * -14}px;--rr:${(i - 1) * 6}deg"><b>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</b><span>${fmtNum(lang, price)} ${t(lang, 'toman')}</span><br><span class="btn">${t(lang, 'buy')}</span></div>`).join('');
-  const applyRows = [['Game DVR', 'off'], ['Power plan', 'Ultimate'], ['Nagle', 'off'], ['DNS', '1.1.1.1']].map(([k, v], i) => `<div class="m-row" style="--i:${i}"><span>${k} · ${v}</span><i class="sw on"></i></div>`).join('');
-  const panels = [
-    `<div class="txt"><span class="lbl">[ ${t(lang, 'step')} ${fmtNum(lang, 1)} ]</span><h3>${t(lang, 'how1')}</h3><p>${fill(t(lang, 'how1d'), lang, env)}</p></div><div class="vis"><div class="stack">${stack}</div></div>`,
-    `<div class="txt"><span class="lbl">[ ${t(lang, 'step')} ${fmtNum(lang, 2)} ]</span><h3>${t(lang, 'how2')}</h3><p>${t(lang, 'how2d')}</p></div><div class="vis"><div class="lwin"><div class="bar"><i></i><i></i><i></i></div><div class="body"><span class="chip">⬇ FPSBoost-Setup.exe · 110 MB</span><div class="f">gamer_01</div><div class="f pw">••••••••••</div><span class="btn">${t(lang, 'login')}</span></div></div></div>`,
-    `<div class="txt"><span class="lbl">[ ${t(lang, 'step')} ${fmtNum(lang, 3)} ]</span><h3>${t(lang, 'how3')}</h3><p>${t(lang, 'how3d')}</p></div><div class="vis"><div class="applyv"><div class="big">60 → 144 FPS</div>${applyRows}<div class="rp">✓ ${t(lang, 'restore_ok')}</div></div></div>`,
-  ].map((h, i) => `<div class="panel${i === 0 ? ' on' : ''}" data-i="${i}">${h}</div>`).join('');
-  const stepsRow = [1, 2, 3].map(i => `<div class="st${i === 1 ? ' on' : ''}"><span class="lbl">[ ${t(lang, 'step')} ${fmtNum(lang, i)} ]</span><b>${t(lang, 'how' + i)}</b></div>`).join('');
+  // how it works: a timeline, one looping mini demo per step (6s cycles, CSS only; paused until revealed)
+  const hwPlans = P.slice(0, 3).map(([m]) => `<span>${fmtNum(lang, m)} ${t(lang, Number(m) > 1 ? 'months' : 'month')}</span>`).join('');
+  const hwToggles = [['Game DVR', 'off'], ['Power plan', 'Ultimate'], ['Nagle', 'off'], ['DNS', '1.1.1.1']].map(([k, v], i) => `<div class="hw-tg" style="--i:${i}" dir="ltr"><span>${k} · <em>${v}</em></span><i></i></div>`).join('');
+  const hwDemos = [
+    `<div class="hw-demo d1"><div class="hw-win"><div class="hw-bar"><i></i><i></i><i></i><span>fpsboost.ir</span></div>
+<label>${t(lang, 'hw_user')}</label><div class="hw-field" dir="ltr"><span class="hw-type">gamer_01</span><i class="hw-caret"></i></div>
+<label>${t(lang, 'hw_plan')}</label><div class="hw-plans"><i class="hw-sel"></i>${hwPlans}</div>
+<div class="hw-btn">${t(lang, 'register')}</div><div class="hw-ok">✓ ${t(lang, 'hw_done')}</div></div></div>`,
+    `<div class="hw-demo d2"><div class="hw-dl"><div class="hw-file"><i>⬇</i><div><b dir="ltr">FPSBoost-Setup.exe</b><small>${t(lang, 'hw_downloading')} · <span class="hw-pc" dir="ltr"></span></small></div></div><div class="hw-prog"><i></i></div></div>
+<div class="hw-win hw-app"><div class="hw-bar"><i></i><i></i><i></i><span>FPS Boost</span></div><div class="hw-field" dir="ltr"><span class="hw-type">gamer_01</span></div><div class="hw-field pw" dir="ltr"><span class="hw-type">••••••••</span></div><div class="hw-btn">${t(lang, 'login')}</div><div class="hw-ok">✓ ${t(lang, 'hw_in')}</div></div></div>`,
+    `<div class="hw-demo d3"><div class="hw-win"><div class="hw-bar"><i></i><i></i><i></i><span>${t(lang, 'hw_apply')}</span></div>
+<div class="hw-gauge"><svg viewBox="0 0 120 70" aria-hidden="true"><path class="tr" d="M10 62a50 50 0 0 1 100 0"/><path class="fl" d="M10 62a50 50 0 0 1 100 0" pathLength="100"/></svg><b class="hw-fps" dir="ltr"></b><small>FPS</small></div>
+${hwToggles}<div class="hw-ok">✓ ${t(lang, 'restore_ok')}</div></div></div>`,
+  ];
+  const howSteps = [1, 2, 3].map(i => `<div class="hw-step rv s${i}"><div class="hw-txt"><span class="lbl">${t(lang, 'step')} ${fmtNum(lang, i)}</span><h3>${t(lang, 'how' + i)}</h3><p>${i === 1 ? fill(t(lang, 'how1d'), lang, env) : t(lang, 'how' + i + 'd')}</p></div><span class="hw-orb"><b>${fmtNum(lang, i)}</b></span>${hwDemos[i - 1]}</div>`).join('');
   const faq = t(lang, 'faq').map(([q, a], i) => `<details class="q rv d${i % 4}"><summary>${esc(q)}</summary><p>${esc(fill(a, lang, env))}</p></details>`).join('');
   const comets = [['8%', '10%', '0s'], ['60%', '4%', '2.3s'], ['80%', '30%', '4.1s'], ['30%', '40%', '5.6s']].map(([l, tp, d]) => `<i class="comet" style="--l:${l};--t:${tp};--d:${d}"></i>`).join('');
   const radar = [['420px', '40s'], ['560px', '55s'], ['700px', '70s'], ['860px', '90s']].map(([s, tm]) => `<i style="--s:${s};--t:${tm}"></i>`).join('') + [['0s'], ['-2s']].map(([d]) => `<i class="pulse" style="--s:560px;--d:${d}"></i>`).join('');
@@ -660,9 +735,8 @@ ${mockHtml(ctx)}
 <div class="ba-stats rv">${BA.map((g, i) => baStats(lang, g, i)).join('')}</div>
 <p class="ba-cap rv">${t(lang, 'ba_cap')}</p></div></section>
 <section class="s" id="features"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'feat_pill')}</span><h2 class="words">${words(t(lang, 'feat_h'))}</h2><p>${t(lang, 'feat_sub')}</p></div><div class="mods">${mods}</div></div></section>
-<section class="s" id="how"><div class="wrap"><div class="stage-wrap"><div class="stage"><div class="head rv" style="margin-bottom:0"><span class="pill"><i></i>${t(lang, 'how_pill')}</span><h2 class="words">${words(t(lang, 'how_h'))}</h2><p>${t(lang, 'how_sub')}</p></div>
-<div class="frame"><div class="smoke"></div><i class="cb tl on"></i><i class="cb tr"></i><i class="cb bl"></i><i class="cb br on"></i>${panels}</div>
-<div class="steps-row"><i class="prog"></i>${stepsRow}</div></div></div></div></section>
+<section class="s hw" id="how"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'how_pill')}</span><h2 class="words">${words(t(lang, 'how_h'))}</h2><p>${t(lang, 'how_sub')}</p></div>
+<div class="hw-tl"><i class="hw-spine"><b></b></i>${howSteps}</div></div></section>
 <section class="s rep"><div class="wrap"><div class="rep-grid"><div class="rep-copy rv l"><span class="pill"><i></i>${t(lang, 'rep_pill')}</span><h2 class="words">${words(t(lang, 'rep_h'))}</h2><p>${t(lang, 'rep_sub')}</p><div class="actions"><a class="btn" href="/download">${t(lang, 'download')}</a><a class="btn ghost" href="/#features">${t(lang, 'nav_features')}</a></div></div>
 <div class="rep-stack rv r"><div class="lines" aria-hidden="true">${lines}</div><div class="bench"><div class="bh"><span class="lbl">${t(lang, 'bench_t')}</span><span>${t(lang, 'bench_g')}</span></div>${bench}<div class="bf">${t(lang, 'bench_f')}</div></div></div></div></div></section>
 <section class="s games" id="games"><div class="floor"></div><div class="floorglow"></div><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'games_pill')}</span><h2 class="words">${words(t(lang, 'games_h'))}</h2><p>${t(lang, 'games_sub')}</p></div></div>
