@@ -501,7 +501,7 @@ details.q p{margin:0 0 16px;color:var(--muted);font-size:14px;animation:up .4s b
 .radar i.pulse{border:1px solid rgba(196,181,253,.6);animation:pulse 4s ease-out infinite;animation-delay:var(--d)}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%{transform:scale(.2);opacity:.9}100%{transform:scale(1.6);opacity:0}}
 .cta .mark{width:70px;height:46px;margin:0 auto 18px;animation:float 6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(167,139,250,.8))}.cta h2{margin-bottom:10px}.cta p{color:var(--muted);margin:0 0 14px;text-shadow:0 0 12px #07060b,0 0 4px #07060b}.cta h2{text-shadow:0 0 24px #07060b}
-.cta-map{position:absolute;left:50%;top:44%;width:min(400px,64vw);height:auto;transform:translate(-50%,-50%);z-index:-1;opacity:.5;pointer-events:none;filter:drop-shadow(0 0 30px rgba(139,92,246,.5))}
+.cta-map{position:absolute;left:50%;top:44%;width:min(400px,64vw);height:auto;transform:translate(-50%,-50%);z-index:-1;opacity:.3;pointer-events:none;filter:drop-shadow(0 0 30px rgba(139,92,246,.5))}
 .cta-first{display:inline-flex;align-items:center;gap:8px;margin:0 0 26px;padding:6px 14px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--accent3);background:rgba(139,92,246,.1);border:1px solid rgba(167,139,250,.3)}
 .cta-first i{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 10px var(--accent2)}
 .planet{position:absolute;left:50%;top:100%;width:220vw;height:220vw;max-width:2600px;max-height:2600px;margin-top:-190px;transform:translateX(-50%);border-radius:50%;background:#040406;z-index:-1;
