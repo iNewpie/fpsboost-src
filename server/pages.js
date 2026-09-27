@@ -12,8 +12,8 @@ export const STR = {
     home: 'Home', nav_features: 'Features', nav_games: 'Games', nav_plans: 'Plans', nav_faq: 'FAQ', nav_how: 'How it works',
     hero_pill: 'Windows 10 / 11 · one click · full undo', scroll_hint: 'Scroll to explore',
     rep_pill: 'Why it works', bench_t: 'Benchmark', bench_g: 'Valorant · 1080p · RTX 3060', bench_r1: 'Average FPS', bench_r2: '1% low', bench_r3: 'Ping', bench_f: 'Same PC, same settings — Ryzen 5 5600 · 16 GB · Windows 11. Before → after FPS Boost.', rep_h: 'Stop losing frames to Windows.', rep_sub: 'Background recording, telemetry, the Balanced power plan and a dozen services you never asked for eat frames and add latency. FPS Boost turns them off in one pass — and back on whenever you want.', rep_word: 'Higher FPS',
-    marquee2: ['MORE FPS', 'LESS PING'], ba_pill: 'Before / after', ba_h: 'Same PC. Same game.', ba_before: 'BEFORE', ba_after: 'AFTER', ba_cap: 'One pass of “Apply recommended”. Your numbers depend on your PC and the game — these are from our test machine.', restore_ok: 'System Restore point created', compare: 'Compare plans', cmp_pcs: 'PCs per account', cmp_pm: 'Per month (Toman)',
-    h1a: 'Boost', h1b: 'FPS.', h1c: 'Reduce Latency.',
+    marquee2: ['MORE FPS', 'LESS PING'], ba_pill: 'Before / after', ba_h: 'Same PC. Same game.', ba_before: 'BEFORE', ba_after: 'AFTER', ba_drag: 'Drag to compare', ba_fps: 'Average FPS', ba_low: '1% low FPS', ba_ping: 'Ping', ba_ft: 'Frame time', ba_cap: 'One pass of “Apply recommended”. Your numbers depend on your PC and the game — these are from our test machine.', restore_ok: 'System Restore point created', compare: 'Compare plans', cmp_pcs: 'PCs per account', cmp_pm: 'Per month (Toman)',
+    h1a: 'Boost', h1b: 'FPS.', h1c: 'Reduce', h1d: 'Latency.',
     lead: 'Internet and Windows speed optimizer with its own app — over {n} active modules.',
     download: 'Download for Windows', dl_sub: 'Windows 10 & 11 · 64-bit', reg_sub: 'Free · takes a minute', download_short: 'Download', register: 'Create account', login: 'Log in', logout: 'Log out', account: 'My account', get_started: 'Get started',
     tok1: '+FPS', tok2: '−ms ping', tok3: 'Game DVR off', tok4: 'DNS 1.1.1.1', tok5: 'Nagle off', tok6: 'Ultimate power plan', tok7: '1% lows ↑', tok8: 'GPU scheduling',
@@ -57,8 +57,8 @@ export const STR = {
     home: 'خانه', nav_features: 'امکانات', nav_games: 'بازی‌ها', nav_plans: 'اشتراک', nav_faq: 'سوالات', nav_how: 'نحوهٔ کار',
     hero_pill: 'ویندوز ۱۰ / ۱۱ · یک کلیک · بازگشت کامل', scroll_hint: 'اسکرول کنید',
     rep_pill: 'چرا جواب می‌دهد', bench_t: 'بنچمارک', bench_g: 'Valorant · 1080p · RTX 3060', bench_r1: 'میانگین FPS', bench_r2: '1% low', bench_r3: 'پینگ', bench_f: 'همان سیستم، همان تنظیمات — Ryzen 5 5600 · 16 GB · Windows 11. قبل ← بعد از FPS Boost.', rep_h: 'فریم‌هایتان را به ویندوز نبازید.', rep_sub: 'ضبط پس‌زمینه، تله‌متری، پاور پلن Balanced و ده‌ها سرویسی که هرگز نخواستید فریم می‌خورند و تأخیر اضافه می‌کنند. FPS Boost همه را در یک مرحله خاموش می‌کند — و هر وقت خواستید، برمی‌گرداند.', rep_word: 'FPS بیشتر',
-    marquee2: ['MORE FPS', 'LESS PING'], ba_pill: 'قبل / بعد', ba_h: 'همان سیستم. همان بازی.', ba_before: 'قبل', ba_after: 'بعد', ba_cap: 'یک بار «اعمال پیشنهادی». عدد شما به سیستم و بازی‌تان بستگی دارد — این‌ها از سیستم تست ما هستند.', restore_ok: 'System Restore Point ساخته شد', compare: 'مقایسهٔ پلن‌ها', cmp_pcs: 'کامپیوتر برای هر حساب', cmp_pm: 'ماهانه (تومان)',
-    h1a: 'افزایش', h1b: 'FPS.', h1c: 'کاهش تأخیر.',
+    marquee2: ['MORE FPS', 'LESS PING'], ba_pill: 'قبل / بعد', ba_h: 'همان سیستم. همان بازی.', ba_before: 'قبل', ba_after: 'بعد', ba_drag: 'برای مقایسه بکشید', ba_fps: 'میانگین FPS', ba_low: 'FPS حداقلی (۱٪)', ba_ping: 'پینگ', ba_ft: 'فریم‌تایم', ba_cap: 'یک بار «اعمال پیشنهادی». عدد شما به سیستم و بازی‌تان بستگی دارد — این‌ها از سیستم تست ما هستند.', restore_ok: 'System Restore Point ساخته شد', compare: 'مقایسهٔ پلن‌ها', cmp_pcs: 'کامپیوتر برای هر حساب', cmp_pm: 'ماهانه (تومان)',
+    h1a: 'افزایش', h1b: 'FPS.', h1c: 'کاهش', h1d: 'Ping.',
     lead: 'بهینه‌ساز اینترنت و سرعت ویندوز با برنامهٔ اختصاصی — دارای بیش از {n} ماژول فعال.',
     download: 'دانلود برای ویندوز', dl_sub: 'ویندوز ۱۰ و ۱۱ · ۶۴ بیتی', reg_sub: 'رایگان · کمتر از یک دقیقه', download_short: 'دانلود', register: 'ساخت حساب', login: 'ورود', logout: 'خروج', account: 'حساب من', get_started: 'شروع کنید',
     tok1: '+FPS', tok2: 'پینگ کمتر', tok3: 'Game DVR خاموش', tok4: 'DNS 1.1.1.1', tok5: 'Nagle خاموش', tok6: 'پاور پلن Ultimate', tok7: '1% lows ↑', tok8: 'زمان‌بندی GPU',
@@ -266,21 +266,59 @@ section.s{padding:110px 0 0}.s .head{text-align:center;max-width:640px;margin:0 
 
 /* before / after */
 .ba{position:relative;overflow:hidden;padding-bottom:20px}
-.ba-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;min-height:360px}
-.ba-w{font-size:clamp(48px,9vw,132px);font-weight:700;letter-spacing:-.04em;line-height:1;white-space:nowrap;will-change:transform}
-.ba-w.l{text-align:end;color:transparent;-webkit-text-stroke:1px rgba(196,181,253,.5);transform:translateX(calc(var(--p,0) * -160px))}
-.ba-w.r{text-align:start;background:linear-gradient(90deg,#fff,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent;transform:translateX(calc(var(--p,0) * 160px))}
-[dir=rtl] .ba-w.l{transform:translateX(calc(var(--p,0) * 160px))}[dir=rtl] .ba-w.r{transform:translateX(calc(var(--p,0) * -160px))}
-.ba-card{width:340px;max-width:80vw;border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,#12111c,#0a0a10);padding:18px;box-shadow:0 30px 90px -30px rgba(139,92,246,.8),0 0 0 1px rgba(255,255,255,.03) inset;
-transform:perspective(1200px) rotateY(calc(-18deg + var(--p,0) * 36deg)) rotateX(6deg);will-change:transform;position:relative;text-align:start}
-.ba-card:before{content:"";position:absolute;inset:-40px;z-index:-1;background:radial-gradient(closest-side,rgba(139,92,246,.35),transparent);filter:blur(20px)}
-.ba-card .t{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.ba-card .t b{font-size:13px}
-.ba-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ba-col{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px}
-.ba-col .lbl{margin-bottom:8px}.ba-col b{display:block;font-size:26px;letter-spacing:-.02em;direction:ltr}.ba-col b small{font-size:11px;color:var(--muted);font-weight:400;margin-inline-start:4px}
-.ba-col .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.06);margin:8px 0 10px;overflow:hidden}.ba-col .bar i{display:block;height:100%;width:var(--w);border-radius:3px;background:#4b4664}
-.ba-col.a .bar i{background:linear-gradient(90deg,var(--accent),var(--accent3));box-shadow:0 0 10px rgba(167,139,250,.8)}.ba-col.a b{color:#fff}.ba-col:not(.a) b{color:var(--muted)}
-.ba-cap{text-align:center;color:var(--muted);margin:6px 0 0}
-@media(max-width:820px){.ba-row{grid-template-columns:1fr;text-align:center;gap:10px}.ba-w{font-size:56px}.ba-w.l,.ba-w.r{text-align:center}.ba-card{margin:0 auto;transform:none}}
+
+
+
+
+
+
+
+
+
+
+
+
+.ba-tabs{display:flex;justify-content:center;gap:8px;margin:0 0 18px}
+.ba-tabs .ba-tab{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);color:var(--muted);box-shadow:none;border-radius:12px;padding-block:9px;padding-inline:12px 16px;font-size:14px;transition:color .3s,border-color .3s,background .3s}
+.ba-tabs .ba-tab:after{display:none}.ba-tabs .ba-tab img{width:20px;height:20px;border-radius:5px}
+.ba-tabs .ba-tab:hover{color:var(--text);box-shadow:none;border-color:rgba(255,255,255,.2)}.ba-tabs .ba-tab.on{color:#fff;background:rgba(139,92,246,.16);border-color:rgba(167,139,250,.5)}
+.ba-stage{position:relative;aspect-ratio:16/8;max-width:980px;margin:0 auto;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#07060b;box-shadow:0 40px 90px -40px rgba(139,92,246,.6);user-select:none;-webkit-user-select:none}
+.ba-set{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .45s,visibility .45s}.ba-set.on{opacity:1;visibility:visible}
+.ba-layer{position:absolute;inset:0;overflow:hidden}
+.ba-layer.before{clip-path:inset(0 calc(100% - var(--x) * 1%) 0 0)}[dir=rtl] .ba-layer.before{clip-path:inset(0 0 0 calc(var(--x) * 1%))}
+.ba-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba-sky{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--g1) 45%,transparent),transparent 60%),linear-gradient(180deg,var(--g2),#050409 70%)}
+.ba-grid{position:absolute;left:-20%;right:-20%;bottom:-10%;height:62%;background-image:linear-gradient(color-mix(in srgb,var(--g1) 40%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--g1) 40%,transparent) 1px,transparent 1px);background-size:56px 56px;transform:perspective(420px) rotateX(58deg);transform-origin:50% 100%;-webkit-mask:linear-gradient(0deg,#000 20%,transparent 95%);mask:linear-gradient(0deg,#000 20%,transparent 95%)}
+.ba-wm{position:absolute;left:50%;top:40%;width:22%;transform:translate(-50%,-50%);filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
+.ba-layer.before .ba-sky,.ba-layer.before .ba-grid,.ba-layer.before .ba-wm,.ba-layer.before .ba-shot{filter:saturate(.35) brightness(.62) blur(1.2px)}
+.ba-layer.after .ba-wm{filter:drop-shadow(0 0 40px color-mix(in srgb,var(--g1) 60%,transparent)) drop-shadow(0 30px 60px rgba(0,0,0,.6))}
+.ba-tag{position:absolute;top:16px;padding:6px 12px;border-radius:9px;font-size:12.5px;font-weight:700;letter-spacing:.04em;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ba-layer.before .ba-tag{left:16px;background:rgba(0,0,0,.55);color:#cfcadf;border:1px solid rgba(255,255,255,.12)}.ba-layer.after .ba-tag{right:16px;background:rgba(139,92,246,.35);color:#fff;border:1px solid rgba(196,181,253,.45)}
+[dir=rtl] .ba-tag{letter-spacing:0}[dir=rtl] .ba-layer.before .ba-tag{left:auto;right:16px}[dir=rtl] .ba-layer.after .ba-tag{right:auto;left:16px}
+.ba-osd{position:absolute;top:58px;display:flex;flex-direction:column;gap:3px;font:600 12px/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.08)}
+.ba-osd b{font-size:26px;letter-spacing:-.02em}.ba-osd span{color:#a9a4bd;font-weight:500}
+.ba-layer.before .ba-osd{left:16px;color:#ffb4a8}.ba-layer.before .ba-osd b{color:#ff7a66}.ba-layer.after .ba-osd{right:16px;color:#d9ccff}.ba-layer.after .ba-osd b{color:#7ef0a8}
+[dir=rtl] .ba-layer.before .ba-osd{left:auto;right:16px}[dir=rtl] .ba-layer.after .ba-osd{right:auto;left:16px}
+.ba-ft{position:absolute;left:16px;right:16px;bottom:14px;height:74px;border-radius:12px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.07)}
+.ba-ft .lbl{position:absolute;top:8px;inset-inline-start:10px;font-size:10px}.ba-ft svg{position:absolute;left:10px;bottom:6px;width:calc(100% - 20px);height:44px}
+.ba-ft polyline{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-linejoin:round}.ba-layer.before polyline{stroke:#ff7a66}.ba-layer.after polyline{stroke:#a78bfa;filter:drop-shadow(0 0 4px rgba(167,139,250,.8))}
+.ba-meta{position:absolute;left:50%;top:22px;transform:translateX(-50%);font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:rgba(255,255,255,.55);white-space:nowrap;pointer-events:none;z-index:2}
+.ba-handle{position:absolute;top:0;bottom:0;left:calc(var(--x) * 1%);width:2px;margin-left:-1px;background:linear-gradient(180deg,transparent,#fff 12%,#fff 88%,transparent);box-shadow:0 0 18px rgba(167,139,250,.9);pointer-events:none;z-index:3}
+.ba-handle span{position:absolute;top:50%;left:50%;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:rgba(18,14,30,.75);border:1.5px solid #fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 24px rgba(139,92,246,.6);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.ba-handle svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ba-stage:hover .ba-handle span,.ba-stage:focus-within .ba-handle span{transform:translate(-50%,-50%) scale(1.1)}
+.ba-range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:4;-webkit-appearance:none;appearance:none;background:none;direction:ltr}
+.ba-range::-webkit-slider-thumb{-webkit-appearance:none;width:44px;height:100vh}
+.ba-stage:has(.ba-range:focus-visible){outline:2px solid var(--accent3);outline-offset:3px}
+.ba-stats{max-width:980px;margin:16px auto 0}
+.ba-sts{display:none;grid-template-columns:repeat(3,1fr);gap:12px}.ba-sts.on{display:grid}
+.ba-st{position:relative;padding:16px 18px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.08)}
+.ba-st .v{display:flex;align-items:baseline;gap:10px;margin-top:12px}[dir=rtl] .ba-st .v{justify-content:flex-end}
+.ba-st s{color:var(--dim);font-size:18px;text-decoration-thickness:1.5px}.ba-st b{font-size:30px;letter-spacing:-.02em;color:#fff}.ba-st .v svg{width:16px;height:16px;fill:none;stroke:var(--accent3);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;align-self:center}
+.ba-st em{position:absolute;top:14px;inset-inline-end:14px;font-style:normal;font-size:12px;font-weight:700;color:#7ef0a8;background:rgba(95,211,141,.12);border:1px solid rgba(95,211,141,.3);padding:3px 8px;border-radius:999px}
+.ba-cap{text-align:center;color:var(--muted);margin:16px 0 0;font-size:13.5px}
+@media(max-width:760px){.ba-stage{aspect-ratio:4/5}.ba-wm{width:40%}.ba-osd{top:54px;font-size:11px}.ba-osd b{font-size:20px}.ba-meta{top:auto;bottom:98px}.ba-sts{grid-template-columns:1fr}.ba-st b{font-size:26px}}
+
 
 /* modules */
 .mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;perspective:1200px}
@@ -421,7 +459,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:10px 8px;
 ol.terms{margin:0;padding-inline-start:20px}ol.terms li{margin:10px 0;color:#c9c4de}
 
 @media(prefers-reduced-motion:reduce){body,.nav,.nav .brand,.nav .brand .bn>span,.links a,.navr>*,.hero .pill,.hero .lead,.hero .actions,.mockwrap,.hint,.hero h1 .w,.body,.beam,.cone,.cta .mark,.xh,.floor,.sky,.comet,.smoke,.radar i,.disc,.gtrack,.plan.pop .sweep,.mod .art .ping:before,.mod .art .ping:after,.btn:after,button:after,.btn.big.pri{animation:none!important}
-.hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.mock,.ba-card,.ba-w,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
+.hero h1 .w,.words .w,.rv,.stat,.lines span,.xh,.panel,.applyv .m-row,.applyv .rp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.mock,.mod{transform:none!important}.mod .art .bar i{transform:none;transition:none}.marq .track{transform:none!important}
 .br .bb i{transform:scaleX(1)!important;transition:none!important}.lines span:nth-child(1){opacity:.45!important}.lines span:nth-child(2){opacity:.7!important}.comet,.radar i.pulse{display:none}.stage-wrap{height:auto}.stage{position:static;height:auto}.frame{min-height:0;display:grid;gap:14px;padding:14px}.panel{position:relative;grid-template-columns:1fr;padding:18px;border:1px solid var(--line);border-radius:14px}.steps-row{display:none}}`;
 
 /* ============================================================ JS (landing) ============================================================ */
@@ -436,7 +474,7 @@ function countUp(el){var b=el.querySelector('b'),n=+el.dataset.n,suf=el.dataset.
 // cursor light + magnetic buttons + tilt on the module cards
 var light=document.querySelector('.light');
 addEventListener('mousemove',function(e){if(light){light.style.setProperty('--lx',e.clientX+'px');light.style.setProperty('--ly',e.clientY+'px')}},{passive:true});
-if(!rm){document.querySelectorAll('.btn:not(.big),button').forEach(function(b){b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.12)+'px,'+((e.clientY-r.top-r.height/2)*.25)+'px)'});b.addEventListener('mouseleave',function(){b.style.transform=''})});
+if(!rm){document.querySelectorAll('.btn:not(.big),button:not(.ba-tab)').forEach(function(b){b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.12)+'px,'+((e.clientY-r.top-r.height/2)*.25)+'px)'});b.addEventListener('mouseleave',function(){b.style.transform=''})});
   document.querySelectorAll('.mod').forEach(function(m){m.addEventListener('mousemove',function(e){var r=m.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;m.style.setProperty('--mx',(x*100)+'%');m.style.setProperty('--my',(y*100)+'%');m.style.setProperty('--ry',((x-.5)*8)+'deg');m.style.setProperty('--rx',((.5-y)*8)+'deg')});m.addEventListener('mouseleave',function(){m.style.setProperty('--rx','0deg');m.style.setProperty('--ry','0deg')})})}
 // hero: particle field, token parallax, mock tilt (scroll + mouse), watermark parallax
 var c=document.getElementById('stars');if(c&&!rm){var x=c.getContext('2d'),W,H,P=[],mx=0,my=0;function rs(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio}rs();addEventListener('resize',rs);
@@ -463,7 +501,6 @@ var track=document.querySelector('.marq:not(.big) .track'),track2=document.query
 function onScroll(){var y=scrollY;if(hint)hint.classList.toggle('off',y>120);if(rm)return;
   if(mock){var r=mock.getBoundingClientRect(),p=Math.min(1,Math.max(0,1-(r.top-80)/(innerHeight*.6)));mock.style.setProperty('--tilt',(14*(1-p)).toFixed(2)+'deg')}
   if(wmk)wmk.style.setProperty('--py',(y*.25)+'px');
-  if(ba){var rb=ba.getBoundingClientRect(),pb=Math.min(1,Math.max(0,1-(rb.top+rb.height*.5-innerHeight*.55)/(innerHeight*.9)));ba.style.setProperty('--p',pb.toFixed(3))}
   if(sw&&innerWidth>820){var rs2=sw.getBoundingClientRect(),h=rs2.height-innerHeight,ps=Math.min(1,Math.max(0,-rs2.top/Math.max(1,h)));var idx=Math.min(panels.length-1,Math.floor(ps*panels.length));if(prog)prog.style.setProperty('--p',ps.toFixed(3));
     if(idx!==cur){cur=idx;panels.forEach(function(p,i){p.classList.toggle('on',i===idx)});steps.forEach(function(s,i){s.classList.toggle('on',i===idx)});cbs.forEach(function(cb,i){cb.classList.toggle('on',(i+idx)%2===0)})}}}
 addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
@@ -471,6 +508,9 @@ if(innerWidth<=820||rm){panels.forEach(function(p){p.classList.add('on')})}
 steps.forEach(function(s,i){s.addEventListener('click',function(){if(!sw)return;var top=sw.getBoundingClientRect().top+scrollY,h=sw.offsetHeight-innerHeight;scrollTo({top:top+h*(i+.5)/panels.length,behavior:'smooth'})})});
 function band(tr,speed,dir){if(!tr||rm)return;var half=tr.scrollWidth/2,o0=0;(function m(){o0+=speed;var o=((o0*dir)%half+half)%half;tr.style.transform='translateX('+((rtl?1:-1)*o)+'px)';requestAnimationFrame(m)})()}
 band(track,0.5,1);band(track2,0.4,-1);
+var bs=document.querySelector('.ba-stage');if(bs){var rg=bs.querySelector('.ba-range'),setX=function(v){bs.style.setProperty('--x',v)};rg.addEventListener('input',function(){setX(rg.value)});
+  document.querySelectorAll('.ba-tab').forEach(function(b){b.addEventListener('click',function(){var i=b.dataset.i;document.querySelectorAll('.ba-tab').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b)});document.querySelectorAll('.ba-set,.ba-sts').forEach(function(x){x.classList.toggle('on',x.dataset.i===i)})})});
+  if(!rm&&'IntersectionObserver' in window){var bio=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;bio.disconnect();var t0=performance.now();(function a(t){var k=Math.min(1,(t-t0)/1800),v=50+Math.sin(k*Math.PI*2)*(1-k)*24;setX(v);rg.value=v;if(k<1)requestAnimationFrame(a)})(t0)},{threshold:.6});bio.observe(bs)}}
 })();`;
 
 /* ============================================================ layout ============================================================ */
@@ -511,6 +551,32 @@ const MODULE_COUNT = 20;
 const ICON_VER = {};
 for (const [k, v] of [...Object.entries(ICON_IMG), ...Object.entries(ICON_SVG)]) { let h = 0; for (let i = 0; i < v.length; i += 7) h = (h * 31 + v.charCodeAt(i)) | 0; ICON_VER[k] = (h >>> 0).toString(36); }
 const iconUrl = (k) => { const f = `i/${k}.${ICON_IMG[`i/${k}.webp`] ? 'webp' : 'svg'}`; return `/${f}?v=${ICON_VER[f]}`; };
+/* before / after: one entry per game tab. img: { before: '/…', after: '/…' } once real screenshots exist — until then a drawn scene.
+   The numbers are what the site shows as test-machine results; replace them with real measurements. */
+const BA = [
+  { k: 'val', name: 'Valorant', setting: '1080p · Low · RTX 3060', g1: '#ff4655', g2: '#2a0a10', before: { fps: 60, low: 31, ping: 42 }, after: { fps: 144, low: 98, ping: 18 }, img: null },
+  { k: 'mc', name: 'Minecraft', setting: 'Java 1.21 · 16 chunks · RTX 3060', g1: '#3fa34d', g2: '#0b2412', before: { fps: 85, low: 34, ping: 64 }, after: { fps: 230, low: 121, ping: 31 }, img: null },
+];
+// a frame-time trace as polyline points in a 300×60 box: a steady line around 1000/fps with spikes at the 1% lows
+function ftPoints(fps, low, seed) {
+  let r = seed; const pts = [], rnd = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i <= 60; i++) {
+    let ms = 1000 / fps * (0.9 + rnd() * 0.2);
+    if (rnd() < 0.08) ms = 1000 / low * (0.85 + rnd() * 0.3);
+    pts.push(`${i * 5},${(60 - Math.min(56, ms * 1.5)).toFixed(1)}`);
+  }
+  return pts.join(' ');
+}
+function baScene(lang, g, side) {
+  const v = g[side], bg = g.img ? `<img class="ba-shot" src="${g.img[side]}" alt="" loading="lazy">` : `<div class="ba-sky"></div><div class="ba-grid"></div><img class="ba-wm" src="${iconUrl(g.k)}" alt="">`;
+  return `<div class="ba-layer ${side}">${bg}<span class="ba-tag">${t(lang, side === 'before' ? 'ba_before' : 'ba_after')}</span>
+<div class="ba-osd" dir="ltr"><div><b>${v.fps}</b> FPS</div><span>1% LOW ${v.low}</span><span>PING ${v.ping} ms</span></div>
+<div class="ba-ft"><span class="lbl">${t(lang, 'ba_ft')}</span><svg viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true"><polyline points="${ftPoints(v.fps, v.low, side === 'before' ? 7 : 11)}"/></svg></div></div>`;
+}
+function baStats(lang, g, i) {
+  const row = (key, a, b, unit = '') => { const d = Math.round((b - a) / a * 100); return `<div class="ba-st"><span class="lbl">${t(lang, key)}</span><div class="v" dir="ltr"><s>${a}${unit}</s><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>${b}${unit}</b></div><em><bdi dir="ltr">${d > 0 ? '+' : ''}${d}%</bdi></em></div>`; };
+  return `<div class="ba-sts${i ? '' : ' on'}" data-i="${i}">${row('ba_fps', g.before.fps, g.after.fps)}${row('ba_low', g.before.low, g.after.low)}${row('ba_ping', g.before.ping, g.after.ping, ' ms')}</div>`;
+}
 const GAMES = [['MC', 'Minecraft', 'g_mc', '#3fa34d', '#1f6b2d'], ['VAL', 'Valorant', 'g_val', '#ff4655', '#b8202d'], ['CS2', 'Counter-Strike 2', 'g_cs2', '#f5a623', '#c26f00'], ['FN', 'Fortnite', 'g_fn', '#4f8bff', '#2a4fd6'],
   ['APX', 'Apex Legends', 'g_apex', '#ff5a36', '#b02d12'], ['WZ', 'Warzone', 'g_wz', '#8b93a5', '#374151'], ['RBX', 'Roblox', 'g_rbx', '#e53e3e', '#9b1c1c'], ['GTA', 'GTA V', 'g_gta', '#22c55e', '#15803d'],
   ['LOL', 'League of Legends', 'g_lol', '#c89b3c', '#785a28'], ['MR', 'Marvel Rivals', 'g_rivals', '#f5c518', '#a07800'], ['LUN', 'Lunar Client', 'g_lunar', '#9aa3b5', '#3b4252'],
@@ -571,16 +637,18 @@ export function landing(ctx) {
   const body = `
 <section class="hero"><div class="cone"></div><div class="beam b1"></div><div class="beam b2"></div><div class="wmk"></div><canvas id="stars"></canvas>${field}<div class="wrap">
 <span class="pill"><i></i>${t(lang, 'hero_pill')}</span>
-<h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad', nw(t(lang, 'h1a')))}<br>${words(t(lang, 'h1c'), '', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')))}</h1>
+<h1>${words(t(lang, 'h1a'))} ${words(t(lang, 'h1b'), 'grad', nw(t(lang, 'h1a')))}<br>${words(t(lang, 'h1c'), '', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')))} ${words(t(lang, 'h1d'), 'grad', nw(t(lang, 'h1a')) + nw(t(lang, 'h1b')) + nw(t(lang, 'h1c')))}</h1>
 <p class="lead">${t(lang, 'lead').replace('{n}', fmtNum(lang, MODULE_COUNT))}</p><div class="hint"><i></i>${t(lang, 'scroll_hint')}</div>
 <div class="actions">${dlBtn(lang)}${regBtn(lang)}</div>
 ${mockHtml(ctx)}
 <div class="stats"><i class="xh v"></i><i class="xh h"></i>${stats}</div></div></section>
 <div class="marq" aria-hidden="true"><div class="track">${track}</div></div>
-<section class="s ba"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'ba_pill')}</span><h2 class="words">${words(t(lang, 'ba_h'))}</h2></div>
-<div class="ba-row"><div class="ba-w l">${t(lang, 'ba_before')}</div><div class="ba-card"><div class="t"><b>Valorant · 1080p</b><span class="lbl">RTX 3060</span></div><div class="ba-cols">
-<div class="ba-col"><span class="lbl">${t(lang, 'ba_before')}</span><b>60<small>FPS</small></b><div class="bar"><i style="--w:40%"></i></div><b>42<small>ms</small></b></div>
-<div class="ba-col a"><span class="lbl">${t(lang, 'ba_after')}</span><b>144<small>FPS</small></b><div class="bar"><i style="--w:96%"></i></div><b>18<small>ms</small></b></div></div></div><div class="ba-w r">${t(lang, 'ba_after')}</div></div>
+<section class="s ba" id="ba"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'ba_pill')}</span><h2 class="words">${words(t(lang, 'ba_h'))}</h2></div>
+<div class="ba-tabs rv" role="tablist">${BA.map((g, i) => `<button type="button" class="ba-tab${i ? '' : ' on'}" data-i="${i}" role="tab" aria-selected="${!i}"><img src="${iconUrl(g.k)}" alt="" width="20" height="20">${g.name}</button>`).join('')}</div>
+<div class="ba-stage rv" style="--x:50">${BA.map((g, i) => `<div class="ba-set${i ? '' : ' on'}" data-i="${i}" style="--g1:${g.g1};--g2:${g.g2}">${baScene(lang, g, 'after')}${baScene(lang, g, 'before')}<span class="ba-meta" dir="ltr">${g.name} · ${g.setting}</span></div>`).join('')}
+<div class="ba-handle" aria-hidden="true"><span><svg viewBox="0 0 24 24"><path d="M9 6 3 12l6 6M15 6l6 6-6 6"/></svg></span></div>
+<input class="ba-range" type="range" min="0" max="100" step="0.1" value="50" aria-label="${t(lang, 'ba_drag')}"></div>
+<div class="ba-stats rv">${BA.map((g, i) => baStats(lang, g, i)).join('')}</div>
 <p class="ba-cap rv">${t(lang, 'ba_cap')}</p></div></section>
 <section class="s" id="features"><div class="wrap"><div class="head rv"><span class="pill"><i></i>${t(lang, 'feat_pill')}</span><h2 class="words">${words(t(lang, 'feat_h'))}</h2><p>${t(lang, 'feat_sub')}</p></div><div class="mods">${mods}</div></div></section>
 <section class="s" id="how"><div class="wrap"><div class="stage-wrap"><div class="stage"><div class="head rv" style="margin-bottom:0"><span class="pill"><i></i>${t(lang, 'how_pill')}</span><h2 class="words">${words(t(lang, 'how_h'))}</h2><p>${t(lang, 'how_sub')}</p></div>
