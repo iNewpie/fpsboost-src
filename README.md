@@ -13,22 +13,43 @@ A Windows app that applies proven **network** and **FPS** tweaks with full undo,
 2. **Zarinpal**: register a merchant at zarinpal.com, put the 36-char id in `server/.env` → `ZARINPAL_MERCHANT`, set `ZARINPAL_SANDBOX = "0"` in `wrangler.toml`, redeploy. Until then buying is disabled and you activate accounts from `/admin`.
 3. **Prices / name**: `wrangler.toml` → `APP_NAME`, `PRICES` (months → Toman); `app/src/config.js` → `APP_NAME`; `app/package.json` → `productName`, `appId`.
 
-## The app (on a Windows PC)
+## The app
+
+Electron, but built for weak PCs: a flat dark UI (title bar, icon sidebar, content — the old ExitLag layout) with no blur,
+shadows, gradients or animations; one renderer process, WebGL off, background throttling on, and a **Lite mode** setting
+that turns GPU acceleration off entirely for old / integrated graphics. Pages: Home (tiles + one-click Boost), FPS Boost
+(15 switches), Network (6 switches + ping test), Games (10 presets = tweak bundles + in-game tips), Tools, Settings.
 
 ```
 cd app
 npm install
-npm start          # run from a terminal opened "as administrator" so tweaks can write HKLM
-npm test           # engine tests with a fake Windows (also runs on Linux)
-npm run dist       # builds dist/FPS Boost Setup x.y.z.exe (NSIS, asks for admin on launch)
+npm test           # engine + auth tests with a fake Windows / fake server (also runs on Linux)
+npm start          # builds out/ then runs Electron (on Windows, from a terminal opened "as administrator")
+npm run dist       # Windows installer: dist/FPSBoost-Setup.exe (builds on Linux with Wine too)
+node dev/gen.js    # refresh dev/demo-data.js, then open dev/demo.html in a browser: the UI with a fake backend
 ```
 
-Upload the installer as a GitHub release; `DOWNLOAD_URL` in `wrangler.toml` points people at it.
+### Build hardening (scripts/build.js, package.json → build)
+
+- `src/` + `tweaks/` are bundled and minified with esbuild, then compiled to **V8 bytecode** (`out/main.jsc`, bytenode);
+  the shipped app has no readable main-process source — the tweak scripts, the licence gate and the server key live only
+  in bytecode. The renderer is minified.
+- **Electron fuses**: `runAsNode` off, Node CLI / `NODE_OPTIONS` off, cookie encryption on, `onlyLoadAppFromAsar`,
+  `EnableEmbeddedAsarIntegrityValidation` — the exe carries the asar hash and refuses to start if `app.asar` was edited.
+- DevTools are compiled out of packaged builds; navigation and `window.open` are blocked; every renderer input is
+  length-limited in the main process; the renderer runs sandboxed with a strict CSP.
+- Size: only the `en-US` + `fa` locales ship, the unused WebGPU compiler (`dxcompiler.dll`, `dxil.dll`) and the 20 MB
+  Chromium licence page are dropped in `scripts/afterPack.js`, NSIS uses maximum LZMA compression.
+- Still to do for a "no one can crack it" posture: **code-sign the exe** (an Authenticode certificate — without it a
+  patched exe is indistinguishable from yours). Everything else that matters is server-side (see licensing).
 
 ## How licensing works
 
 - The website account = the app login. `/api/app/login` returns a signed token bound to a hashed machine id; up to `MAX_MACHINES` PCs per account (reset from the account page or `/admin`).
 - The app checks `/api/app/status` on every start; if the server is unreachable it keeps working for `OFFLINE_GRACE_DAYS` after the last "active" answer.
+- Every `/api/app/*` answer is **signed** (Ed25519, `APP_SIGN_KEY` in `server/.env` → the public key in `app/src/config.js`)
+  and echoes the app's random nonce + machine id, so a fake server, a proxy rewriting `active`, or a replayed old answer
+  cannot unlock the app. New key pair: see `server/.env.example` (change both halves together, then redeploy + rebuild).
 - Tweaks and tools are refused in the main process (not just hidden) without an active subscription.
 
 ## Safety

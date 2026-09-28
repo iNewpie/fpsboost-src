@@ -3,3 +3,4 @@ app/dist/
 server/.env
 server/.wrangler/
 *.log
+app/out/

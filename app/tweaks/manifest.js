@@ -66,6 +66,36 @@ const FPS = [
     desc: { en: 'Turns off window animations, shadows and transparency. Frees a little GPU and makes the desktop snappier — looks plainer.', fa: 'انیمیشن پنجره‌ها، سایه‌ها و شفافیت را خاموش می‌کند. کمی GPU آزاد می‌کند و دسکتاپ چابک‌تر می‌شود — ظاهر ساده‌تر.' },
     values: [v(`${HKCU}\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects`, 'VisualFXSetting', 2), v(`${HKCU}\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize`, 'EnableTransparency', 0)],
   }),
+  regTweak({
+    id: 'game_bar_off', category: 'fps', level: 'safe', recommended: true,
+    title: { en: 'Disable the Xbox Game Bar overlay', fa: 'غیرفعال کردن اورلی Xbox Game Bar' },
+    desc: { en: 'No overlay hooks into your games and no startup panel — one less process drawing on top of every frame.', fa: 'هیچ اورلی‌ای به بازی قلاب نمی‌شود و پنل شروع نمی‌آید — یک پروسهٔ کمتر روی هر فریم.' },
+    values: [v(`${HKCU}\\Software\\Microsoft\\GameBar`, 'ShowStartupPanel', 0), v(`${HKCU}\\Software\\Microsoft\\GameBar`, 'UseNexusForGameBarEnabled', 0), v(`${HKCU}\\Software\\Microsoft\\GameBar`, 'GamePanelStartupTipIndex', 3)],
+  }),
+  regTweak({
+    id: 'telemetry_off', category: 'fps', level: 'safe', recommended: true,
+    title: { en: 'Stop diagnostics & telemetry uploads', fa: 'توقف ارسال دیاگنوستیک و تله‌متری' },
+    desc: { en: 'Windows stops collecting and uploading usage data in the background — less disk and network activity while you play.', fa: 'ویندوز دیگر در پس‌زمینه دادهٔ مصرف جمع و آپلود نمی‌کند — فعالیت دیسک و شبکهٔ کمتر هنگام بازی.' },
+    values: [v(`${HKLM}\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection`, 'AllowTelemetry', 0), v(`${HKLM}\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection`, 'AllowTelemetry', 0)],
+  }),
+  regTweak({
+    id: 'widgets_off', category: 'fps', level: 'safe', recommended: true,
+    title: { en: 'Turn off taskbar widgets / news feed', fa: 'خاموش کردن ویجت‌ها و فید خبری تسک‌بار' },
+    desc: { en: 'The Windows 11 widgets board and the Windows 10 news feed refresh in the background all day. Off = no Edge WebView processes idling behind your game.', fa: 'ویجت‌های ویندوز ۱۱ و فید خبری ویندوز ۱۰ تمام روز در پس‌زمینه رفرش می‌شوند. خاموش = هیچ پروسهٔ WebView پشت بازی بیکار نمی‌چرخد.' },
+    values: [v(`${HKLM}\\SOFTWARE\\Policies\\Microsoft\\Dsh`, 'AllowNewsAndInterests', 0), v(`${HKCU}\\Software\\Microsoft\\Windows\\CurrentVersion\\Feeds`, 'ShellFeedsTaskbarViewMode', 2)],
+  }),
+  regTweak({
+    id: 'tips_off', category: 'fps', level: 'safe', recommended: true,
+    title: { en: 'Disable tips, suggestions and Start ads', fa: 'غیرفعال کردن نکته‌ها، پیشنهادها و تبلیغ‌های Start' },
+    desc: { en: 'Content Delivery Manager stops fetching suggested apps and tips — fewer surprise downloads and notifications mid-game.', fa: 'Content Delivery Manager دیگر برنامهٔ پیشنهادی و نکته دانلود نمی‌کند — دانلود و نوتیفیکیشن ناگهانی کمتر وسط بازی.' },
+    values: [v(`${HKCU}\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager`, 'SubscribedContent-338389Enabled', 0), v(`${HKCU}\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager`, 'SoftLandingEnabled', 0), v(`${HKCU}\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager`, 'SystemPaneSuggestionsEnabled', 0), v(`${HKCU}\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager`, 'SilentInstalledAppsEnabled', 0)],
+  }),
+  regTweak({
+    id: 'win32_priority', category: 'fps', level: 'advanced', recommended: false,
+    title: { en: 'Longer CPU time slices for the foreground app', fa: 'زمان CPU طولانی‌تر برای برنامهٔ جلو' },
+    desc: { en: 'Win32PrioritySeparation 0x26: the active window (your game) gets long, fixed quanta with a foreground boost. Background downloads and launchers get less. Advanced — revert if a streaming/recording app stutters.', fa: 'Win32PrioritySeparation روی 0x26: پنجرهٔ فعال (بازی) سهم بلند و ثابت CPU با بوست جلو می‌گیرد. دانلود و لانچرهای پس‌زمینه کمتر. پیشرفته — اگر برنامهٔ استریم/ضبط لگ زد برگردانید.' },
+    values: [v(`${HKLM}\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl`, 'Win32PrioritySeparation', 38)],
+  }),
   {
     id: 'power_plan_high', category: 'fps', level: 'safe', recommended: true,
     title: { en: 'High performance power plan', fa: 'پاور پلن High performance' },

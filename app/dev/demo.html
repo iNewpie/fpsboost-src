@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'">
-<title>FPS Boost</title><link rel="stylesheet" href="styles.css"></head>
+
+<title>FPS Boost</title><link rel="stylesheet" href="../renderer/styles.css"></head>
 <body>
 <svg hidden xmlns="http://www.w3.org/2000/svg">
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></symbol>
@@ -18,11 +18,11 @@
   <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></symbol>
 </svg>
 
-<div class="tb" id="tb"><img src="logo.png" alt="" class="tb-mark"><b class="tb-name">FPS BOOST</b><span class="tb-user" id="tbuser" hidden><svg><use href="#i-user"/></svg><span></span></span></div>
+<div class="tb" id="tb"><img src="../renderer/logo.png" alt="" class="tb-mark"><b class="tb-name">FPS BOOST</b><span class="tb-user" id="tbuser" hidden><svg><use href="#i-user"/></svg><span></span></span></div>
 
 <div id="login" class="screen login" hidden>
   <div class="lcard">
-    <img src="logo.png" alt="" class="lmark"><h1>FPS Boost</h1><p class="muted" data-i18n="login_sub"></p>
+    <img src="../renderer/logo.png" alt="" class="lmark"><h1>FPS Boost</h1><p class="muted" data-i18n="login_sub"></p>
     <form id="loginform" autocomplete="on">
       <label><span data-i18n="username"></span><input id="lu" autocomplete="username" spellcheck="false" required maxlength="40"></label>
       <label><span data-i18n="password"></span><input id="lp" type="password" autocomplete="current-password" required maxlength="200"></label>
@@ -109,5 +109,5 @@
   </main>
 </div>
 <div class="toast" id="toast"></div>
-<script src="i18n.js"></script><script src="app.js"></script>
+<script src="demo-data.js"></script><script src="demo.js"></script><script src="../renderer/i18n.js"></script><script src="../renderer/app.js"></script>
 </body></html>

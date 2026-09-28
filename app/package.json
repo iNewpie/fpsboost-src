@@ -1,29 +1,30 @@
 {
   "name": "fpsboost",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Windows network + FPS optimizer with a subscription",
   "private": true,
-  "main": "src/main.js",
+  "main": "out/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "node scripts/build.js && electron .",
     "test": "node --test",
-    "dist": "electron-builder --win nsis"
+    "build": "node scripts/build.js",
+    "dist": "electron-builder --win nsis --x64",
+    "demo": "node dev/gen.js"
   },
   "devDependencies": {
     "bytenode": "^1.7.0",
     "electron": "^44.0.0",
     "electron-builder": "^26.0.0",
-    "esbuild": "^0.28.2"
+    "esbuild": "^0.25.0"
   },
   "build": {
     "appId": "ir.fpsboost.app",
     "productName": "FPS Boost",
     "files": [
-      "src/**",
-      "renderer/**",
-      "tweaks/**",
+      "out/**",
       "package.json",
-      "build/icon.png"
+      "build/icon.png",
+      "!node_modules/bytenode/{README.md,CHANGELOG.md,lib/cli.js,cli.js,.github}"
     ],
     "win": {
       "target": "nsis",
@@ -36,7 +37,29 @@
       "artifactName": "FPSBoost-Setup.exe",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
-      "shortcutName": "FPS Boost"
+      "shortcutName": "FPS Boost",
+      "differentialPackage": false,
+      "deleteAppDataOnUninstall": false
+    },
+    "asar": true,
+    "compression": "maximum",
+    "electronLanguages": [
+      "en-US",
+      "fa"
+    ],
+    "beforePack": "scripts/beforePack.js",
+    "afterPack": "scripts/afterPack.js",
+    "electronFuses": {
+      "runAsNode": false,
+      "enableCookieEncryption": true,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true,
+      "loadBrowserProcessSpecificV8Snapshot": false
     }
+  },
+  "dependencies": {
+    "bytenode": "^1.5.6"
   }
 }

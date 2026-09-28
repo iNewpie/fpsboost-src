@@ -10,7 +10,7 @@
      /download               → DOWNLOAD_URL (the latest installer, e.g. a GitHub release)
      /admin                  users, subscriptions, payments, stats — HTTP basic auth with ADMIN_USER / ADMIN_PASS
      /api/app/login          the desktop app: {username, password, machine} → {token, expires, ...}
-     /api/app/status         {token} → {active, expires, username}  (the app checks daily; offline grace is in the app)
+     /api/app/status         {token, machine, nonce} → {d, sig} signed Ed25519 (APP_SIGN_KEY) — d = {active, expires, username, now, nonce, machine}
 
    Vars (wrangler.toml): APP_NAME, PRICES (JSON months→Toman), DOWNLOAD_URL, MAX_MACHINES, ZARINPAL_SANDBOX
    Secrets: ADMIN_USER, ADMIN_PASS, ZARINPAL_MERCHANT, SESSION_SECRET
@@ -227,6 +227,20 @@ async function sessionCookie(env, id) {
   return `__Host-s=${tok}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly; Secure; SameSite=Lax`;
 }
 
+/* ---- app answers are signed (Ed25519, APP_SIGN_KEY = base64 PKCS8): { d: '<json>', sig } — the app verifies with the
+   embedded public key and checks that d echoes its nonce + machine id, so nothing but this worker can say "active" ---- */
+let appKeyPromise = null;
+function appKey(env) {
+  if (!env.APP_SIGN_KEY) return null;
+  return appKeyPromise || (appKeyPromise = crypto.subtle.importKey('pkcs8', Uint8Array.from(atob(env.APP_SIGN_KEY), c => c.charCodeAt(0)), { name: 'Ed25519' }, false, ['sign']));
+}
+async function appAnswer(env, b, payload) {
+  const key = await appKey(env); if (!key) return Response.json({ error: 'server not configured (APP_SIGN_KEY)' }, { status: 503 });
+  const d = JSON.stringify({ ...payload, now: Date.now(), nonce: String(b.nonce || '').slice(0, 64), machine: String(b.machine || '').slice(0, 64) });
+  const sig = b64e(new Uint8Array(await crypto.subtle.sign({ name: 'Ed25519' }, key, enc.encode(d))));
+  return Response.json({ d, sig });
+}
+
 /* ---- the desktop app ---- */
 async function appApi(request, env, p, ip) {
   if (request.method !== 'POST') return Response.json({ error: 'method' }, { status: 405 });
@@ -247,7 +261,7 @@ async function appApi(request, env, p, ip) {
     }
     await db(env, { op: 'user.update', id: u.id, machines: JSON.stringify(machines), last_seen: Date.now() });
     const token = await sign(env, `${u.id}.${Date.now() + APP_TOKEN_DAYS * 86400000}.${machine}`);
-    return Response.json({ token, username: u.username, active: isActive(u), expires: u.expires || 0, now: Date.now() });
+    return appAnswer(env, b, { token, username: u.username, active: isActive(u), expires: u.expires || 0 });
   }
   if (p === '/api/app/status') {
     const parts = await verifySigned(env, String(b.token || '')); if (!parts) return Response.json({ error: 'token expired, log in again' }, { status: 401 });
@@ -255,7 +269,7 @@ async function appApi(request, env, p, ip) {
     let machines = []; try { machines = JSON.parse(u.machines || '[]'); } catch (e) {}
     if (parts[2] && !machines.includes(parts[2])) return Response.json({ error: 'this device was removed from the account, log in again' }, { status: 403 });
     await db(env, { op: 'user.update', id: u.id, last_seen: Date.now() });
-    return Response.json({ username: u.username, active: isActive(u), expires: u.expires || 0, now: Date.now() });
+    return appAnswer(env, b, { username: u.username, active: isActive(u), expires: u.expires || 0 });
   }
   return Response.json({ error: 'not found' }, { status: 404 });
 }
