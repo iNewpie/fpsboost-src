@@ -11,6 +11,7 @@
      /admin                  users, subscriptions, payments, stats — HTTP basic auth with ADMIN_USER / ADMIN_PASS
      /api/app/login          the desktop app: {username, password, machine} → {token, expires, ...}
      /api/app/status         {token, machine, nonce} → {d, sig} signed Ed25519 (APP_SIGN_KEY) — d = {active, expires, username, now, nonce, machine}
+    /api/app/update         {version, machine, nonce} → signed {latest, url, sha256} from APP_LATEST / DOWNLOAD_URL / APP_SHA256 (self-update)
 
    Vars (wrangler.toml): APP_NAME, PRICES (JSON months→Toman), DOWNLOAD_URL, MAX_MACHINES, ZARINPAL_SANDBOX
    Secrets: ADMIN_USER, ADMIN_PASS, ZARINPAL_MERCHANT, SESSION_SECRET
@@ -262,6 +263,9 @@ async function appApi(request, env, p, ip) {
     await db(env, { op: 'user.update', id: u.id, machines: JSON.stringify(machines), last_seen: Date.now() });
     const token = await sign(env, `${u.id}.${Date.now() + APP_TOKEN_DAYS * 86400000}.${machine}`);
     return appAnswer(env, b, { token, username: u.username, active: isActive(u), expires: u.expires || 0 });
+  }
+  if (p === '/api/app/update') {   // no account needed: { version } → signed { latest, url, sha256 } so only this worker can point the app at an installer
+    return appAnswer(env, b, { latest: String(env.APP_LATEST || ''), url: String(env.DOWNLOAD_URL || ''), sha256: String(env.APP_SHA256 || '').toLowerCase(), current: String(b.version || '').slice(0, 20) });
   }
   if (p === '/api/app/status') {
     const parts = await verifySigned(env, String(b.token || '')); if (!parts) return Response.json({ error: 'token expired, log in again' }, { status: 401 });

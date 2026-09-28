@@ -8,4 +8,6 @@ contextBridge.exposeInMainWorld('api', {
   presets: call('presets:list'), applyPreset: call('presets:apply'),
   ping: call('tools:ping'), action: call('tools:action'), actions: call('tools:list'), systemInfo: call('system:info'),
   settings: call('settings:get'), saveSettings: call('settings:set'),
+  updateState: call('update:state'), updateCheck: call('update:check'), updateDownload: call('update:download'), updateInstall: call('update:install'),
+  onUpdate: (fn) => { ipcRenderer.on('update:state', (e, st) => fn(st)); },
 });

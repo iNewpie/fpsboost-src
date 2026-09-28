@@ -40,6 +40,11 @@ node dev/gen.js    # refresh dev/demo-data.js, then open dev/demo.html in a brow
   length-limited in the main process; the renderer runs sandboxed with a strict CSP.
 - Size: only the `en-US` + `fa` locales ship, the unused WebGPU compiler (`dxcompiler.dll`, `dxil.dll`) and the 20 MB
   Chromium licence page are dropped in `scripts/afterPack.js`, NSIS LZMA compression at the default level (level 9 needs ~700 MB RAM and gets OOM-killed on the 2 GB build box).
+- **Self-update**: the app asks `/api/app/update` (a signed answer, same key as the licence) for `APP_LATEST` /
+  `APP_SHA256` / `DOWNLOAD_URL`, downloads the installer in the background, refuses it unless its SHA-256 matches the
+  signed one, and runs it silently (`/S`) on "Update now" or when the app closes (setting: automatic updates).
+  Release flow: `npm run dist` → `bash scripts/release.sh` (hashes the exe, writes the two vars into
+  `server/wrangler.toml`, uploads GitHub release v<version>) → `bash server/deploy.sh` (only now do installed apps see it).
 - Still to do for a "no one can crack it" posture: **code-sign the exe** (an Authenticode certificate — without it a
   patched exe is indistinguishable from yours). Everything else that matters is server-side (see licensing).
 

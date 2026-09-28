@@ -7,7 +7,9 @@
   const demo = new URLSearchParams(location.search);
   let loggedIn = demo.get('login') !== '0', active = demo.get('active') !== '0';
   const applied = new Set(['game_dvr_off', 'game_mode_on', 'power_plan_high', 'mouse_accel_off', 'nagle_off', 'dns_fast', 'telemetry_off']);
-  const settings = { lang: demo.get('lang') || 'en', lite: false, lastPing: { at: Date.now() - 3600000, avg: [21, 34, 29] } };
+  const upd = { status: 'idle', current: '0.2.0', latest: '', progress: 0 }, updListeners = [];
+  const emit = (patch) => { Object.assign(upd, patch); const c = { ...upd }; updListeners.forEach(f => f(c)); return c; };
+  const settings = { lang: demo.get('lang') || 'en', lite: false, autoUpdate: true, lastPing: { at: Date.now() - 3600000, avg: [21, 34, 29] } };
   window.api = {
     info: () => ok({ name: 'FPS Boost', version: '0.2.0', serverUrl: 'https://fpsboost.ir', platform: 'win32', isAdmin: true, pingHosts: ['1.1.1.1', '8.8.8.8', 'google.com'], lite: false }),
     open: (u) => { window.open(u, '_blank'); return ok(); }, relaunch: () => ok(),
@@ -25,6 +27,10 @@
     actions: () => ok(DEMO_ACTIONS),
     systemInfo: () => ok({ os: 'Windows 10 Pro 22H2', cpu: 'Intel Core i5-4460 @ 3.20GHz', cores: 4, ramGb: 8, gpu: 'NVIDIA GeForce GTX 750 Ti' }),
     settings: () => ok({ ...settings }), saveSettings: (p) => { Object.assign(settings, p); return ok({ ...settings }); },
+    updateState: () => ok({ ...upd }), onUpdate: (fn) => { updListeners.push(fn); },
+    updateCheck: async () => { emit({ status: 'checking' }); await wait(700); return ok(emit({ status: 'available', latest: '0.3.0' })); },
+    updateDownload: async () => { emit({ status: 'downloading', latest: '0.3.0', progress: 0 }); for (let p = 5; p <= 100; p += 5) { await wait(120); emit({ progress: p }); } return ok(emit({ status: 'ready', progress: 100 })); },
+    updateInstall: async () => { emit({ status: 'installing' }); return ok(true); },
   };
   function status() { return loggedIn ? { loggedIn: true, username: 'hossein', active, expires: Date.now() + 23 * 86400000, checked: Date.now(), offline: false } : { loggedIn: false }; }
 })();

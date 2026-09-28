@@ -8,6 +8,7 @@ const TWEAKS = require('../tweaks/manifest');
 const PRESETS = require('../tweaks/presets');
 const Auth = require('./auth');
 const Settings = require('./settings');
+const { Updater } = require('./update');
 const tools = require('./tools');
 
 if (!app.requestSingleInstanceLock()) app.quit();
@@ -18,7 +19,7 @@ if (settings.get().lite) app.disableHardwareAcceleration();
 app.commandLine.appendSwitch('disable-features', 'SpareRendererForSitePerProcess');   // one renderer, no spare process
 nativeTheme.themeSource = 'dark';
 
-let win = null, engine = null, auth = null;
+let win = null, engine = null, auth = null, updater = null;
 const RENDERER = require('node:fs').existsSync(path.join(__dirname, 'renderer')) ? path.join(__dirname, 'renderer') : path.join(__dirname, '..', 'renderer');   // out/renderer in a build, ../renderer from source
 
 function createWindow() {
@@ -43,8 +44,14 @@ app.whenReady().then(() => {
   const runner = windowsRunner();
   engine = new Engine({ tweaks: TWEAKS, runner, backup: new FileBackup(path.join(app.getPath('userData'), 'backup.json')) });
   auth = new Auth({ serverUrl: CONFIG.SERVER_URL, storePath: path.join(app.getPath('userData'), 'auth.json'), runner, graceDays: CONFIG.OFFLINE_GRACE_DAYS, publicKey: CONFIG.SERVER_PUBKEY });
+  updater = new Updater({ auth, version: app.getVersion(), dir: path.join(app.getPath('userData'), 'update'), onState: (st) => { if (win && !win.isDestroyed()) win.webContents.send('update:state', st); } });
   createWindow();
+  // quiet check a few seconds after start; with autoUpdate on, the installer is fetched in the background and the
+  // page shows "update ready" — installed on "Update now" or when the app is closed
+  setTimeout(async () => { const st = await updater.check(); if (st.status === 'available' && settings.get().autoUpdate) updater.download(); }, 8000);
+  setInterval(() => { if (updater.state.status === 'idle' || updater.state.status === 'uptodate') updater.check(); }, 6 * 3600000);
 });
+app.on('before-quit', () => { if (updater && updater.state.status === 'ready' && settings.get().autoUpdate) { try { updater.install(); } catch (e) {} } });
 app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
 app.on('window-all-closed', () => app.quit());
 
@@ -85,5 +92,9 @@ ipcMain.handle('tools:ping', wrap(async (e, hosts) => {
 ipcMain.handle('tools:action', wrap(gated((id) => tools.action(engine.runner, str(id, 40)))));
 ipcMain.handle('tools:list', wrap(() => tools.actionList()));
 ipcMain.handle('system:info', wrap(() => tools.systemInfo(engine.runner, os)));
+ipcMain.handle('update:state', wrap(() => ({ ...updater.state })));
+ipcMain.handle('update:check', wrap(() => updater.check()));
+ipcMain.handle('update:download', wrap(() => updater.download()));
+ipcMain.handle('update:install', wrap(async () => { updater.install(); setTimeout(() => app.quit(), 300); return true; }));
 ipcMain.handle('settings:get', wrap(() => settings.get()));
 ipcMain.handle('settings:set', wrap((e, patch) => settings.set(patch && typeof patch === 'object' ? patch : {})));

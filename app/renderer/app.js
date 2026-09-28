@@ -1,6 +1,6 @@
 /* The page: login → app shell (Home / FPS / Network / Games / Tools / Settings). Everything goes through window.api. */
 const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
-let lang = 'en', info = {}, status = {}, tweaks = [], actions = [], presets = [], settings = {}, sys = null;
+let lang = 'en', info = {}, status = {}, tweaks = [], actions = [], presets = [], settings = {}, sys = null, upd = { status: 'idle' };
 const filters = { fps: 'all', network: 'all' }, logItems = [];
 const t = (k, vars = {}) => Object.entries(vars).reduce((s, [a, b]) => s.replace('{' + a + '}', b), (I18N[lang] || I18N.en)[k] || I18N.en[k] || k);
 const L = (obj) => (obj && (obj[lang] || obj.en)) || '';
@@ -109,7 +109,19 @@ function renderGames() {
 function renderActions() {
   $('#list-actions').innerHTML = actions.map(a => `<div class="tw" data-action="${a.id}"><div class="tw-ic"><svg><use href="#i-tool"/></svg></div><div><h4>${esc(L(a.title))}${a.reboot ? `<span class="tag reboot">${t('reboot')}</span>` : ''}</h4><p>${esc(L(a.desc))}</p></div><div class="tw-c"><span class="res" data-res="${a.id}"></span><button class="run" ${status.active ? '' : 'disabled'}>${t('run')}</button></div></div>`).join('');
 }
+function renderUpdate() {
+  const v = upd.latest || '', st = upd.status, b = $('#u-btn'), s = $('#u-status'), bn = $('#ubanner');
+  const text = { idle: t('upd_check'), checking: t('upd_checking'), uptodate: t('upd_uptodate'), available: t('upd_available', { v }), downloading: t('upd_downloading', { v, p: num(upd.progress || 0) }), ready: t('upd_ready', { v }), installing: t('upd_installing'), error: t('upd_error', { e: upd.error || '' }) }[st] || st;
+  s.textContent = st === 'idle' ? `v${info.version || ''}` : text;
+  b.textContent = st === 'available' || st === 'error' ? t('upd_download') : st === 'ready' ? t('upd_install') : t('upd_check');
+  b.className = st === 'ready' ? 'pri' : 'ghost'; b.disabled = st === 'checking' || st === 'downloading' || st === 'installing';
+  $('#u-prog').hidden = st !== 'downloading'; $('#u-prog i').style.width = (upd.progress || 0) + '%';
+  $('#s-auto').checked = settings.autoUpdate !== false;
+  bn.hidden = !(st === 'ready' || (st === 'available' && settings.autoUpdate === false));
+  $('#ubanner-t').textContent = t(st === 'ready' ? 'upd_banner' : 'upd_banner_avail', { v }); $('#ubanner-b').textContent = t(st === 'ready' ? 'upd_install' : 'upd_download');
+}
 function renderSettings() {
+  renderUpdate();
   $('#s-user').textContent = status.username || ''; $('#s-sub').textContent = status.active ? t('sub_active', { d: fmtDate(status.expires) }) : t('sub_none');
   $('#s-lite').checked = !!settings.lite; $('#s-lite-hint').hidden = !!settings.lite === !!info.lite;
   $('#version1').textContent = $('#version2').textContent = 'v' + (info.version || '');
@@ -133,10 +145,16 @@ document.addEventListener('change', async (e) => {
     await refresh(); return;
   }
   if (e.target.id === 's-lite') { settings = (await api.saveSettings({ lite: e.target.checked })).data || settings; renderSettings(); }
+  if (e.target.id === 's-auto') { settings = (await api.saveSettings({ autoUpdate: e.target.checked })).data || settings; renderUpdate(); if (e.target.checked && upd.status === 'available') api.updateDownload(); }
 });
 document.addEventListener('click', async (e) => {
   if (e.target.closest('#s-relaunch')) { e.preventDefault(); api.relaunch(); return; }
   const btn = e.target.closest('button'); if (!btn) return;
+  if (btn.id === 'u-btn' || btn.id === 'ubanner-b') {
+    const st = upd.status; btn.disabled = true;
+    try { if (st === 'ready') await call(api.updateInstall); else if (st === 'available' || st === 'error') await call(api.updateDownload); else await call(api.updateCheck); } catch (err) { toast(t('error') + ': ' + err.message); }
+    btn.disabled = false; return;
+  }
   if (btn.dataset.page) { go(btn.dataset.page); return; }
   if (btn.dataset.f) { const cat = btn.closest('.chips').dataset.filterFor; filters[cat] = btn.dataset.f; renderLists(); return; }
   const row = btn.closest('.tw');
@@ -169,6 +187,8 @@ document.addEventListener('click', async (e) => {
 /* ---- start ---- */
 (async () => {
   info = (await api.info()).data || {}; settings = (await api.settings()).data || {};
+  if (api.onUpdate) api.onUpdate((st) => { upd = st; if (!$('#main').hidden) renderUpdate(); });
+  if (api.updateState) upd = (await api.updateState()).data || upd;
   $('#pinghosts').value = (info.pingHosts || []).join(' ');
   $('#version1').textContent = $('#version2').textContent = 'v' + (info.version || '');
   actions = (await api.actions()).data || []; presets = (await api.presets()).data || [];

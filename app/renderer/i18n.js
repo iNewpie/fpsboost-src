@@ -18,6 +18,7 @@ const I18N = {
     done: 'Done', applied_n: '{n} applied', reverted_n: '{n} restored', error: 'Error', restore_point_made: 'restore point created', restore_point_skip: 'restore point from today reused',
     log_apply: 'Applied: {t}', log_revert: 'Restored: {t}', log_preset: '{g} optimized ({n} tweaks)', log_tool: '{t}: {r}', log_boost: 'Boost: {n} tweaks applied', log_restore: 'Restore: {n} tweaks put back',
     win: 'Windows 10 / 11 · 64-bit',
+    upd_title: 'Updates', upd_sub: 'New versions install over this one — no download page, no uninstall.', upd_auto: 'Download updates automatically and install when the app closes', upd_check: 'Check for updates', upd_checking: 'Checking…', upd_uptodate: 'You have the latest version', upd_available: 'Version {v} is available', upd_download: 'Download update', upd_downloading: 'Downloading {v}… {p}%', upd_ready: 'Version {v} is downloaded and ready', upd_install: 'Update now', upd_installing: 'Installing — the app will restart', upd_error: 'Update failed: {e}', upd_banner: 'FPS Boost {v} is ready to install.', upd_banner_avail: 'FPS Boost {v} is available.',
   },
   fa: {
     lang: 'English', login_sub: 'با حساب fpsboost.ir وارد شوید', username: 'نام کاربری', password: 'رمز عبور', login: 'ورود', signing_in: 'در حال ورود…', no_account: 'ساخت حساب', forgot: 'رمز را فراموش کرده‌اید؟', logout: 'خروج',
@@ -37,5 +38,6 @@ const I18N = {
     done: 'انجام شد', applied_n: '{n} مورد اعمال شد', reverted_n: '{n} مورد برگشت', error: 'خطا', restore_point_made: 'نقطهٔ بازیابی ساخته شد', restore_point_skip: 'نقطهٔ بازیابی امروز از قبل هست',
     log_apply: 'اعمال شد: {t}', log_revert: 'برگشت: {t}', log_preset: '{g} بهینه شد ({n} تنظیم)', log_tool: '{t}: {r}', log_boost: 'بوست: {n} تنظیم اعمال شد', log_restore: 'بازگشت: {n} تنظیم برگشت',
     win: 'ویندوز ۱۰ / ۱۱ · ۶۴ بیت',
+    upd_title: 'به‌روزرسانی', upd_sub: 'نسخه‌های جدید روی همین نسخه نصب می‌شوند — بدون صفحهٔ دانلود، بدون حذف برنامه.', upd_auto: 'دانلود خودکار به‌روزرسانی و نصب هنگام بستن برنامه', upd_check: 'بررسی به‌روزرسانی', upd_checking: 'در حال بررسی…', upd_uptodate: 'آخرین نسخه را دارید', upd_available: 'نسخهٔ {v} آماده است', upd_download: 'دانلود به‌روزرسانی', upd_downloading: 'در حال دانلود {v}… {p}٪', upd_ready: 'نسخهٔ {v} دانلود شده و آمادهٔ نصب است', upd_install: 'همین حالا به‌روز کن', upd_installing: 'در حال نصب — برنامه دوباره اجرا می‌شود', upd_error: 'به‌روزرسانی ناموفق: {e}', upd_banner: 'FPS Boost {v} آمادهٔ نصب است.', upd_banner_avail: 'FPS Boost {v} منتشر شده است.',
   },
 };

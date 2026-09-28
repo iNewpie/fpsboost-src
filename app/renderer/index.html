@@ -50,6 +50,7 @@
 
   <main class="content">
     <div id="banner" class="banner" hidden><svg><use href="#i-warn"/></svg><span></span></div>
+    <div id="ubanner" class="banner info" hidden><svg><use href="#i-refresh"/></svg><span id="ubanner-t"></span><button class="pri sm" id="ubanner-b"></button></div>
 
     <section data-page="home">
       <div class="ph"><div><h2 id="hi"></h2><p class="muted" id="sysline" data-i18n="home_sub"></p></div></div>
@@ -96,6 +97,11 @@
       <div class="card set">
         <div class="srow"><div><h4 data-i18n="s_language"></h4><p class="muted" data-i18n="s_language_sub"></p></div><select id="s-lang"><option value="en">English</option><option value="fa">فارسی</option></select></div>
         <div class="srow"><div><h4 data-i18n="s_lite"></h4><p class="muted" data-i18n="s_lite_sub"></p><p class="muted hint" id="s-lite-hint" hidden><span data-i18n="s_restart_hint"></span> <a href="#" id="s-relaunch" data-i18n="s_restart_now"></a></p></div><label class="sw"><input type="checkbox" id="s-lite"><i></i></label></div>
+      </div>
+      <h3 class="sh" data-i18n="upd_title"></h3>
+      <div class="card set">
+        <div class="srow"><div><h4 id="u-status"></h4><p class="muted" data-i18n="upd_sub"></p><div class="prog" id="u-prog" hidden><i></i></div></div><button class="ghost" id="u-btn"></button></div>
+        <div class="srow"><div><h4 data-i18n="upd_auto"></h4></div><label class="sw"><input type="checkbox" id="s-auto"><i></i></label></div>
       </div>
       <h3 class="sh" data-i18n="s_account"></h3>
       <div class="card set">
