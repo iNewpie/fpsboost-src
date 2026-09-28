@@ -39,7 +39,13 @@
       "uninstallerIcon": "build/icon.ico",
       "shortcutName": "FPS Boost",
       "differentialPackage": false,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "include": "build/installer.nsh",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/uninstallerSidebar.bmp",
+      "installerHeader": "build/installerHeader.bmp",
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true
     },
     "asar": true,
     "compression": "normal",
