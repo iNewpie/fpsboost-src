@@ -39,7 +39,7 @@ node dev/gen.js    # refresh dev/demo-data.js, then open dev/demo.html in a brow
 - DevTools are compiled out of packaged builds; navigation and `window.open` are blocked; every renderer input is
   length-limited in the main process; the renderer runs sandboxed with a strict CSP.
 - Size: only the `en-US` + `fa` locales ship, the unused WebGPU compiler (`dxcompiler.dll`, `dxil.dll`) and the 20 MB
-  Chromium licence page are dropped in `scripts/afterPack.js`, NSIS uses maximum LZMA compression.
+  Chromium licence page are dropped in `scripts/afterPack.js`, NSIS LZMA compression at the default level (level 9 needs ~700 MB RAM and gets OOM-killed on the 2 GB build box).
 - Still to do for a "no one can crack it" posture: **code-sign the exe** (an Authenticode certificate — without it a
   patched exe is indistinguishable from yours). Everything else that matters is server-side (see licensing).
 
