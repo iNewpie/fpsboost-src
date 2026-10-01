@@ -28,7 +28,7 @@ import { ICON_SVG, ICON_IMG } from './icons.js';
 import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, prices } from './pages.js';
 import { adminAuthPage, adminDash } from './admin.js';
 
-const BUILD = '2026-10-01a';
+const BUILD = '2026-10-01b';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
