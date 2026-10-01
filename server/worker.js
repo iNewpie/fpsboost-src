@@ -8,13 +8,14 @@
      /pay/start (POST plan)  → Zarinpal request → redirect to the gateway
      /pay/callback           Zarinpal returns here (?Authority=&Status=OK|NOK) → verify → extend the subscription
      /download               → DOWNLOAD_URL (the latest installer, e.g. a GitHub release)
-     /admin                  users, subscriptions, payments, stats — HTTP basic auth with ADMIN_USER / ADMIN_PASS
+     /admin                  owner console (admin.js): users, subscriptions, payments, stats — ADMIN_USER / ADMIN_PASS + TOTP 2FA,
+                             enrolled once on the first sign-in (secret kept in the DO); ADMIN_2FA_RESET="1" re-opens the enrolment
      /api/app/login          the desktop app: {username, password, machine} → {token, expires, ...}
      /api/app/status         {token, machine, nonce} → {d, sig} signed Ed25519 (APP_SIGN_KEY) — d = {active, expires, username, now, nonce, machine}
     /api/app/update         {version, machine, nonce} → signed {latest, url, sha256} from APP_LATEST / DOWNLOAD_URL / APP_SHA256 (self-update)
 
    Vars (wrangler.toml): APP_NAME, PRICES (JSON months→Toman), DOWNLOAD_URL, MAX_MACHINES, ZARINPAL_SANDBOX
-   Secrets: ADMIN_USER, ADMIN_PASS, ZARINPAL_MERCHANT, SESSION_SECRET
+   Secrets: ADMIN_USER, ADMIN_PASS, ZARINPAL_MERCHANT, SESSION_SECRET (+ optional var ADMIN_2FA_RESET="1" while re-enrolling a lost authenticator)
    Passwords: PBKDF2-SHA256 (100k) + per-user salt. Sessions/tokens: HMAC-SHA256 over "id.exp[.machine]".
    Hardening: strict CSP with a per-request nonce (no inline scripts/styles without it, no framing, forms only post here or to
    Zarinpal), HSTS, nosniff, referrer + permissions policies; every website POST must be same-origin (Sec-Fetch-Site / Origin)
@@ -24,9 +25,10 @@
 import { DurableObject } from 'cloudflare:workers';
 import { ASSETS, MAP_SVG } from './assets.js';
 import { ICON_SVG, ICON_IMG } from './icons.js';
-import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, adminPage, prices } from './pages.js';
+import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, prices } from './pages.js';
+import { adminAuthPage, adminDash } from './admin.js';
 
-const BUILD = '2026-09-27j';
+const BUILD = '2026-10-01a';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
@@ -48,6 +50,7 @@ export class Store extends DurableObject {
       authority TEXT PRIMARY KEY, user_id TEXT NOT NULL, months INTEGER NOT NULL, amount INTEGER NOT NULL, status TEXT NOT NULL,
       ref_id TEXT, card_pan TEXT, created INTEGER NOT NULL, verified INTEGER)`);
     this.sql.exec(`CREATE INDEX IF NOT EXISTS payments_user ON payments(user_id, created)`);
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS kv(k TEXT PRIMARY KEY, v TEXT)`);
   }
   async fetch(request) {
     const b = await request.json(), now = Date.now();
@@ -88,6 +91,8 @@ export class Store extends DurableObject {
       }
       case 'payment.listByUser': return Response.json(this.sql.exec('SELECT * FROM payments WHERE user_id = ? ORDER BY created DESC LIMIT 50', b.user_id).toArray());
       case 'payment.listAll': return Response.json(this.sql.exec('SELECT p.*, u.username FROM payments p LEFT JOIN users u ON u.id = p.user_id ORDER BY p.created DESC LIMIT 300').toArray());
+      case 'kv.get': return Response.json({ v: (one('SELECT v FROM kv WHERE k = ?', b.k) || {}).v ?? null });
+      case 'kv.set': { this.sql.exec('INSERT INTO kv(k, v) VALUES(?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v', b.k, b.v); return Response.json({ ok: true }); }
       case 'stats': {
         const users = one('SELECT COUNT(*) n FROM users').n, active = one('SELECT COUNT(*) n FROM users WHERE expires > ? AND disabled = 0', now).n;
         const paid = one('SELECT COUNT(*) n, COALESCE(SUM(amount), 0) sum FROM payments WHERE status = ?', 'paid');
@@ -313,23 +318,100 @@ async function payCallback(ctx) {
   return html(payPage(ctx, false, pay), 200);
 }
 
-/* ---- admin (basic auth) ---- */
+/* ---- admin: owner password → TOTP (RFC 6238, SHA-1, 30 s, 6 digits); first sign-in enrols the authenticator once ----
+   kv: admin.totp = base32 secret, admin.totp_last = last accepted time-step (no replay), admin.gen = bumped on enrolment
+   (old admin sessions die). Cookies: __Host-ap = password passed (10 min), __Host-a = console session (12 h); both HMAC-signed. */
+const ADMIN_HOURS = 12;
+const kvGet = async (env, k) => (await db(env, { op: 'kv.get', k })).v;
+const kvSet = (env, k, v) => db(env, { op: 'kv.set', k, v: String(v) });
+const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32e(bytes) { let bits = 0, v = 0, out = ''; for (const x of bytes) { v = (v << 8) | x; bits += 8; while (bits >= 5) { out += B32[(v >>> (bits - 5)) & 31]; bits -= 5; } } if (bits) out += B32[(v << (5 - bits)) & 31]; return out; }
+function b32d(s) { let bits = 0, v = 0; const out = []; for (const ch of s) { const i = B32.indexOf(ch); if (i < 0) continue; v = (v << 5) | i; bits += 5; if (bits >= 8) { out.push((v >>> (bits - 8)) & 255); bits -= 8; } } return new Uint8Array(out); }
+async function hotp(secret, step) {
+  const key = await crypto.subtle.importKey('raw', b32d(secret), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+  const msg = new Uint8Array(8); let x = step; for (let i = 7; i >= 0; i--) { msg[i] = x & 255; x = Math.floor(x / 256); }
+  const h = new Uint8Array(await crypto.subtle.sign('HMAC', key, msg)), o = h[19] & 15;
+  return String((((h[o] & 127) << 24) | (h[o + 1] << 16) | (h[o + 2] << 8) | h[o + 3]) % 1000000).padStart(6, '0');
+}
+// the step that matches (±1 step of clock drift), or 0
+async function totpStep(secret, code) {
+  if (!/^\d{6}$/.test(code)) return 0;
+  const now = Math.floor(Date.now() / 30000);
+  for (const s of [now, now - 1, now + 1]) if (timingSafeEqual(await hotp(secret, s), code)) return s;
+  return 0;
+}
+async function sha(s) { return b64e(new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(s)))); }
+async function ownerOk(env, user, pass) {   // compares digests so lengths leak nothing; the username ignores case
+  if (!env.ADMIN_USER || !env.ADMIN_PASS) return false;
+  const [a, b, c, d] = await Promise.all([sha(user.toLowerCase()), sha(env.ADMIN_USER.toLowerCase()), sha(pass), sha(env.ADMIN_PASS)]);
+  return timingSafeEqual(a, b) & timingSafeEqual(c, d) ? true : false;
+}
+const cookieOf = (request, name) => { const m = (request.headers.get('cookie') || '').match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)')); return m ? m[1] : ''; };
+const setCookie = (name, v, secs) => `${name}=${v}; Path=/; Max-Age=${secs}; HttpOnly; Secure; SameSite=Strict`;
+async function adminSession(request, env) {
+  const parts = await verifySigned(env, cookieOf(request, '__Host-a'));
+  return !!parts && parts[0] === 'adm' && parts[2] === String(await kvGet(env, 'admin.gen') || 0);
+}
+async function passedPassword(request, env) { const parts = await verifySigned(env, cookieOf(request, '__Host-ap')); return !!parts && parts[0] === 'admpw'; }
+const enrolled = async (env) => env.ADMIN_2FA_RESET === '1' ? null : kvGet(env, 'admin.totp');
+async function startSession(env) {
+  const gen = String(await kvGet(env, 'admin.gen') || 0);
+  const h = new Headers({ location: '/admin' });
+  h.append('set-cookie', setCookie('__Host-a', await sign(env, `adm.${Date.now() + ADMIN_HOURS * 3600000}.${gen}`), ADMIN_HOURS * 3600));
+  h.append('set-cookie', setCookie('__Host-ap', '', 0));
+  return new Response(null, { status: 302, headers: h });
+}
+
 async function admin(request, ctx) {
-  const { env, url } = ctx;
-  const a = request.headers.get('authorization') || '', want = 'Basic ' + btoa(`${env.ADMIN_USER || ''}:${env.ADMIN_PASS || ''}`);
-  if (!env.ADMIN_USER || !env.ADMIN_PASS || !timingSafeEqual(a, want)) return new Response('admin', { status: 401, headers: { 'www-authenticate': 'Basic realm="admin"' } });
-  if (request.method === 'POST') {
-    const f = await readForm(request); const id = f('id'), act = f('act');
-    if (act === 'extend') await db(env, { op: 'user.extend', id, months: Number(f('months')) || 1 });
+  const { env, url, ip } = ctx, p = url.pathname, post = request.method === 'POST';
+  const page = (step, opts, status = 200) => html(adminAuthPage(ctx, step, opts), status);
+  if (p === '/admin/logout') { const h = new Headers({ location: '/admin/login' }); h.append('set-cookie', setCookie('__Host-a', '', 0)); h.append('set-cookie', setCookie('__Host-ap', '', 0)); return new Response(null, { status: 302, headers: h }); }
+  if (p === '/admin/login') {
+    if (!post) return (await adminSession(request, env)) ? redirect('/admin') : page('login');
+    const f = await readForm(request), username = f('username').slice(0, 64);
+    if (braked(ip)) return page('login', { error: 'Too many attempts — wait 10 minutes.', username }, 429);
+    if (!await ownerOk(env, username, f('password').slice(0, 200))) { failed(ip); return page('login', { error: 'Wrong username or password.', username }, 401); }
+    return redirect(await enrolled(env) ? '/admin/2fa' : '/admin/setup', setCookie('__Host-ap', await sign(env, `admpw.${Date.now() + 600000}`), 600));
+  }
+  if (p === '/admin/setup') {   // one time: only while no authenticator is enrolled
+    if (!await passedPassword(request, env)) return redirect('/admin/login');
+    if (await enrolled(env)) return redirect('/admin/2fa');
+    let secret = await kvGet(env, 'admin.totp_pending');
+    if (!secret) { secret = b32e(crypto.getRandomValues(new Uint8Array(20))); await kvSet(env, 'admin.totp_pending', secret); }
+    const uri = `otpauth://totp/${encodeURIComponent('FPS Boost:' + env.ADMIN_USER)}?secret=${secret}&issuer=${encodeURIComponent('FPS Boost')}&algorithm=SHA1&digits=6&period=30`;
+    if (!post) return page('setup', { secret, uri });
+    if (braked(ip)) return page('setup', { secret, uri, error: 'Too many attempts — wait 10 minutes.' }, 429);
+    const step = await totpStep(secret, (await readForm(request))('code'));
+    if (!step) { failed(ip); return page('setup', { secret, uri, error: 'That code did not match — check the time on your phone and try the next one.' }, 401); }
+    await kvSet(env, 'admin.totp', secret); await kvSet(env, 'admin.totp_pending', ''); await kvSet(env, 'admin.totp_last', step);
+    await kvSet(env, 'admin.gen', Number(await kvGet(env, 'admin.gen') || 0) + 1);
+    return startSession(env);
+  }
+  if (p === '/admin/2fa') {
+    if (!await passedPassword(request, env)) return redirect('/admin/login');
+    const secret = await enrolled(env); if (!secret) return redirect('/admin/setup');
+    if (!post) return page('code');
+    if (braked(ip)) return page('code', { error: 'Too many attempts — wait 10 minutes.' }, 429);
+    const step = await totpStep(secret, (await readForm(request))('code'));
+    if (!step || step <= Number(await kvGet(env, 'admin.totp_last') || 0)) { failed(ip); return page('code', { error: 'Wrong or already used code.' }, 401); }
+    await kvSet(env, 'admin.totp_last', step);
+    return startSession(env);
+  }
+  if (!await adminSession(request, env)) return redirect('/admin/login');
+  if (p !== '/admin') return redirect('/admin');
+  const q = url.searchParams.get('q') || '';
+  if (post) {
+    const f = await readForm(request); const id = f('id'); let act = f('act');
+    if (act === 'extend') await db(env, { op: 'user.extend', id, months: Math.min(Math.max(Number(f('months')) || 1, 1), 36) });
     else if (act === 'expire') await db(env, { op: 'user.update', id, expires: Date.now() });
     else if (act === 'toggle') { const u = await db(env, { op: 'user.byId', id }); if (u) await db(env, { op: 'user.update', id, disabled: u.disabled ? 0 : 1 }); }
     else if (act === 'devices') await db(env, { op: 'user.update', id, machines: '[]' });
-    else if (act === 'password') { const { hash, salt } = await hashPassword(f('password')); if (f('password').length >= 8) await db(env, { op: 'user.update', id, pass_hash: hash, salt }); }
+    else if (act === 'password') { const pw = f('password'); if (pw.length >= 8 && pw.length <= 200) { const { hash, salt } = await hashPassword(pw); await db(env, { op: 'user.update', id, pass_hash: hash, salt }); } else act = 'short'; }
     else if (act === 'note') await db(env, { op: 'user.update', id, note: f('note').slice(0, 200) });
     else if (act === 'delete') await db(env, { op: 'user.delete', id });
-    return redirect('/admin' + (url.search || ''));
+    const sp = new URLSearchParams(); if (q) sp.set('q', q); sp.set('ok', act);
+    return redirect('/admin?' + sp + '#users');
   }
-  const q = url.searchParams.get('q') || '';
   const [users, stats, payments] = await Promise.all([db(env, { op: 'user.list', q }), db(env, { op: 'stats' }), db(env, { op: 'payment.listAll' })]);
-  return html(adminPage(ctx, users, stats, payments, q));
+  return html(adminDash(ctx, { users, stats, payments, q, owner: env.ADMIN_USER, flash: url.searchParams.get('ok') }));
 }

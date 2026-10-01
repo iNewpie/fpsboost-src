@@ -19,7 +19,7 @@ export const STR = {
     tok1: '+FPS', tok2: '−ms ping', tok3: 'Game DVR off', tok4: 'DNS 1.1.1.1', tok5: 'Nagle off', tok6: 'Ultimate power plan', tok7: '1% lows ↑', tok8: 'GPU scheduling',
     st1: 'tweaks', st2: 'modules', st3: 'game presets', st4: 'undo — every change is backed up',
     marquee: ['PC optimization', 'Network optimization', 'Windows optimization', 'Game presets'],
-    feat_pill: 'Features', feat_h: 'Four modules. One button.', feat_sub: 'Pick a module or press “Apply recommended” and let the app do the safe set for you. Everything can be reverted from the same screen.',
+    feat_pill: 'Features', feat_h: 'Four modules. Endless options.', feat_sub: 'Pick a module and apply the settings for your game — and remember, there is always a way back to how it was.',
     m1: 'PC optimization', m1d: 'Ultimate power plan, GPU hardware scheduling, fullscreen optimizations, mouse acceleration, background apps, visual effects.',
     m2: 'Network optimization', m2d: 'Nagle off, TCP tuning, network throttling index, QoS reserve, fast DNS (Cloudflare / Shecan / 403 / Electro), flush & Winsock reset.',
     m3: 'Windows optimization', m3d: 'Game DVR & Game Bar, Xbox services, telemetry, startup apps, temp files, notifications and the other things Windows runs while you play.',
@@ -64,11 +64,11 @@ export const STR = {
     tok1: '+FPS', tok2: 'پینگ کمتر', tok3: 'Game DVR خاموش', tok4: 'DNS 1.1.1.1', tok5: 'Nagle خاموش', tok6: 'پاور پلن Ultimate', tok7: '1% lows ↑', tok8: 'زمان‌بندی GPU',
     st1: 'تنظیم', st2: 'ماژول', st3: 'پریست بازی', st4: 'بازگشت — از هر تغییر پشتیبان گرفته می‌شود',
     marquee: ['بهینه‌سازی سیستم', 'بهینه‌سازی شبکه', 'بهینه‌سازی ویندوز', 'پریست بازی‌ها'],
-    feat_pill: 'امکانات', feat_h: 'چهار ماژول. یک دکمه.', feat_sub: 'یک ماژول را انتخاب کنید یا «اعمال پیشنهادی» را بزنید تا برنامه مجموعهٔ امن را برایتان اعمال کند. همه‌چیز از همان صفحه قابل بازگشت است.',
-    m1: 'بهینه‌سازی سیستم', m1d: 'پاور پلن Ultimate، زمان‌بندی سخت‌افزاری GPU، بهینه‌سازی فول‌اسکرین، شتاب ماوس، برنامه‌های پس‌زمینه، جلوه‌های بصری.',
-    m2: 'بهینه‌سازی شبکه', m2d: 'خاموش کردن Nagle، تنظیم TCP، محدودیت شبکه، رزرو QoS، DNS سریع (کلادفلر / شکن / ۴۰۳ / الکترو)، فلاش و ریست Winsock.',
-    m3: 'بهینه‌سازی ویندوز', m3d: 'Game DVR و Game Bar، سرویس‌های Xbox، تله‌متری، برنامه‌های استارتاپ، فایل‌های موقت، نوتیفیکیشن‌ها و بقیهٔ چیزهایی که ویندوز حین بازی اجرا می‌کند.',
-    m4: 'بهینه‌سازی بازی‌ها', m4d: 'پریست مخصوص هر بازی — گزینه‌های اجرا، مقادیر کانفیگ و اولویت پردازشی مناسب همان بازی. ماینکرفت، ولورانت، CS2 و بیشتر.',
+    feat_pill: 'امکانات', feat_h: 'چهار ماژول. هزار آپشن.', feat_sub: 'یک ماژول رو انتخاب کنید و تنظیمات بازی رو اعمال کنید — توجه کنید که گزینهٔ بازگشت همیشه برای شما گذاشته می‌شود.',
+    m1: 'تنظیمات داخلی سیستم', m1d: 'آپتیمایز کارت گرافیک، بهینه‌سازی فوکس مانیتور، تنظیم برنامه‌های پس‌زمینه، آپتیمایز شتاب ماوس و کیبورد، بالا بردن کیفیت پس‌زمینه.',
+    m2: 'آپتیمایز اینترنت', m2d: 'یک سری تنظیمات برای آپتیمایز اینترنت و بهینه‌سازی پینگ، تنظیم درست پروتکل‌ها از جمله TCP، تنظیمات سخت‌افزاری اینترنت در سیستم‌عامل.',
+    m3: 'تنظیمات ویندوز', m3d: 'تنظیمات بک‌گراند برای FPS بیشتر، تنظیم برنامه‌های استارتاپ، پاکسازی فایل‌های حجیم و مخرب و باقی تنظیمات برای بهتر شدن تجربهٔ بازی.',
+    m4: 'آپتیمایز بازی', m4d: 'تنظیمات پاور و بازی، تنظیمات گرافیکی مخصوص هر بازی، تنظیمات رجیستری که برای سیستم مخرب نیستند، فوکس گرافیکی روی یک بازی مشخص.',
     games_pill: 'پریست بازی‌ها', games_h: 'برای هر بازی یک پریست.', games_sub: 'هر پریست تنظیماتی را که برای همان بازی مهم است یکجا جمع می‌کند. قبل از بازی اعمال کنید، بعدش برگردانید.',
     g_mc: 'فلگ‌های JVM، تخصیص رم، اولویت', g_val: 'Raw input، اولویت، شبکه', g_cs2: 'گزینه‌های اجرا، اولویت', g_fn: 'اولویت، Game Mode', g_apex: 'گزینه‌های اجرا، شبکه', g_wz: 'اولویت، کش شیدر', g_rbx: 'اولویت، برنامه‌های پس‌زمینه', g_gta: 'اولویت، Game Mode', g_lol: 'اولویت، شبکه', g_rivals: 'اولویت، کش شیدر', g_lunar: 'فلگ‌های JVM، تخصیص رم', g_blc: 'فلگ‌های JVM، رم، اولویت', g_cf: 'رم مادپک، فلگ‌های JVM', g_modrinth: 'رم مادپک، فلگ‌های JVM', f_badges: 'نمادها', badge_enamad: 'اینماد', badge_zarinpal: 'زرین‌پال', badge_soon: 'به‌زودی', made_by: 'ساخته‌شده توسط {name}', made_name: 'حسین دانش',
     how_pill: 'نحوهٔ کار', how_h: 'در سه قدم آماده است.', hw_user: 'نام کاربری', hw_plan: 'پلن', hw_done: 'حساب آماده است', hw_downloading: 'در حال دانلود', hw_in: 'وارد شدید', hw_apply: 'اعمال پیشنهادی', how_sub: 'لازم نیست تنظیمات را یاد بگیرید. برنامه کار را انجام می‌دهد و راه برگشت را نگه می‌دارد.',
@@ -766,10 +766,10 @@ export function landing(ctx) {
   const mq2 = t(lang, 'marquee2'); const track2 = [...mq2, ...mq2, ...mq2, ...mq2].map(w => `<span>${esc(w)}</span><em>★</em>`).join('');
   const discs = [['-520px', '520px', '30deg', '0s'], ['-300px', '620px', '55deg', '-3s'], ['-80px', '680px', '70deg', '-6s'], ['160px', '640px', '50deg', '-9s'], ['400px', '560px', '35deg', '-12s']].map(([x, s, a, d]) => `<i class="disc" style="--x:${x};--s:${s};--a:${a};--d:${d}"></i>`).join('');
   const arts = {
-    m1: `<div class="art"><span class="lbl" style="top:14px">FPS</span><div class="bar" style="top:34px;--w:52%"><i></i></div><span class="lbl" style="top:58px">1% low</span><div class="bar" style="top:78px;--w:84%"><i></i></div></div>`,
-    m2: `<div class="art"><div class="grid"></div><div class="ping"></div><span class="lbl" style="top:84px;left:50%;transform:translateX(-50%);color:var(--accent3)">18 ms</span></div>`,
+    m1: `<div class="art"><span class="lbl" style="top:14px">FPS</span><div class="bar" style="top:34px;--w:52%"><i></i></div><span class="lbl" style="top:58px"><bdi dir="ltr">1% low</bdi></span><div class="bar" style="top:78px;--w:84%"><i></i></div></div>`,
+    m2: `<div class="art"><div class="grid"></div><div class="ping"></div><span class="lbl" style="top:84px;inset-inline:0;text-align:center;color:var(--accent3)"><bdi dir="ltr">18 ms</bdi></span></div>`,
     m3: `<div class="art"><div class="win"><i></i><i></i><i></i></div></div>`,
-    m4: `<div class="art"><div class="keys"><i>-XX:+UseG1GC</i><i>-high</i><i>raw input</i><i>-novid</i><i>priority: high</i></div></div>`,
+    m4: `<div class="art"><div class="keys"><i dir="ltr">-XX:+UseG1GC</i><i dir="ltr">-high</i><i dir="ltr">raw input</i><i dir="ltr">-novid</i><i dir="ltr">priority: high</i></div></div>`,
   };
   const mods = [['m1', 'pc'], ['m2', 'net'], ['m3', 'win'], ['m4', 'game']].map(([k, ic], i) => `<div class="card mod rv ${i % 2 ? 'r' : 'l'} d${i % 4}">${arts[k]}<div class="ic">${ICONS[ic]}</div><h3>${t(lang, k)}</h3><p>${t(lang, k + 'd')}</p></div>`).join('');
   const gcards = GAMES.map(([ab, name, k, g1, g2]) => `<div class="gcard" style="--g1:${g1};--g2:${g2}"><span class="gw">${ab}</span><i class="circ"></i><span class="gi"><img src="${iconUrl(k.slice(2))}" alt="" draggable="false"></span><b>${name}</b><span>${t(lang, k)}</span><i class="shn"></i></div>`).join('');
@@ -875,17 +875,4 @@ export function payPage(ctx, ok, pay) {
 }
 export function messagePage(ctx, title, text) {
   return layout(ctx, title, `<div class="wrap"><section class="card auth"><h2>${esc(title)}</h2>${text ? `<p class="muted">${esc(text)}</p>` : ''}<p><a class="btn ghost" href="/">${t(ctx.lang, 'home')}</a></p></section></div>`);
-}
-export function adminPage(ctx, users, stats, payments, q) {
-  const now = Date.now();
-  const row = (u) => { let m = []; try { m = JSON.parse(u.machines || '[]'); } catch (e) {}
-    const st = u.disabled ? '<span class="st off">disabled</span>' : (u.expires || 0) > now ? `<span class="st on">until ${new Date(u.expires).toISOString().slice(0, 10)}</span>` : '<span class="st warn">no sub</span>';
-    const f = (act, label, extra = '', cls = 'ghost sm') => `<form method="post"><input type="hidden" name="id" value="${u.id}"><input type="hidden" name="act" value="${act}">${extra}<button class="${cls}">${label}</button></form>`;
-    return `<tr><td><b>${esc(u.username)}</b><div class="muted">${esc(u.note || '')}</div></td><td>${st}</td><td>${u.last_seen ? new Date(u.last_seen).toISOString().slice(0, 16).replace('T', ' ') : 'never'}</td><td>${m.length}</td><td>${new Date(u.created).toISOString().slice(0, 10)}</td>
-<td class="acts">${f('extend', '+1 mo', '<input type="hidden" name="months" value="1">')} ${f('extend', '+3', '<input type="hidden" name="months" value="3">')} ${f('extend', '+12', '<input type="hidden" name="months" value="12">')} ${f('expire', 'expire')} ${f('toggle', u.disabled ? 'enable' : 'disable')} ${f('devices', 'reset devices')} ${f('password', 'set pw', '<input name="password" placeholder="new password" class="inl">')} ${f('note', 'note', `<input name="note" value="${esc(u.note || '')}" placeholder="note" class="inl">`)} ${f('delete', 'delete', '', 'danger sm')}</td></tr>`; };
-  return layout(ctx, 'admin', `<style nonce="${ctx.nonce}">.inl{width:120px;display:inline;padding:4px 8px;border-radius:8px}</style><div class="wrap page"><div class="grid">
-<section class="card wide"><h3>Stats</h3><div class="kpis"><div class="kpi"><b>${stats.users}</b>users</div><div class="kpi"><b>${stats.active}</b>active subs</div><div class="kpi"><b>${stats.seen24h}</b>seen 24h</div><div class="kpi"><b>${stats.payments}</b>payments</div><div class="kpi"><b>${fmtNum('en', stats.revenue)}</b>Toman</div></div></section>
-<section class="card wide"><h3>Users</h3><form method="get" class="actions" style="justify-content:flex-start"><input name="q" value="${esc(q)}" placeholder="search username" style="max-width:260px"><button class="ghost sm">Search</button></form>
-<div class="tbl"><table><tr><th>User</th><th>Subscription</th><th>Last seen</th><th>Devices</th><th>Created</th><th></th></tr>${users.map(row).join('') || '<tr><td colspan="6" class="muted">no users</td></tr>'}</table></div></section>
-<section class="card wide"><h3>Payments</h3><div class="tbl"><table><tr><th>Date</th><th>User</th><th>Plan</th><th>Amount</th><th>Status</th><th>Ref</th><th>Card</th></tr>${payments.map(p => `<tr><td>${new Date(p.created).toISOString().slice(0, 16).replace('T', ' ')}</td><td>${esc(p.username || p.user_id)}</td><td>${p.months} mo</td><td>${fmtNum('en', p.amount)}</td><td><span class="st ${p.status === 'paid' ? 'on' : p.status === 'pending' ? 'warn' : 'off'}">${p.status}</span></td><td>${esc(p.ref_id || '')}</td><td>${esc(p.card_pan || '')}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">none</td></tr>'}</table></div></section></div></div>`);
 }
