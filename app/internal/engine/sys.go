@@ -48,7 +48,7 @@ func Must(s Sys, timeout time.Duration, cmd string, args ...string) (RunResult, 
 
 // PS runs a PowerShell snippet and returns its stdout.
 func PS(s Sys, timeout time.Duration, script string) (string, error) {
-	r := s.Run(timeout, "powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", script)
+	r := s.Run(timeout, "powershell", "-NoProfile", "-NonInteractive", "-Command", script)
 	if r.Code != 0 {
 		return "", fmt.Errorf("powershell failed: %s", clip(r.Text(), 300))
 	}

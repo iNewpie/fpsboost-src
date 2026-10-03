@@ -4,7 +4,7 @@
 #   bash scripts/build.sh exe        → just the exe
 #   bash scripts/build.sh nsis       → just the installer (dist/fpsboost.exe must exist)
 # Needs: Go (/usr/local/go), go-winres (~/go/bin), makensis (apt nsis ≥ 3.08; falls back to electron-builder's cache).
-# Code signing: put SIGN_PFX / SIGN_PASS in app/.sign.env (git-ignored) or the environment — see scripts/sign.sh.
+# Code signing: SIGN_PFX / SIGN_PASS (certificate file) or SIGN_JSIGN (cloud signing) in app/.sign.env — see SIGNING.md.
 # Without a certificate the build is simply unsigned.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -12,7 +12,7 @@ export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
 [ -f .sign.env ] && { set -a; . ./.sign.env; set +a; }
 VER=$(tr -d ' \n' < VERSION)
 mkdir -p dist
-echo "== FPS Boost $VER${SIGN_PFX:+ (signed)}"
+echo "== FPS Boost $VER$( [ -n "${SIGN_PFX:-}${SIGN_JSIGN:-}" ] && echo " (signed)")"
 
 if [ "${1:-}" != "nsis" ]; then
 # 1. resources: icon + requireAdministrator / per-monitor DPI manifest + version info → rsrc_windows_amd64.syso
@@ -21,7 +21,7 @@ sed "s/__VERSION__/$VER/g" build/winres.json > build/winres.gen.json
 rm -f build/winres.gen.json
 
 # 2. the exe (no cgo, GUI subsystem, stripped)
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-s -w -H windowsgui -X fpsboost.ir/app/internal/config.Version=$VER" -o dist/fpsboost.exe .
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-w -H windowsgui -X fpsboost.ir/app/internal/config.Version=$VER" -o dist/fpsboost.exe .
 rm -f rsrc_windows_amd64.syso
 bash scripts/sign.sh dist/fpsboost.exe
 ls -la dist/fpsboost.exe
@@ -37,7 +37,7 @@ else
   NSISDIR=$(dirname "$(dirname "$MAKENSIS")")
 fi
 SIGN=()
-[ -n "${SIGN_PFX:-}" ] && SIGN=(-DSIGN_CMD="bash $PWD/scripts/sign.sh")   # installer.nsi signs the installer + uninstaller with it
+[ -n "${SIGN_PFX:-}${SIGN_JSIGN:-}" ] && SIGN=(-DSIGN_CMD="bash $PWD/scripts/sign.sh")   # installer.nsi signs the installer + uninstaller with it
 cd build
 ${NSISDIR:+NSISDIR="$NSISDIR"} "$MAKENSIS" -INPUTCHARSET UTF8 -DVERSION="$VER" "${SIGN[@]}" -V2 installer.nsi
 cd ..

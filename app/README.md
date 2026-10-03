@@ -29,20 +29,22 @@ electron-builder cache is only a fallback). Version comes from `VERSION`. Tests:
 on Linux). `GOOS=windows go vet -unsafeptr=false ./...` for the Windows-only packages.
 
 ## Code signing (Windows SmartScreen / Defender)
-The build signs everything when a certificate is configured, and stays unsigned otherwise:
+Unsigned builds get "Windows protected your PC — Unknown publisher" from SmartScreen, and Defender's ML heuristics
+sometimes block the exe outright. **SIGNING.md** has the whole story: which certificate to buy (Azure Trusted Signing,
+SSL.com eSigner, Certum SimplySign, a classic OV .pfx), how to report a false positive to Microsoft, and what the build
+does to stay off the heuristics. The build signs everything as soon as credentials exist and stays unsigned otherwise:
 
 ```
 cat > .sign.env <<'X'          # git-ignored
-SIGN_PFX=/root/secrets/fpsboost.pfx
+SIGN_PFX=/root/secrets/fpsboost.pfx      # a certificate file …
 SIGN_PASS=…
+# … or a cloud signing service through jsign (/root/tools/jsign.jar), e.g. Azure Trusted Signing:
+# SIGN_JSIGN="--storetype TRUSTEDSIGNING --keystore weu.codesigning.azure.net --storepass <tenant>|<client>|<secret> --alias <account>/<profile>"
 X
 bash scripts/build.sh          # "== FPS Boost x.y.z (signed)": fpsboost.exe, FPSBoost-Setup.exe and Uninstall.exe
 ```
-`scripts/sign.sh` uses osslsigncode (sha256, DigiCert RFC 3161 timestamp); `installer.nsi` signs the installer and the
-uninstaller stub through `!finalize` / `!uninstfinalize`. Any Authenticode certificate works (OV or EV, .pfx). Until
-there is one, SmartScreen shows "Windows protected your PC" on a fresh download — that is reputation, not a detection,
-and only a signature (or many clean downloads) removes it. If Defender flags a build, submit both exes as a software
-developer at https://www.microsoft.com/wdsi/filesubmission — false positives are usually cleared within a day or two.
+`scripts/sign.sh` uses osslsigncode for a .pfx and jsign for cloud providers (sha256, DigiCert RFC 3161 timestamp);
+`installer.nsi` signs the installer and the uninstaller stub through `!finalize` / `!uninstfinalize`.
 
 ## Updates — what the user sees
 - The app asks `/api/app/update` 8 s after start, every 6 h in the tray, and whenever the window is opened (at most
