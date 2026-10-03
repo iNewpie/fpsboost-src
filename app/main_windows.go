@@ -598,8 +598,8 @@ func (a *application) registerHandlers() {
 		cat, _ := arg[string](args, 0)
 		a.restorePoint()
 		ids := a.engine.Recommended(cat)
-		res := a.engine.ApplyMany(ids, func(done, total int, r engine.Result) {
-			a.emit("progress", map[string]any{"op": "boost", "done": done, "total": total, "id": r.ID})
+		res := a.engine.ApplyMissing(ids, func(done, total int, r engine.Result) {
+			a.emit("progress", map[string]any{"op": "boost", "done": done, "total": total, "id": r.ID, "error": r.Error, "skipped": r.Skipped})
 		})
 		go a.liveState()
 		return res, nil
@@ -619,8 +619,8 @@ func (a *application) registerHandlers() {
 			return nil, errors.New("unknown preset")
 		}
 		a.restorePoint()
-		res := a.engine.ApplyMany(p.Tweaks, func(done, total int, r engine.Result) {
-			a.emit("progress", map[string]any{"op": "preset", "done": done, "total": total, "id": r.ID, "preset": id})
+		res := a.engine.ApplyMissing(p.Tweaks, func(done, total int, r engine.Result) {
+			a.emit("progress", map[string]any{"op": "preset", "done": done, "total": total, "id": r.ID, "preset": id, "error": r.Error, "skipped": r.Skipped, "reboot": r.Reboot})
 		})
 		go a.liveState()
 		return res, nil

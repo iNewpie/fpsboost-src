@@ -60,6 +60,7 @@ type Result struct {
 	Applied *bool  `json:"applied,omitempty"`
 	Reboot  bool   `json:"reboot,omitempty"`
 	Error   string `json:"error,omitempty"`
+	Skipped bool   `json:"skipped,omitempty"` // ApplyMissing: it was already on, nothing was run
 }
 
 // Engine runs the tweaks.
@@ -150,6 +151,28 @@ func (e *Engine) ApplyMany(ids []string, progress func(done, total int, r Result
 	out := make([]Result, 0, len(ids))
 	for i, id := range ids {
 		r := e.Apply(id, "")
+		out = append(out, r)
+		if progress != nil {
+			progress(i+1, len(ids), r)
+		}
+	}
+	return out
+}
+
+// ApplyMissing is ApplyMany for presets: a tweak that is already on is reported as Skipped instead of being run again
+// (re-running the PowerShell ones costs seconds, re-running dns_fast would scan again). progress is called for every id.
+func (e *Engine) ApplyMissing(ids []string, progress func(done, total int, r Result)) []Result {
+	out := make([]Result, 0, len(ids))
+	for i, id := range ids {
+		var r Result
+		if t, err := e.Find(id); err != nil {
+			r = Result{ID: id, Error: err.Error()}
+		} else if on, err := t.Check(e.ctx(id, "")); err == nil && on {
+			yes := true
+			r = Result{ID: id, Applied: &yes, Skipped: true}
+		} else {
+			r = e.Apply(id, "")
+		}
 		out = append(out, r)
 		if progress != nil {
 			progress(i+1, len(ids), r)

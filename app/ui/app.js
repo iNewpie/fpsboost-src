@@ -44,6 +44,7 @@ const I18N = {
     acc_title: 'Account', acc_sub: 'Your plan, devices, password and links — all without leaving the app.', acc_refresh: 'Refresh', acc_loading: 'Loading your account…', acc_offline: 'Could not reach fpsboost.ir: {e}', acc_member: 'member since {d}', acc_devices: 'Devices', acc_devices_n: '{a} of {n} PCs', acc_devices_sub: 'Each account works on {n} PCs. Resetting forgets the other PCs; this one stays signed in.', acc_reset: 'Reset devices', acc_reset_done: 'Other devices removed', acc_plan: 'Plan', acc_plan_sub: 'Renew or buy on fpsboost.ir — the app notices within a minute.',
     acc_pw: 'Change password', acc_pw_sub: 'Your current password is required. Other signed-in devices stay signed in.', acc_pw_cur: 'Current password', acc_pw_new: 'New password (8+ characters)', acc_pw_new2: 'Repeat the new password', acc_pw_btn: 'Change password', acc_pw_mismatch: 'The new passwords do not match', acc_pw_done: 'Password changed',
     acc_links: 'Links', acc_l_account: 'Account on fpsboost.ir', acc_l_account_s: 'Plans, payments, devices in the browser', acc_l_download: 'Download page', acc_l_download_s: 'The latest installer', acc_l_support: 'Support', acc_l_support_s: 'Ask us anything', acc_l_terms: 'Terms', acc_l_terms_s: 'What the subscription covers', acc_l_site: 'fpsboost.ir', acc_l_site_s: 'Features, games, FAQ',
+    optimizing: 'Optimizing… {a}/{n}', opt_done: '{g} optimized', opt_partial: '{g}: {n} tweaks could not be applied', opt_tweaks: 'Tweaks in this bundle', st_on: 'on', st_off: 'off', st_skip: 'already on', st_err: 'failed', st_run: 'applying…', st_wait: 'waiting', opt_reboot: 'Restart Windows to finish',
     acc_pay: 'Payments', acc_pay_none: 'No payments yet.', acc_pay_months: '{n} mo', toman: 'Toman', pay_paid: 'paid', pay_pending: 'pending', pay_failed: 'failed', acc_prices: 'Plans', per_month: '{n} month', per_months: '{n} months',
   },
   fa: {
@@ -74,13 +75,14 @@ const I18N = {
     acc_title: 'حساب کاربری', acc_sub: 'پلن، دستگاه‌ها، رمز عبور و لینک‌ها — همه بدون خروج از برنامه.', acc_refresh: 'به‌روزرسانی', acc_loading: 'در حال دریافت حساب…', acc_offline: 'دسترسی به fpsboost.ir ممکن نشد: {e}', acc_member: 'عضو از {d}', acc_devices: 'دستگاه‌ها', acc_devices_n: '{a} از {n} کامپیوتر', acc_devices_sub: 'هر حساب روی {n} کامپیوتر کار می‌کند. ریست، کامپیوترهای دیگر را فراموش می‌کند؛ این یکی وارد می‌ماند.', acc_reset: 'ریست دستگاه‌ها', acc_reset_done: 'دستگاه‌های دیگر حذف شدند', acc_plan: 'پلن', acc_plan_sub: 'تمدید یا خرید در fpsboost.ir — برنامه تا یک دقیقه بعد متوجه می‌شود.',
     acc_pw: 'تغییر رمز عبور', acc_pw_sub: 'رمز فعلی لازم است. دستگاه‌های دیگر وارد می‌مانند.', acc_pw_cur: 'رمز فعلی', acc_pw_new: 'رمز جدید (حداقل ۸ کاراکتر)', acc_pw_new2: 'تکرار رمز جدید', acc_pw_btn: 'تغییر رمز', acc_pw_mismatch: 'رمزهای جدید یکسان نیستند', acc_pw_done: 'رمز عبور عوض شد',
     acc_links: 'لینک‌ها', acc_l_account: 'حساب در fpsboost.ir', acc_l_account_s: 'پلن‌ها، پرداخت‌ها و دستگاه‌ها در مرورگر', acc_l_download: 'صفحهٔ دانلود', acc_l_download_s: 'آخرین نصب‌کننده', acc_l_support: 'پشتیبانی', acc_l_support_s: 'هر سؤالی دارید بپرسید', acc_l_terms: 'قوانین', acc_l_terms_s: 'اشتراک چه چیزهایی را شامل می‌شود', acc_l_site: 'fpsboost.ir', acc_l_site_s: 'امکانات، بازی‌ها، سؤال‌های متداول',
+    optimizing: 'در حال بهینه‌سازی… {a}/{n}', opt_done: '{g} بهینه شد', opt_partial: '{g}: {n} تنظیم اعمال نشد', opt_tweaks: 'تنظیمات این بسته', st_on: 'روشن', st_off: 'خاموش', st_skip: 'از قبل روشن', st_err: 'ناموفق', st_run: 'در حال اعمال…', st_wait: 'در انتظار', opt_reboot: 'برای تکمیل، ویندوز را ریستارت کنید',
     acc_pay: 'پرداخت‌ها', acc_pay_none: 'هنوز پرداختی نیست.', acc_pay_months: '{n} ماهه', toman: 'تومان', pay_paid: 'پرداخت شد', pay_pending: 'در انتظار', pay_failed: 'ناموفق', acc_prices: 'پلن‌ها', per_month: '{n} ماهه', per_months: '{n} ماهه',
   },
 };
 const ICONS = { game_dvr_off: 'eye-off', game_mode_on: 'pad', fse_off: 'monitor', mm_games_priority: 'layers', hags_on: 'gpu', mouse_accel_off: 'mouse', background_apps_off: 'layers', power_throttling_off: 'power', visual_fx_perf: 'monitor', game_bar_off: 'pad', telemetry_off: 'eye-off', widgets_off: 'layers', tips_off: 'info', win32_priority: 'cpu', power_plan_high: 'power', startup_delay_off: 'clock', menu_delay_off: 'zap', sticky_keys_off: 'keyboard', paging_executive_off: 'ram', timer_global: 'clock', core_parking_off: 'cpu', sysmain_off: 'ram', wsearch_off: 'eye-off', nagle_off: 'zap', network_throttling_off: 'wifi', qos_reserve_off: 'wifi', delivery_optimization_off: 'download', tcp_tuning: 'net', dns_fast: 'dns', wifi_power_max: 'wifi', hags_off: 'gpu', mpo_off: 'monitor', pagefile_fixed: 'ram', hvci_off: 'shield' };
 
 /* ---- state ---- */
-const S = { lang: 'en', page: 'home', info: {}, settings: {}, auth: {}, tweaks: null, presets: [], tools: [], guard: {}, upd: {}, system: {}, dns: [], dnsScan: null, dnsMore: false, account: null, accErr: '', filter: { fps: 'all', network: 'all' }, busy: new Set(), log: [], ping: null, live: false, max: false };
+const S = { lang: 'en', page: 'home', info: {}, settings: {}, auth: {}, tweaks: null, presets: [], tools: [], guard: {}, upd: {}, system: {}, dns: [], dnsScan: null, dnsMore: false, account: null, accErr: '', filter: { fps: 'all', network: 'all' }, busy: new Set(), log: [], ping: null, live: false, max: false, runs: {}, open: new Set() };
 const t = (k, v) => { let s = (I18N[S.lang] || I18N.en)[k] ?? I18N.en[k] ?? k; if (v) for (const [a, b] of Object.entries(v)) s = s.replaceAll('{' + a + '}', b); return s; };
 const tx = (o) => (o && (o[S.lang] || o.en)) || '';
 const loc = () => S.lang === 'fa' ? 'fa-IR' : 'en-GB';
@@ -290,16 +292,56 @@ async function batch(key, method, arg, logKey, btn) {
 function renderGames() {
   const box = $('#games'); if (!box) return;
   box.innerHTML = S.presets.map(p => {
-    const list = p.tweaks.map(id => (S.tweaks || []).find(x => x.id === id)).filter(Boolean);
-    const onN = list.filter(x => x.applied === true).length, all = S.tweaks && onN === p.tweaks.length, busy = S.busy.has('preset:' + p.id);
-    return `<div class="g ${all ? 'on' : ''}" data-preset="${p.id}">
-      <div class="g-h"><img src="assets/games/${esc(p.icon)}" alt=""><div><h4>${esc(p.name)}</h4><small>${S.tweaks ? t('preset_n', { a: onN, n: p.tweaks.length }) : t('checking_short')}</small></div></div>
-      <div class="bar"><i style="width:${S.tweaks ? Math.round(onN / p.tweaks.length * 100) : 0}%"></i></div>
-      <div class="g-a"><button class="pri" data-opt-preset="${p.id}" ${busy || !S.tweaks ? 'disabled' : ''}>${busy ? '…' : all ? `<svg><use href="#i-check"/></svg>${t('optimized')}` : t('optimize')}</button></div>
-      <details><summary><svg><use href="#i-chev"/></svg>${t('tips')}</summary><ul>${p.tips.map(x => `<li>${esc(tx(x))}</li>`).join('')}</ul></details>
+    const run = S.runs[p.id];
+    const list = p.tweaks.map(id => (S.tweaks || []).find(x => x.id === id) || { id, title: { en: id, fa: id } });
+    const onN = list.filter(x => x.applied === true).length, all = S.tweaks && onN === p.tweaks.length;
+    const busy = !!run && !run.finished, done = !!run && run.finished;
+    const pct = busy ? Math.round(run.done / run.total * 100) : (S.tweaks ? Math.round(onN / p.tweaks.length * 100) : 0);
+    const failed = run ? Object.values(run.items).filter(x => x.state === 'err').length : 0;
+    const row = (tw) => {
+      const it = run && run.items[tw.id];
+      const st = it ? it.state : (tw.applied === true ? 'on' : tw.applied == null ? 'wait' : 'off');
+      const label = { on: t('st_on'), off: t('st_off'), skip: t('st_skip'), err: t('st_err'), run: t('st_run'), wait: t('st_wait'), ok: t('st_on') }[st] || st;
+      return `<li class="${st}" title="${esc(it && it.error || '')}"><i class="ck"><svg><use href="#i-${st === 'err' ? 'x' : st === 'run' ? 'refresh' : 'check'}"/></svg></i><span>${esc(tx(tw.title))}</span><small>${esc(label)}${it && it.error ? ' · ' + esc(it.error) : ''}</small></li>`;
+    };
+    return `<div class="g ${all ? 'on' : ''} ${busy ? 'busy' : ''} ${done && !failed ? 'done' : ''}" data-preset="${p.id}">
+      <div class="g-h"><img src="assets/games/${esc(p.icon)}" alt=""><div><h4>${esc(p.name)}</h4><small>${busy ? t('optimizing', { a: run.done, n: run.total }) : S.tweaks ? t('preset_n', { a: onN, n: p.tweaks.length }) : t('checking_short')}</small></div>${all && !busy ? `<i class="g-badge"><svg><use href="#i-check"/></svg></i>` : ''}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="g-a"><button class="pri" data-opt-preset="${p.id}" ${busy || !S.tweaks || !S.live ? 'disabled' : ''}>${busy ? `<i class="spin"></i>${t('optimizing', { a: run.done, n: run.total })}` : all ? `<svg><use href="#i-check"/></svg>${t('optimized')}` : `<svg><use href="#i-bolt"/></svg>${t('optimize')}`}</button><button class="ghost sm g-more" data-toggle-preset="${p.id}" title="${esc(t('opt_tweaks'))}"><svg><use href="#i-chev"/></svg></button></div>
+      ${run && run.reboot && done ? `<p class="g-note"><svg><use href="#i-info"/></svg>${t('opt_reboot')}</p>` : ''}
+      <div class="g-list" ${S.open.has(p.id) || busy ? '' : 'hidden'}><ul class="twl">${list.map(row).join('')}</ul>
+        <details><summary><svg><use href="#i-chev"/></svg>${t('tips')}</summary><ul>${p.tips.map(x => `<li>${esc(tx(x))}</li>`).join('')}</ul></details></div>
     </div>`;
   }).join('');
 }
+async function runPreset(id) {
+  const p = S.presets.find(x => x.id === id); if (!p || (S.runs[id] && !S.runs[id].finished)) return;
+  const run = { done: 0, total: p.tweaks.length, items: {}, finished: false, reboot: false };
+  p.tweaks.forEach(tw => { run.items[tw] = { state: 'wait' }; });
+  run.items[p.tweaks[0]] = { state: 'run' };
+  S.runs[id] = run; renderGames();
+  try {
+    const res = await api('presets.apply', id);
+    const ok = res.filter(r => !r.error), bad = res.filter(r => r.error);
+    res.forEach(r => { run.items[r.id] = { state: r.error ? 'err' : r.skipped ? 'skip' : 'ok', error: r.error || '' }; const tw = (S.tweaks || []).find(x => x.id === r.id); if (tw && !r.error) { tw.applied = true; tw.hasBackup = true; tw.error = ''; } });
+    run.done = run.total; run.reboot = ok.some(r => r.reboot && !r.skipped);
+    if (bad.length) { toast(t('opt_partial', { g: p.name, n: bad.length }), 'bad'); addLog(t('opt_partial', { g: p.name, n: bad.length }), 'bad'); bad.forEach(r => addLog(`${titleOf(r.id)}: ${r.error}`, 'bad')); }
+    else { toast(t('opt_done', { g: p.name }), 'ok'); addLog(t('log_preset', { g: p.name, n: ok.filter(r => !r.skipped).length }), 'ok'); }
+    if (run.reboot) toast(t('reboot_hint'));
+  } catch (e) { fail(e); Object.keys(run.items).forEach(k => { if (run.items[k].state !== 'ok' && run.items[k].state !== 'skip') run.items[k] = { state: 'err', error: e.message }; }); }
+  run.finished = true; S.open.add(id); progress(0, 0); renderGames(); renderLists(); renderHome();
+  refreshState();
+}
+on('progress', (d) => {
+  if (d.op !== 'preset' || !d.preset) return;
+  const run = S.runs[d.preset]; if (!run || run.finished) return;
+  run.done = d.done; run.total = d.total;
+  run.items[d.id] = { state: d.error ? 'err' : d.skipped ? 'skip' : 'ok', error: d.error || '' };
+  if (d.reboot && !d.skipped && !d.error) run.reboot = true;
+  const p = S.presets.find(x => x.id === d.preset);
+  if (p) { const next = p.tweaks[d.done]; if (next && run.items[next] && run.items[next].state === 'wait') run.items[next] = { state: 'run' }; }
+  renderGames();
+});
 
 /* ---- tools ---- */
 const toolRes = {};
@@ -503,7 +545,7 @@ on('restore', (r) => { if (r.status === 'created') toast(t('restore_point_made')
 
 /* ---- events ---- */
 document.addEventListener('click', (e) => {
-  const el = e.target.closest('button[data-page],[data-win],[data-open],[data-href],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-run],[data-lang],[data-upd],[data-dns],#boost,#unboost,#pingbtn,#dnsbtn,#dnsmore,#logout,#cleannow,#acc-refresh,#acc-devices');
+  const el = e.target.closest('button[data-page],[data-win],[data-open],[data-href],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-toggle-preset],[data-run],[data-lang],[data-upd],[data-dns],#boost,#unboost,#pingbtn,#dnsbtn,#dnsmore,#logout,#cleannow,#acc-refresh,#acc-devices');
   if (!el) return;
   if (el.dataset.page) go(el.dataset.page);
   else if (el.dataset.href) { e.preventDefault(); api('app.open', el.dataset.href); }
@@ -519,7 +561,8 @@ document.addEventListener('click', (e) => {
   else if (el.dataset.rec) batch('rec:' + el.dataset.rec, 'tweaks.applyRecommended', el.dataset.rec, 'log_boost', el);
   else if (el.dataset.revert) batch('revert:' + el.dataset.revert, 'tweaks.revertAll', el.dataset.revert, 'log_restore', el);
   else if (el.classList.contains('chip')) { const cat = el.closest('.chips').dataset.filterFor; S.filter[cat] = el.dataset.f; $$('.chip', el.parentElement).forEach(c => c.classList.toggle('on', c === el)); renderList(cat); }
-  else if (el.dataset.optPreset) { const id = el.dataset.optPreset; S.busy.add('preset:' + id); renderGames(); batch('preset:' + id, 'presets.apply', id, 'log_preset', null).then(() => { S.busy.delete('preset:' + id); renderGames(); }); }
+  else if (el.dataset.optPreset) runPreset(el.dataset.optPreset);
+  else if (el.dataset.togglePreset) { const id = el.dataset.togglePreset; if (S.open.has(id)) S.open.delete(id); else S.open.add(id); renderGames(); }
   else if (el.dataset.run) runTool(el.dataset.run);
   else if (el.dataset.upd) { const act = el.dataset.upd; api('update.' + act).then(u => { if (act !== 'install') { S.upd = u; renderUpdate(); } }).catch(fail); }
   else if (el.id === 'boost') batch('boost', 'tweaks.applyRecommended', '', 'log_boost', el);

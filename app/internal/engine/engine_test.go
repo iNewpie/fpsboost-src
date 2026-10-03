@@ -139,3 +139,24 @@ func TestSameAndNum(t *testing.T) {
 		t.Fatal("Same is wrong")
 	}
 }
+
+func TestApplyMissingSkipsWhatIsAlreadyOn(t *testing.T) {
+	f := NewFake()
+	tw := []*Tweak{
+		RegTweak(Meta{ID: "a"}, DW("HKCU\\A", "v", 1)),
+		RegTweak(Meta{ID: "b"}, DW("HKCU\\B", "v", 1)),
+	}
+	f.Set("HKCU\\A", "v", RegValue{Type: "REG_DWORD", Value: uint32(1)}) // already on
+	e := New(tw, f, NewBackup(""))
+	var seen []string
+	res := e.ApplyMissing([]string{"a", "b", "zzz"}, func(done, total int, r Result) { seen = append(seen, r.ID) })
+	if len(res) != 3 || !res[0].Skipped || res[1].Skipped || res[1].Applied == nil || !*res[1].Applied || res[2].Error == "" {
+		t.Fatalf("%+v", res)
+	}
+	if e.Backup.Has("a") || !e.Backup.Has("b") {
+		t.Fatal("a skipped tweak must not get a backup; an applied one must")
+	}
+	if len(seen) != 3 {
+		t.Fatalf("progress for every id: %v", seen)
+	}
+}
