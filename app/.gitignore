@@ -1,3 +1,6 @@
 dist/
 *.syso
 build/winres.gen.json
+.sign.env
+*.pfx
+*.p12

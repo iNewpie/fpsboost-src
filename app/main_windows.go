@@ -57,6 +57,11 @@ type application struct {
 	stateRun    bool
 	restoreOnce sync.Once
 	quitting    bool
+
+	updMu     sync.Mutex
+	lastCheck time.Time // last /api/app/update call (window open re-checks after 10 min)
+	notified  string    // version the tray balloon already announced
+	updated   bool      // first run of a new version (the UI shows "updated to …")
 }
 
 func main() {
@@ -84,6 +89,10 @@ func main() {
 	a.sys = sysimpl.Windows{}
 	a.engine = engine.New(tweaks.All, a.sys, engine.NewBackup(filepath.Join(a.dataDir, "backup.json")))
 	a.settings = settings.New(filepath.Join(a.dataDir, "settings.json"))
+	if prev := a.settings.Get().LastVersion; prev != config.Version {
+		a.updated = prev != ""
+		a.settings.Update(func(d *settings.Data) { d.LastVersion = config.Version })
+	}
 	au, err := auth.New(config.ServerURL, filepath.Join(a.dataDir, "auth.json"), config.ServerPubKey, sysimpl.MachineGUID(), config.OfflineGraceDays)
 	if err != nil {
 		win.MessageBox("FPS Boost", "Broken build: "+err.Error(), win.MB_ICONERROR)
@@ -132,7 +141,7 @@ func main() {
 	a.guard.Enforce = a.engine.Enforce
 	a.guard.OnChange = func(s guard.Status) { a.emit("guard", s); a.trayTip() }
 	a.actions = tools.Actions(tools.Env{Temp: os.Getenv("TEMP"), SystemRoot: os.Getenv("SystemRoot"), LocalAppData: os.Getenv("LOCALAPPDATA")}, a.guard.CleanNow)
-	a.updater = update.New(a.auth, config.Version, filepath.Join(a.dataDir, "update"), func(s update.State) { a.emit("update", s) })
+	a.updater = update.New(a.auth, config.Version, filepath.Join(a.dataDir, "update"), func(s update.State) { a.emit("update", s); a.notifyUpdate(s) })
 	a.updater.Launch = win.StartDetached
 
 	sub, _ := fs.Sub(uiFS, "ui")
@@ -147,7 +156,7 @@ func main() {
 	a.applySettings(a.settings.Get(), true)
 	a.guard.Start()
 
-	if !*tray {
+	if !*tray || a.consumeReopen() {
 		a.openWindow()
 	} else {
 		a.app.Tray(config.AppName)
@@ -194,6 +203,7 @@ func (a *application) setupLog() {
 /* ---- window / tray ---- */
 
 func (a *application) openWindow() {
+	go a.checkUpdates(false) // a release pushed while the app sat in the tray shows its button right away
 	a.app.Dispatch(func() {
 		if a.host.IsOpen() {
 			a.host.Window().Show()
@@ -362,12 +372,67 @@ func (a *application) initJS() string {
 func (a *application) updateLoop() {
 	time.Sleep(8 * time.Second)
 	for {
-		st := a.updater.Check()
-		if st.Status == "available" && a.settings.Get().AutoUpdate {
-			a.updater.Download()
-		}
+		a.checkUpdates(true)
 		time.Sleep(6 * time.Hour)
 	}
+}
+
+// checkUpdates asks the server for the newest version (at most every 10 min unless forced) and, with automatic updates
+// on, downloads it in the background so the UI goes straight to "Update now".
+func (a *application) checkUpdates(force bool) {
+	a.updMu.Lock()
+	if !force && time.Since(a.lastCheck) < 10*time.Minute {
+		a.updMu.Unlock()
+		return
+	}
+	a.lastCheck = time.Now()
+	a.updMu.Unlock()
+	st := a.updater.Check()
+	if st.Status == "available" && a.settings.Get().AutoUpdate {
+		a.updater.Download()
+	}
+}
+
+// notifyUpdate: with the window closed, a tray balloon once per version when an update is ready (or available, if
+// automatic downloads are off). Clicking the balloon opens the app on its Update button.
+func (a *application) notifyUpdate(s update.State) {
+	if s.Status != "ready" && !(s.Status == "available" && !a.settings.Get().AutoUpdate) {
+		return
+	}
+	a.updMu.Lock()
+	seen := a.notified == s.Latest
+	a.notified = s.Latest
+	a.updMu.Unlock()
+	if seen || a.host.IsOpen() || !a.hasTray() {
+		return
+	}
+	title, text := "FPS Boost "+s.Latest+" is ready", "Click to open the app and press Update."
+	if s.Status == "available" {
+		title, text = "FPS Boost "+s.Latest+" is available", "Click to open the app and download it."
+	}
+	if a.lang() == "fa" {
+		title, text = "FPS Boost "+s.Latest+" آماده است", "برای باز کردن برنامه و زدن دکمهٔ به‌روزرسانی کلیک کنید."
+		if s.Status == "available" {
+			title, text = "FPS Boost "+s.Latest+" منتشر شد", "برای باز کردن برنامه و دانلود آن کلیک کنید."
+		}
+	}
+	a.app.Dispatch(func() {
+		if t := a.app.Tray(config.AppName); t != nil {
+			t.Balloon(title, text)
+		}
+	})
+}
+
+func (a *application) reopenMarker() string { return filepath.Join(a.dataDir, "update", "reopen") }
+
+// consumeReopen: "Update now" leaves a marker so the new version, started by the silent installer with --tray, opens
+// its window instead of hiding — the user sees the new version straight away.
+func (a *application) consumeReopen() bool {
+	if _, err := os.Stat(a.reopenMarker()); err != nil {
+		return false
+	}
+	_ = os.Remove(a.reopenMarker())
+	return true
 }
 
 /* ---- RPC ---- */
@@ -394,7 +459,7 @@ func (a *application) registerHandlers() {
 	h := a.host
 	h.Handle("app.boot", func(args []json.RawMessage) (any, error) {
 		return map[string]any{
-			"info":     map[string]any{"name": config.AppName, "version": config.Version, "isAdmin": win.IsAdmin(), "pingHosts": config.PingHosts, "debug": a.debug, "serverUrl": config.ServerURL},
+			"info":     map[string]any{"name": config.AppName, "version": config.Version, "isAdmin": win.IsAdmin(), "pingHosts": config.PingHosts, "debug": a.debug, "serverUrl": config.ServerURL, "updated": a.updated},
 			"settings": a.settings.Get(),
 			"auth":     a.auth.View(),
 			"state":    a.cachedState(),
@@ -535,6 +600,7 @@ func (a *application) registerHandlers() {
 		if err := a.updater.Install(); err != nil {
 			return nil, err
 		}
+		_ = os.WriteFile(a.reopenMarker(), []byte("1"), 0o644)
 		go func() {
 			time.Sleep(400 * time.Millisecond)
 			a.quitting = true

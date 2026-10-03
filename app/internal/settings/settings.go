@@ -32,7 +32,8 @@ type Data struct {
 	GuardEnforce  bool            `json:"guardEnforce"`  // re-apply tweaks Windows reverted
 	LastPing      json.RawMessage `json:"lastPing,omitempty"`
 	Win           Window          `json:"win"`
-	Seen          map[string]bool `json:"seen,omitempty"` // one-time hints shown (tray balloon …)
+	LastVersion   string          `json:"lastVersion,omitempty"` // version that ran last (a change = "updated to …" toast)
+	Seen          map[string]bool `json:"seen,omitempty"`        // one-time hints shown (tray balloon …)
 }
 
 func Defaults() Data {

@@ -22,9 +22,35 @@ app/
 ```
 
 ## Build (Linux)
-`bash scripts/build.sh` — needs Go in /usr/local/go, `go-winres` in ~/go/bin and electron-builder's makensis cache.
-Version comes from `VERSION`. Tests: `go test ./...` (fake Windows, runs on Linux). `GOOS=windows go vet ./...` for the
-Windows-only packages.
+`bash scripts/build.sh` — needs Go in /usr/local/go, `go-winres` in ~/go/bin and `makensis` (apt `nsis`, 3.09; the
+electron-builder cache is only a fallback). Version comes from `VERSION`. Tests: `go test ./...` (fake Windows, runs
+on Linux). `GOOS=windows go vet -unsafeptr=false ./...` for the Windows-only packages.
+
+## Code signing (Windows SmartScreen / Defender)
+The build signs everything when a certificate is configured, and stays unsigned otherwise:
+
+```
+cat > .sign.env <<'X'          # git-ignored
+SIGN_PFX=/root/secrets/fpsboost.pfx
+SIGN_PASS=…
+X
+bash scripts/build.sh          # "== FPS Boost x.y.z (signed)": fpsboost.exe, FPSBoost-Setup.exe and Uninstall.exe
+```
+`scripts/sign.sh` uses osslsigncode (sha256, DigiCert RFC 3161 timestamp); `installer.nsi` signs the installer and the
+uninstaller stub through `!finalize` / `!uninstfinalize`. Any Authenticode certificate works (OV or EV, .pfx). Until
+there is one, SmartScreen shows "Windows protected your PC" on a fresh download — that is reputation, not a detection,
+and only a signature (or many clean downloads) removes it. If Defender flags a build, submit both exes as a software
+developer at https://www.microsoft.com/wdsi/filesubmission — false positives are usually cleared within a day or two.
+
+## Updates — what the user sees
+- The app asks `/api/app/update` 8 s after start, every 6 h in the tray, and whenever the window is opened (at most
+  every 10 min). A newer `APP_LATEST` on the server → banner "FPS Boost x.y.z is available" with a button.
+- Automatic updates (default on): the installer downloads in the background → banner "ready to install" + **Update now**;
+  with the window closed a tray balloon announces it once; the download is installed when the app quits anyway.
+- **Update now** runs the verified installer silently, the app quits, the installer restarts it and (because of the
+  `update/reopen` marker) the window opens again on the new version with an "Updated to x.y.z" toast.
+- Release: `bash scripts/build.sh && bash scripts/release.sh && bash ../server/deploy.sh` — nothing reaches installed
+  apps before the deploy.
 
 ## Preview the UI without Windows
 `python3 -m http.server 8731 --directory ui` then open `http://127.0.0.1:8731/index.html?stateMs=50&page=guard`

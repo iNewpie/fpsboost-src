@@ -42,8 +42,9 @@ python3 -m http.server 8731 --directory ui   # then open http://127.0.0.1:8731/i
   `server/wrangler.toml`, uploads GitHub release v<version>) → `bash server/deploy.sh` (only now do installed apps see it).
 - The installer removes an Electron-era install (0.1 / 0.2) from the same folder first and installs the Microsoft Edge
   WebView2 runtime when a PC lacks it (bundled 2 MB bootstrapper; Windows 11 always has it).
-- Still to do for a "no one can crack it" posture: **code-sign the exe** (an Authenticode certificate — without it a
-  patched exe is indistinguishable from yours). Everything else that matters is server-side (see licensing).
+- **Code signing** is wired in (`app/.sign.env` → `SIGN_PFX` / `SIGN_PASS`; exe, installer and uninstaller are signed
+  with osslsigncode, see app/README.md). It only needs a certificate: without one, SmartScreen warns on new downloads and
+  a patched exe is indistinguishable from yours. Everything else that matters is server-side (see licensing).
 
 ## How licensing works
 
