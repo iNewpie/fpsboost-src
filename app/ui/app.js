@@ -38,6 +38,13 @@ const I18N = {
     win: 'Windows 10 / 11 · 64-bit', made: 'Made for gamers in Iran · fpsboost.ir',
     upd_title: 'Updates', upd_sub: 'New versions install over this one — no download page, no uninstall.', upd_auto: 'Download updates automatically and install when the app closes', upd_check: 'Check for updates', upd_checking: 'Checking…', upd_uptodate: 'You have the latest version', upd_available: 'Version {v} is available', upd_download: 'Download update', upd_downloading: 'Downloading {v}… {p}%', upd_ready: 'Version {v} is downloaded and ready', upd_install: 'Update now', upd_installing: 'Installing — the app will restart', upd_error: 'Update failed: {e}', upd_banner: 'FPS Boost {v} is ready to install.', upd_banner_avail: 'FPS Boost {v} is available.', upd_done: 'Updated to FPS Boost {v}',
     gb: 'GB', mb: 'MB',
+    nav_account: 'Account',
+    dns_title: 'DNS finder', dns_sub: 'Tests every resolver at once — your ISP\'s own (Shatel, TCI, Pishgaman), the Iranian anti-sanction ones and 50+ public servers from the DNS Jumper list — and shows which answers fastest from your connection.', dns_scan: 'Scan DNS', dns_scanning: 'Scanning…', dns_best: 'Use best: {n}', dns_use: 'Use', dns_in_use: 'In use', dns_rec: 'Recommended', dns_silent: 'no answer', dns_isp: 'Your ISP: {n}', dns_isp_unknown: 'ISP not detected', dns_isp_hint: 'Your ISP\'s resolver answered — it is the recommended pick.', dns_isp_hint_silent: 'Your ISP\'s resolver did not answer — the fastest public one is recommended instead.', dns_more: 'Show {n} servers that did not answer', dns_less: 'Hide the silent servers', dns_last: 'last scan {t}', dns_none: 'Press Scan to test the servers.', dns_applied: 'DNS set to {n}', dns_empty: 'No server answered — check the connection.',
+    grp_isp: 'ISP', grp_iran: 'Iran', grp_global: 'Public', grp_family: 'Family filter', grp_secure: 'Malware filter', dns_auto: 'Auto — best for my network',
+    acc_title: 'Account', acc_sub: 'Your plan, devices, password and links — all without leaving the app.', acc_refresh: 'Refresh', acc_loading: 'Loading your account…', acc_offline: 'Could not reach fpsboost.ir: {e}', acc_member: 'member since {d}', acc_devices: 'Devices', acc_devices_n: '{a} of {n} PCs', acc_devices_sub: 'Each account works on {n} PCs. Resetting forgets the other PCs; this one stays signed in.', acc_reset: 'Reset devices', acc_reset_done: 'Other devices removed', acc_plan: 'Plan', acc_plan_sub: 'Renew or buy on fpsboost.ir — the app notices within a minute.',
+    acc_pw: 'Change password', acc_pw_sub: 'Your current password is required. Other signed-in devices stay signed in.', acc_pw_cur: 'Current password', acc_pw_new: 'New password (8+ characters)', acc_pw_new2: 'Repeat the new password', acc_pw_btn: 'Change password', acc_pw_mismatch: 'The new passwords do not match', acc_pw_done: 'Password changed',
+    acc_links: 'Links', acc_l_account: 'Account on fpsboost.ir', acc_l_account_s: 'Plans, payments, devices in the browser', acc_l_download: 'Download page', acc_l_download_s: 'The latest installer', acc_l_support: 'Support', acc_l_support_s: 'Ask us anything', acc_l_terms: 'Terms', acc_l_terms_s: 'What the subscription covers', acc_l_site: 'fpsboost.ir', acc_l_site_s: 'Features, games, FAQ',
+    acc_pay: 'Payments', acc_pay_none: 'No payments yet.', acc_pay_months: '{n} mo', toman: 'Toman', pay_paid: 'paid', pay_pending: 'pending', pay_failed: 'failed', acc_prices: 'Plans', per_month: '{n} month', per_months: '{n} months',
   },
   fa: {
     lang: 'English', login_sub: 'با حساب fpsboost.ir وارد شوید', username: 'نام کاربری', password: 'رمز عبور', login: 'ورود', signing_in: 'در حال ورود…', no_account: 'ساخت حساب', forgot: 'رمز را فراموش کرده‌اید؟', logout: 'خروج',
@@ -61,12 +68,19 @@ const I18N = {
     win: 'ویندوز ۱۰ / ۱۱ · ۶۴ بیت', made: 'ساخته‌شده برای گیمرهای ایران · fpsboost.ir',
     upd_title: 'به‌روزرسانی', upd_sub: 'نسخه‌های جدید روی همین نسخه نصب می‌شوند — بدون صفحهٔ دانلود، بدون حذف برنامه.', upd_auto: 'دانلود خودکار به‌روزرسانی و نصب هنگام بستن برنامه', upd_check: 'بررسی به‌روزرسانی', upd_checking: 'در حال بررسی…', upd_uptodate: 'آخرین نسخه را دارید', upd_available: 'نسخهٔ {v} آماده است', upd_download: 'دانلود به‌روزرسانی', upd_downloading: 'در حال دانلود {v}… {p}٪', upd_ready: 'نسخهٔ {v} دانلود شده و آمادهٔ نصب است', upd_install: 'همین حالا به‌روز کن', upd_installing: 'در حال نصب — برنامه دوباره اجرا می‌شود', upd_error: 'به‌روزرسانی ناموفق: {e}', upd_banner: 'FPS Boost {v} آمادهٔ نصب است.', upd_banner_avail: 'FPS Boost {v} منتشر شده است.', upd_done: 'به FPS Boost {v} به‌روز شد',
     gb: 'GB', mb: 'MB',
+    nav_account: 'حساب',
+    dns_title: 'یابندهٔ DNS', dns_sub: 'همهٔ سرورها را هم‌زمان تست می‌کند — DNS اپراتور خودتان (شاتل، مخابرات، پیشگامان)، DNSهای ضدتحریم ایرانی و بیش از ۵۰ سرور عمومی از لیست DNS Jumper — و نشان می‌دهد کدام از اتصال شما سریع‌تر جواب می‌دهد.', dns_scan: 'اسکن DNS', dns_scanning: 'در حال اسکن…', dns_best: 'انتخاب بهترین: {n}', dns_use: 'استفاده', dns_in_use: 'فعال', dns_rec: 'پیشنهادی', dns_silent: 'بدون پاسخ', dns_isp: 'اپراتور شما: {n}', dns_isp_unknown: 'اپراتور شناسایی نشد', dns_isp_hint: 'DNS اپراتور شما جواب داد — همان پیشنهاد می‌شود.', dns_isp_hint_silent: 'DNS اپراتور شما جواب نداد — سریع‌ترین DNS عمومی پیشنهاد می‌شود.', dns_more: 'نمایش {n} سرور بدون پاسخ', dns_less: 'پنهان کردن سرورهای بدون پاسخ', dns_last: 'آخرین اسکن {t}', dns_none: 'برای تست سرورها «اسکن» را بزنید.', dns_applied: 'DNS روی {n} تنظیم شد', dns_empty: 'هیچ سروری جواب نداد — اتصال را بررسی کنید.',
+    grp_isp: 'اپراتور', grp_iran: 'ایران', grp_global: 'عمومی', grp_family: 'فیلتر خانواده', grp_secure: 'فیلتر بدافزار', dns_auto: 'خودکار — بهترین برای شبکهٔ من',
+    acc_title: 'حساب کاربری', acc_sub: 'پلن، دستگاه‌ها، رمز عبور و لینک‌ها — همه بدون خروج از برنامه.', acc_refresh: 'به‌روزرسانی', acc_loading: 'در حال دریافت حساب…', acc_offline: 'دسترسی به fpsboost.ir ممکن نشد: {e}', acc_member: 'عضو از {d}', acc_devices: 'دستگاه‌ها', acc_devices_n: '{a} از {n} کامپیوتر', acc_devices_sub: 'هر حساب روی {n} کامپیوتر کار می‌کند. ریست، کامپیوترهای دیگر را فراموش می‌کند؛ این یکی وارد می‌ماند.', acc_reset: 'ریست دستگاه‌ها', acc_reset_done: 'دستگاه‌های دیگر حذف شدند', acc_plan: 'پلن', acc_plan_sub: 'تمدید یا خرید در fpsboost.ir — برنامه تا یک دقیقه بعد متوجه می‌شود.',
+    acc_pw: 'تغییر رمز عبور', acc_pw_sub: 'رمز فعلی لازم است. دستگاه‌های دیگر وارد می‌مانند.', acc_pw_cur: 'رمز فعلی', acc_pw_new: 'رمز جدید (حداقل ۸ کاراکتر)', acc_pw_new2: 'تکرار رمز جدید', acc_pw_btn: 'تغییر رمز', acc_pw_mismatch: 'رمزهای جدید یکسان نیستند', acc_pw_done: 'رمز عبور عوض شد',
+    acc_links: 'لینک‌ها', acc_l_account: 'حساب در fpsboost.ir', acc_l_account_s: 'پلن‌ها، پرداخت‌ها و دستگاه‌ها در مرورگر', acc_l_download: 'صفحهٔ دانلود', acc_l_download_s: 'آخرین نصب‌کننده', acc_l_support: 'پشتیبانی', acc_l_support_s: 'هر سؤالی دارید بپرسید', acc_l_terms: 'قوانین', acc_l_terms_s: 'اشتراک چه چیزهایی را شامل می‌شود', acc_l_site: 'fpsboost.ir', acc_l_site_s: 'امکانات، بازی‌ها، سؤال‌های متداول',
+    acc_pay: 'پرداخت‌ها', acc_pay_none: 'هنوز پرداختی نیست.', acc_pay_months: '{n} ماهه', toman: 'تومان', pay_paid: 'پرداخت شد', pay_pending: 'در انتظار', pay_failed: 'ناموفق', acc_prices: 'پلن‌ها', per_month: '{n} ماهه', per_months: '{n} ماهه',
   },
 };
 const ICONS = { game_dvr_off: 'eye-off', game_mode_on: 'pad', fse_off: 'monitor', mm_games_priority: 'layers', hags_on: 'gpu', mouse_accel_off: 'mouse', background_apps_off: 'layers', power_throttling_off: 'power', visual_fx_perf: 'monitor', game_bar_off: 'pad', telemetry_off: 'eye-off', widgets_off: 'layers', tips_off: 'info', win32_priority: 'cpu', power_plan_high: 'power', startup_delay_off: 'clock', menu_delay_off: 'zap', sticky_keys_off: 'keyboard', paging_executive_off: 'ram', timer_global: 'clock', core_parking_off: 'cpu', sysmain_off: 'ram', wsearch_off: 'eye-off', nagle_off: 'zap', network_throttling_off: 'wifi', qos_reserve_off: 'wifi', delivery_optimization_off: 'download', tcp_tuning: 'net', dns_fast: 'dns', wifi_power_max: 'wifi' };
 
 /* ---- state ---- */
-const S = { lang: 'en', page: 'home', info: {}, settings: {}, auth: {}, tweaks: null, presets: [], tools: [], guard: {}, upd: {}, system: {}, dns: [], filter: { fps: 'all', network: 'all' }, busy: new Set(), log: [], ping: null, live: false, max: false };
+const S = { lang: 'en', page: 'home', info: {}, settings: {}, auth: {}, tweaks: null, presets: [], tools: [], guard: {}, upd: {}, system: {}, dns: [], dnsScan: null, dnsMore: false, account: null, accErr: '', filter: { fps: 'all', network: 'all' }, busy: new Set(), log: [], ping: null, live: false, max: false };
 const t = (k, v) => { let s = (I18N[S.lang] || I18N.en)[k] ?? I18N.en[k] ?? k; if (v) for (const [a, b] of Object.entries(v)) s = s.replaceAll('{' + a + '}', b); return s; };
 const tx = (o) => (o && (o[S.lang] || o.en)) || '';
 const loc = () => S.lang === 'fa' ? 'fa-IR' : 'en-GB';
@@ -74,6 +88,8 @@ const fmtDate = (ms) => ms ? new Date(ms).toLocaleDateString(loc(), { year: 'num
 const fmtTime = (ms) => new Date(ms).toLocaleTimeString(loc(), { hour: '2-digit', minute: '2-digit' });
 const fmtMB = (mb) => mb >= 1024 ? (mb / 1024).toFixed(1) + ' ' + t('gb') : Math.round(mb) + ' ' + t('mb');
 const num = (s) => `<bdi>${esc(s)}</bdi>`;
+const fmtNum = (n) => Number(n || 0).toLocaleString(loc());
+const dnsName = (id) => { const p = (S.dns || []).find(x => x.id === id); return p ? p.label.replace(/\s*\(.*$/, '') : id; };
 const titleOf = (id) => { const tw = (S.tweaks || []).find(x => x.id === id); return tw ? tx(tw.title) : id; };
 
 /* ---- toast + log ---- */
@@ -105,9 +121,10 @@ function applyLite() { document.documentElement.classList.toggle('lite', !!S.set
 /* ---- navigation ---- */
 function go(page) {
   S.page = page;
-  $$('.nav-i').forEach(b => b.classList.toggle('on', b.dataset.page === page));
+  $$('.nav-i,.ucard').forEach(b => b.classList.toggle('on', b.dataset.page === page));
   $$('section[data-page]').forEach(s => { s.hidden = s.dataset.page !== page; });
   $('#content').scrollTop = 0;
+  if (page === 'account' && !S.account && !S.busy.has('account')) loadAccount();
 }
 
 /* ---- banners ---- */
@@ -134,6 +151,7 @@ function renderSub() {
     ${a.active ? `<div class="days"><i style="width:${pct}%"></i></div>` : ''}
     <button class="${a.active ? 'ghost' : 'pri'}" data-open="/account">${a.active ? t('renew') : t('buy')}</button>`;
   const u = $('#hi'); if (u) u.textContent = t('hi', { u: a.username || '' });
+  const uc = $('#ucard'); if (uc) uc.innerHTML = `<i class="av">${esc((a.username || '?').slice(0, 1).toUpperCase())}</i><div><b>${esc(a.username || '')}</b><small>${a.active ? t('nav_account') : t('sub_none')}</small></div><svg><use href="#i-chev"/></svg>`;
 }
 
 /* ---- home ---- */
@@ -208,7 +226,7 @@ function renderList(cat) {
   const shown = rows.filter(x => f === 'all' || (f === 'rec' ? x.recommended : !x.recommended));
   box.innerHTML = shown.map(tw => {
     const on = tw.applied === true, unknown = tw.applied == null, busy = S.busy.has(tw.id);
-    const opts = tw.options ? `<select data-opt="${tw.id}" ${on || busy ? 'disabled' : ''}>${(S.dns.length ? S.dns : Object.keys(tw.options)).filter(k => tw.options[k]).map(k => `<option value="${k}" ${k === (tw.defaultOption || '') ? 'selected' : ''}>${esc(tw.options[k])}</option>`).join('')}</select>` : '';
+    const opts = tw.options ? `<select data-opt="${tw.id}" ${on || busy ? 'disabled' : ''}>${optionsHTML(tw)}</select>` : '';
     return `<div class="tw ${on ? 'on' : ''} ${busy ? 'busy' : ''} ${unknown ? 'unknown' : ''}" data-id="${tw.id}">
       <div class="tw-ic"><svg><use href="#i-${ICONS[tw.id] || (cat === 'fps' ? 'bolt' : 'wifi')}"/></svg></div>
       <div class="tw-b"><h4>${esc(tx(tw.title))} ${tw.recommended ? `<span class="tag rec">${t('rec')}</span>` : `<span class="tag adv">${t('adv')}</span>`}${tw.reboot ? `<span class="tag reboot">${t('reboot')}</span>` : ''}</h4><p>${esc(tx(tw.desc))}</p></div>
@@ -219,6 +237,17 @@ function renderList(cat) {
   $('#' + cat + '-count').textContent = t('count', { a: onN, n: rows.length });
   $('#cnt-' + cat).textContent = `${onN}/${rows.length}`;
   box.classList.toggle('wait', !S.live);
+}
+function optionsHTML(tw) {
+  const sel = tw.selected || tw.defaultOption || '';
+  if (tw.id !== 'dns_fast' || !S.dns.length) return Object.keys(tw.options).filter(k => tw.options[k]).map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(tw.options[k])}</option>`).join('');
+  const best = S.dnsScan && S.dnsScan.best;
+  let html = `<option value="auto" ${sel === 'auto' ? 'selected' : ''}>${esc(t('dns_auto'))}${best ? ' · ' + esc(dnsName(best)) : ''}</option>`;
+  for (const g of ['isp', 'iran', 'global', 'family', 'secure']) {
+    const list = S.dns.filter(p => p.group === g); if (!list.length) continue;
+    html += `<optgroup label="${esc(t('grp_' + g))}">${list.map(p => `<option value="${p.id}" ${p.id === sel ? 'selected' : ''}>${esc(p.label)}</option>`).join('')}</optgroup>`;
+  }
+  return html;
 }
 function renderLists() { renderList('fps'); renderList('network'); }
 
@@ -231,6 +260,7 @@ async function toggleTweak(id, want) {
     if (r.error) throw new Error(r.error);
     tw.applied = r.applied; tw.hasBackup = !!want; tw.error = '';
     addLog(t(want ? 'log_apply' : 'log_revert', { t: tx(tw.title) }), 'ok');
+    if (id === 'dns_fast' && want) renderDNS();
     if (r.reboot && want) toast(t('reboot_hint'));
   } catch (e) { fail(e); }
   S.busy.delete(id); renderList(tw.category); renderHome(); renderGames();
@@ -301,6 +331,114 @@ async function runPing() {
   btn.disabled = false; btn.textContent = t('ping_run');
 }
 
+/* ---- DNS finder ---- */
+function dnsInUse() {
+  const tw = (S.tweaks || []).find(x => x.id === 'dns_fast');
+  return tw && tw.applied === true ? (tw.current || '') : '';
+}
+function renderDNS() {
+  const box = $('#dnsr'), sc = S.dnsScan, isp = $('#dnsisp'), bestBtn = $('#dnsbest'); if (!box) return;
+  const scanning = S.busy.has('dns');
+  const btn = $('#dnsbtn'); btn.disabled = scanning; $('span', btn).textContent = scanning ? t('dns_scanning') : t('dns_scan');
+  if (!sc || !sc.results) { box.innerHTML = `<p class="muted dns-empty">${t('dns_none')}</p>`; isp.hidden = true; bestBtn.hidden = true; return; }
+  isp.hidden = false; isp.className = 'pill ' + (sc.isp ? 'ok' : 'idle'); isp.textContent = sc.isp ? t('dns_isp', { n: sc.ispName || sc.isp }) : t('dns_isp_unknown');
+  bestBtn.hidden = !sc.best; if (sc.best) { $('span', bestBtn).textContent = t('dns_best', { n: dnsName(sc.best) }); bestBtn.dataset.dns = sc.best; }
+  const ok = sc.results.filter(r => r.ms != null), silent = sc.results.filter(r => r.ms == null);
+  const max = ok.length ? Math.max(...ok.map(r => r.ms)) : 1;
+  const ispP = S.dns.find(p => p.group === 'isp' && p.isp === sc.isp);
+  const ispRow = ispP && sc.results.find(r => r.id === ispP.id);
+  const hint = ispP ? (ispRow && ispRow.ms != null && sc.best === ispP.id ? t('dns_isp_hint') : t('dns_isp_hint_silent')) : '';
+  const inUse = dnsInUse();
+  const row = (r, i) => { const rec = r.id === sc.best, used = r.id === inUse, loss = r.queries ? Math.round((1 - r.answers / r.queries) * 100) : 0;
+    return `<div class="dr ${rec ? 'rec' : ''} ${used ? 'used' : ''} ${r.ms == null ? 'silent' : ''}" data-dns-row="${esc(r.id)}">
+      <i class="rank">${r.ms == null ? '–' : i + 1}</i>
+      <div class="dr-b"><b>${esc(r.label)}${rec ? `<span class="tag rec"><svg><use href="#i-star"/></svg>${t('dns_rec')}</span>` : ''}${used ? `<span class="tag used">${t('dns_in_use')}</span>` : ''}</b><small class="mono">${esc(r.servers.join(' · '))}<span class="grp">${esc(t('grp_' + r.group))}</span></small></div>
+      <div class="dr-m">${r.ms == null ? `<b class="bad">${t('dns_silent')}</b>` : `<b class="${r.ms < 40 ? 'ok' : r.ms < 120 ? 'warn' : 'bad'}">${num(r.ms + ' ' + t('ping_ms'))}</b>${loss ? `<small>${num(loss + '%')} ${t('ping_loss')}</small>` : ''}<div class="bar"><i class="${r.ms < 40 ? '' : r.ms < 120 ? 'warn' : 'bad'}" style="width:${Math.max(4, Math.round(r.ms / max * 100))}%"></i></div>`}</div>
+      <button class="${rec ? 'pri' : 'ghost'} sm" data-dns="${esc(r.id)}" ${r.ms == null || S.busy.has('dns_fast') || used ? 'disabled' : ''}>${used ? `<svg><use href="#i-check"/></svg>` : t('dns_use')}</button>
+    </div>`; };
+  box.innerHTML = `<div class="dns-meta"><span class="muted">${hint ? esc(hint) + ' · ' : ''}${esc(t('dns_last', { t: fmtTime(sc.at) }))}</span></div>
+    ${ok.length ? ok.map(row).join('') : `<p class="muted dns-empty">${t('dns_empty')}</p>`}
+    ${silent.length ? `<button class="ghost sm dns-more" id="dnsmore">${S.dnsMore ? t('dns_less') : t('dns_more', { n: silent.length })}</button>${S.dnsMore ? silent.map(row).join('') : ''}` : ''}`;
+}
+async function runDNSScan() {
+  if (S.busy.has('dns')) return;
+  S.busy.add('dns'); renderDNS();
+  try { S.dnsScan = await api('dns.scan'); if (!S.dnsScan.best) toast(t('dns_empty'), 'bad'); }
+  catch (e) { fail(e); }
+  S.busy.delete('dns'); renderDNS(); renderList('network');
+}
+async function applyDNS(id) {
+  const tw = (S.tweaks || []).find(x => x.id === 'dns_fast'); if (!tw || S.busy.has('dns_fast')) return;
+  tw.selected = id; S.busy.add('dns_fast'); renderList('network'); renderDNS();
+  try {
+    const r = await api('tweaks.apply', 'dns_fast', id);
+    if (r.error) throw new Error(r.error);
+    tw.applied = r.applied; tw.hasBackup = true; tw.error = ''; tw.current = id;
+    toast(t('dns_applied', { n: dnsName(id) }), 'ok'); addLog(t('dns_applied', { n: dnsName(id) }), 'ok');
+  } catch (e) { fail(e); }
+  S.busy.delete('dns_fast'); renderList('network'); renderDNS(); renderHome();
+}
+
+/* ---- account page ---- */
+async function loadAccount(force) {
+  if (S.busy.has('account')) return;
+  S.busy.add('account'); S.accErr = ''; if (force) S.account = null; renderAccount();
+  try { S.account = await api('auth.account'); }
+  catch (e) { S.accErr = e.message; if (/log in again|disabled|not logged in/i.test(e.message)) { S.busy.delete('account'); api('auth.status').then(a => { S.auth = a; if (!a.loggedIn) showLogin(); }); } }
+  S.busy.delete('account'); renderAccount(); renderSub(); renderHome();
+}
+function renderAccount() {
+  const box = $('#account'); if (!box) return;
+  const a = S.auth, acc = S.account, loading = S.busy.has('account');
+  const days = a.expires ? Math.max(0, Math.ceil((a.expires - Date.now()) / 864e5)) : 0, pct = Math.min(100, Math.round(days / 30 * 100));
+  const support = acc && acc.support ? acc.support : '';
+  const supportHref = support ? (support.startsWith('@') ? 'https://t.me/' + support.slice(1) : support.includes('@') && !support.startsWith('http') ? 'mailto:' + support : support) : '';
+  const link = (icon, title, sub, href, ext) => `<a class="lnk" href="#" ${ext ? `data-href="${esc(href)}"` : `data-open="${esc(href)}"`}><i><svg><use href="#i-${icon}"/></svg></i><div><b>${esc(title)}</b><small>${esc(sub)}</small></div><svg class="go"><use href="#i-ext"/></svg></a>`;
+  const prices = acc && acc.prices ? Object.entries(acc.prices).sort((x, y) => Number(x[0]) - Number(y[0])) : [];
+  box.innerHTML = `
+    <div class="acc-top">
+      <div class="card acc-me ${a.active ? 'on' : 'off'}">
+        <div class="acc-id"><i class="av big">${esc((a.username || '?').slice(0, 1).toUpperCase())}</i><div><h3>${esc(a.username || '')}</h3><p class="muted">${acc && acc.created ? esc(t('acc_member', { d: fmtDate(acc.created) })) : (loading ? esc(t('acc_loading')) : '')}</p></div><span class="pill ${a.active ? (days <= 5 ? 'warn' : 'ok') : 'off'}">${a.active ? t('sub_days', { n: days }) : t('sub_none')}</span></div>
+        <div class="acc-plan"><div class="meter"><div class="meter-h"><span>${t('acc_plan')}</span><b>${a.active ? esc(t('sub_active', { d: fmtDate(a.expires) })) : esc(t('sub_none'))}</b></div><div class="bar"><i class="${a.active ? (days <= 5 ? 'warn' : '') : 'bad'}" style="width:${a.active ? pct : 0}%"></i></div></div><p class="muted">${t('acc_plan_sub')}${a.offline ? ' · ' + esc(t('sub_offline', { d: fmtDate(a.checked) })) : ''}</p>
+          ${prices.length ? `<div class="plans">${prices.map(([m, v]) => `<button class="plan ghost sm" data-open="/account"><b>${esc(t(Number(m) === 1 ? 'per_month' : 'per_months', { n: fmtNum(m) }))}</b><small>${esc(fmtNum(v))} ${t('toman')}</small></button>`).join('')}</div>` : ''}
+          <div class="acc-acts"><button class="${a.active ? 'ghost' : 'pri'}" data-open="/account"><svg><use href="#i-card"/></svg>${a.active ? t('renew') : t('buy')}</button><button class="ghost" id="logout"><svg><use href="#i-logout"/></svg>${t('logout')}</button></div></div>
+        ${S.accErr ? `<p class="err">${esc(t('acc_offline', { e: S.accErr }))}</p>` : ''}
+      </div>
+      <div class="acc-side">
+        <div class="card"><h3><svg><use href="#i-devices"/></svg><span>${t('acc_devices')}</span>${acc ? `<i class="pill ${acc.machines >= acc.max ? 'warn' : 'ok'}">${esc(t('acc_devices_n', { a: fmtNum(acc.machines), n: fmtNum(acc.max) }))}</i>` : ''}</h3><p class="muted">${t('acc_devices_sub', { n: acc ? fmtNum(acc.max) : '…' })}</p><div class="acc-acts"><button class="ghost sm" id="acc-devices" ${!acc || S.busy.has('devices') ? 'disabled' : ''}><svg><use href="#i-refresh"/></svg>${t('acc_reset')}</button></div></div>
+        <div class="card"><h3><svg><use href="#i-key"/></svg><span>${t('acc_pw')}</span></h3><p class="muted">${t('acc_pw_sub')}</p>
+          <form id="pwform" class="pwform" autocomplete="off"><input type="password" id="pw0" placeholder="${esc(t('acc_pw_cur'))}" autocomplete="current-password" required maxlength="200"><input type="password" id="pw1" placeholder="${esc(t('acc_pw_new'))}" autocomplete="new-password" required minlength="8" maxlength="200"><input type="password" id="pw2" placeholder="${esc(t('acc_pw_new2'))}" autocomplete="new-password" required minlength="8" maxlength="200"><p class="err" id="pwerr"></p><button class="pri sm" id="pwbtn" ${S.busy.has('pw') ? 'disabled' : ''}><svg><use href="#i-key"/></svg>${t('acc_pw_btn')}</button></form></div>
+      </div>
+    </div>
+    <div class="sh">${t('acc_links')}</div>
+    <div class="links2">
+      ${link('user', t('acc_l_account'), t('acc_l_account_s'), '/account')}
+      ${link('download', t('acc_l_download'), t('acc_l_download_s'), '/download')}
+      ${support ? link('send', t('acc_l_support'), support, supportHref, true) : ''}
+      ${link('globe', t('acc_l_site'), t('acc_l_site_s'), '/')}
+      ${link('info', t('acc_l_terms'), t('acc_l_terms_s'), '/terms')}
+    </div>
+    <div class="sh">${t('acc_pay')}</div>
+    <div class="card pays">${acc && acc.payments && acc.payments.length ? `<table><thead><tr><th>${t('acc_pay')}</th><th></th><th></th><th></th></tr></thead><tbody>${acc.payments.map(p => `<tr><td>${esc(fmtDate(p.at))}</td><td>${esc(t('acc_pay_months', { n: fmtNum(p.months) }))}</td><td>${num(fmtNum(p.amount) + ' ' + t('toman'))}</td><td><span class="pill ${p.status === 'paid' ? 'ok' : p.status === 'pending' ? 'idle' : 'off'}">${esc(t('pay_' + p.status) === 'pay_' + p.status ? p.status : t('pay_' + p.status))}</span>${p.ref ? ` <small class="muted mono">${esc(p.ref)}</small>` : ''}</td></tr>`).join('')}</tbody></table>` : `<p class="muted">${loading ? t('acc_loading') : t('acc_pay_none')}</p>`}</div>`;
+}
+async function changePassword() {
+  const cur = $('#pw0').value, n1 = $('#pw1').value, n2 = $('#pw2').value, err = $('#pwerr');
+  err.textContent = '';
+  if (n1 !== n2) { err.textContent = t('acc_pw_mismatch'); return; }
+  if (S.busy.has('pw')) return;
+  S.busy.add('pw'); $('#pwbtn').disabled = true;
+  try { await api('auth.password', cur, n1); toast(t('acc_pw_done'), 'ok'); addLog(t('acc_pw_done'), 'ok'); $('#pw0').value = $('#pw1').value = $('#pw2').value = ''; }
+  catch (e) { err.textContent = e.message; }
+  S.busy.delete('pw'); const b = $('#pwbtn'); if (b) b.disabled = false;
+}
+async function resetDevices() {
+  if (S.busy.has('devices')) return;
+  S.busy.add('devices'); renderAccount();
+  try { const r = await api('auth.devices'); if (S.account) S.account.machines = r.machines; toast(t('acc_reset_done'), 'ok'); addLog(t('acc_reset_done'), 'ok'); }
+  catch (e) { fail(e); }
+  S.busy.delete('devices'); renderAccount();
+}
+
 /* ---- settings ---- */
 function renderSettings() {
   const s = S.settings, a = S.auth, u = S.upd || {};
@@ -324,7 +462,7 @@ function renderSettings() {
     </div>
     <div class="sh">${t('s_account')}</div>
     <div class="card set">
-      <div class="srow"><div><h4>${esc(a.username || '')}</h4><p class="muted">${a.active ? t('sub_active', { d: fmtDate(a.expires) }) : t('sub_none')}${a.offline ? ' · ' + t('sub_offline', { d: fmtDate(a.checked) }) : ''}</p></div><div class="lrow"><button class="ghost sm" data-open="/account"><svg><use href="#i-ext"/></svg>${t('s_manage')}</button><button class="ghost sm" id="logout"><svg><use href="#i-logout"/></svg>${t('logout')}</button></div></div>
+      <div class="srow"><div><h4>${esc(a.username || '')}</h4><p class="muted">${a.active ? t('sub_active', { d: fmtDate(a.expires) }) : t('sub_none')}${a.offline ? ' · ' + t('sub_offline', { d: fmtDate(a.checked) }) : ''}</p></div><div class="lrow"><button class="ghost sm" data-page="account"><svg><use href="#i-user"/></svg>${t('s_manage')}</button><button class="ghost sm" id="logout"><svg><use href="#i-logout"/></svg>${t('logout')}</button></div></div>
     </div>
     <div class="sh">${t('s_about')}</div>
     <div class="card"><div class="about"><img src="assets/logo.png" alt=""><div><b>FPS Boost <bdi>${esc(S.info.version || '')}</bdi></b><span class="muted">${t('win')} · ${t('made')}</span></div><button class="ghost sm" data-open="/"><svg><use href="#i-globe"/></svg>${t('s_site')}</button></div></div>`;
@@ -347,7 +485,7 @@ function renderUpdate() {
 function renderAll() {
   $('#tbver').textContent = S.info.version ? 'v' + S.info.version : '';
   $('#version1').textContent = S.info.version ? 'v' + S.info.version : '';
-  renderSub(); renderBanner(); renderHome(); renderLists(); renderGames(); renderTools(); renderSettings(); renderPing();
+  renderSub(); renderBanner(); renderHome(); renderLists(); renderGames(); renderTools(); renderSettings(); renderPing(); renderDNS(); renderAccount();
 }
 
 /* ---- data refresh ---- */
@@ -356,7 +494,7 @@ async function refreshState() {
 }
 function applyState(st) { S.tweaks = st; S.live = true; renderLists(); renderHome(); renderGames(); }
 on('state', applyState);
-on('auth', (a) => { S.auth = a; renderSub(); renderBanner(); renderHome(); renderSettings(); });
+on('auth', (a) => { S.auth = a; renderSub(); renderBanner(); renderHome(); renderSettings(); renderAccount(); if (!a.loggedIn && !$('#main').hidden) showLogin(); });
 on('guard', (g) => { S.guard = g; renderGuard(); renderHome(); });
 on('update', (u) => { S.upd = u; renderUpdate(); });
 on('settings', (s) => { S.settings = s; applyLite(); renderGuard(); renderSettings(); });
@@ -365,9 +503,15 @@ on('restore', (r) => { if (r.status === 'created') toast(t('restore_point_made')
 
 /* ---- events ---- */
 document.addEventListener('click', (e) => {
-  const el = e.target.closest('[data-page],[data-win],[data-open],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-run],[data-lang],[data-upd],#boost,#unboost,#pingbtn,#logout,#cleannow');
+  const el = e.target.closest('[data-page],[data-win],[data-open],[data-href],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-run],[data-lang],[data-upd],[data-dns],#boost,#unboost,#pingbtn,#dnsbtn,#dnsmore,#logout,#cleannow,#acc-refresh,#acc-devices');
   if (!el) return;
   if (el.dataset.page) go(el.dataset.page);
+  else if (el.dataset.href) { e.preventDefault(); api('app.open', el.dataset.href); }
+  else if (el.dataset.dns) applyDNS(el.dataset.dns);
+  else if (el.id === 'dnsbtn') runDNSScan();
+  else if (el.id === 'dnsmore') { S.dnsMore = !S.dnsMore; renderDNS(); }
+  else if (el.id === 'acc-refresh') loadAccount(true);
+  else if (el.id === 'acc-devices') resetDevices();
   else if (el.dataset.win) api('app.win', el.dataset.win);
   else if (el.dataset.open !== undefined) { e.preventDefault(); api('app.open', (S.info.serverUrl || 'https://fpsboost.ir') + (el.dataset.open === '/' ? '' : el.dataset.open)); }
   else if (el.classList.contains('lang')) { e.preventDefault(); setLang(S.lang === 'fa' ? 'en' : 'fa'); }
@@ -381,14 +525,16 @@ document.addEventListener('click', (e) => {
   else if (el.id === 'boost') batch('boost', 'tweaks.applyRecommended', '', 'log_boost', el);
   else if (el.id === 'unboost') batch('unboost', 'tweaks.revertAll', '', 'log_restore', el);
   else if (el.id === 'pingbtn') runPing();
-  else if (el.id === 'logout') api('auth.logout').then(a => { S.auth = a; showLogin(); });
+  else if (el.id === 'logout') api('auth.logout').then(a => { S.auth = a; S.account = null; showLogin(); });
   else if (el.id === 'cleannow') { el.disabled = true; api('guard.clean').then(r => { toast(t('freed', { n: fmtMB(r.mb || 0) }), 'ok'); addLog(t('freed', { n: fmtMB(r.mb || 0) }), 'ok'); }).catch(fail).finally(() => { el.disabled = !S.auth.active; }); }
 });
 document.addEventListener('change', (e) => {
   const tw = e.target.closest('input[data-tw]'); if (tw) { toggleTweak(tw.dataset.tw, tw.checked); return; }
+  const opt = e.target.closest('select[data-opt]'); if (opt) { const x = (S.tweaks || []).find(y => y.id === opt.dataset.opt); if (x) x.selected = opt.value; return; }
   const st = e.target.closest('input[data-set]'); if (st) { const patch = {}; patch[st.dataset.set] = st.checked; api('settings.set', patch).then(s => { S.settings = s; applyLite(); renderGuard(); renderSettings(); renderHome(); }).catch(fail); }
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.id === 'pinghosts') runPing(); });
+document.addEventListener('submit', (e) => { if (e.target.id === 'pwform') { e.preventDefault(); changePassword(); } });
 // title bar: drag + double-click fallbacks for runtimes without app-region support (the host swallows them otherwise)
 $('#tb').addEventListener('mousedown', (e) => { if (e.button === 0 && !e.target.closest('button')) api('app.win', 'drag'); });
 $('#tb').addEventListener('dblclick', (e) => { if (!e.target.closest('button')) api('app.win', 'max'); });
@@ -405,7 +551,7 @@ async function showMain() {
 $('#loginform').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = $('#lbtn'); btn.disabled = true; $('span', btn).textContent = t('signing_in'); $('#lerr').textContent = '';
-  try { S.auth = await api('auth.login', $('#lu').value.trim(), $('#lp').value); $('#lp').value = ''; await showMain(); }
+  try { S.auth = await api('auth.login', $('#lu').value.trim(), $('#lp').value); $('#lp').value = ''; S.account = null; S.accErr = ''; await showMain(); }
   catch (err) { $('#lerr').textContent = err.message; }
   btn.disabled = false; $('span', btn).textContent = t('login');
 });
@@ -414,7 +560,9 @@ $('#loginform').addEventListener('submit', async (e) => {
 (async () => {
   if (!native) await new Promise(r => { const s = document.createElement('script'); s.src = 'mock.js'; s.onload = r; document.head.appendChild(s); });
   const b = await api('app.boot');
-  Object.assign(S, { info: b.info || {}, settings: b.settings || {}, auth: b.auth || {}, tweaks: b.state || null, presets: b.presets || [], tools: b.tools || [], guard: b.guard || {}, upd: b.update || {}, system: b.system || {}, dns: b.dns || [] });
+  Object.assign(S, { info: b.info || {}, settings: b.settings || {}, auth: b.auth || {}, tweaks: b.state || null, presets: b.presets || [], tools: b.tools || [], guard: b.guard || {}, upd: b.update || {}, system: b.system || {}, dns: Array.isArray(b.dns) ? b.dns : [] });
+  try { S.dnsScan = typeof b.dnsScan === 'string' ? JSON.parse(b.dnsScan) : (b.dnsScan || null); } catch (e) { S.dnsScan = null; }
+  if (S.dnsScan && !S.dnsScan.results) S.dnsScan = null;
   try { S.ping = S.settings.lastPing ? JSON.parse(S.settings.lastPing) : null; } catch (e) { S.ping = null; }
   if (S.ping && !S.ping.results) S.ping = null;
   $('#pinghosts').value = (S.info.pingHosts || []).join(' ');

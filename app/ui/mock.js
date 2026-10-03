@@ -24,8 +24,20 @@
     ['dns_fast', 'network', 'safe', true, false, T('Fast DNS on every connection', 'DNS سریع روی همهٔ اتصال‌ها'), T('Replaces the ISP resolver on all active adapters. Undo restores what you had.', 'DNS اپراتور را روی همهٔ کارت‌های فعال عوض می‌کند.')],
     ['wifi_power_max', 'network', 'safe', false, false, T('Wi-Fi adapter: maximum performance', 'کارت Wi-Fi: حداکثر کارایی'), T('Stops Windows putting the wireless adapter to sleep between packets.', 'جلوی خواباندن کارت وایرلس بین پکت‌ها را می‌گیرد.')],
   ].map(([id, category, level, recommended, reboot, title, desc]) => ({ id, category, level, recommended, reboot, title, desc, hasBackup: false }));
-  TW.find(t => t.id === 'dns_fast').options = { cloudflare: 'Cloudflare 1.1.1.1', google: 'Google 8.8.8.8', shecan: 'Shecan (شکن — anti-sanction)', electro: 'Electro (الکترو — anti-sanction)', begzar: 'Begzar (بگذر — anti-sanction)', radar: 'Radar Game (رادار — gaming)', '403': '403.online (anti-sanction)' };
-  TW.find(t => t.id === 'dns_fast').defaultOption = 'cloudflare';
+  const DNS = [
+    ['shatel', 'Shatel (شاتل — ISP)', ['85.15.1.14', '85.15.1.15'], 'isp', 'shatel'], ['tci', 'TCI / Mokhabrat (مخابرات — ISP)', ['217.218.127.127', '217.218.155.155'], 'isp', 'tci'], ['pishgaman', 'Pishgaman (پیشگامان — ISP)', ['5.202.100.100', '5.202.100.101'], 'isp', 'pishgaman'],
+    ['shecan', 'Shecan (شکن — anti-sanction)', ['178.22.122.100', '185.51.200.2'], 'iran'], ['electro', 'Electro (الکترو — anti-sanction)', ['78.157.42.100', '78.157.42.101'], 'iran'], ['begzar', 'Begzar (بگذر — anti-sanction)', ['185.55.226.26', '185.55.225.25'], 'iran'], ['radar', 'Radar Game (رادار — gaming)', ['10.202.10.10', '10.202.10.11'], 'iran'], ['403', '403.online (anti-sanction)', ['10.202.10.202', '10.202.10.102'], 'iran'],
+    ['cloudflare', 'Cloudflare 1.1.1.1', ['1.1.1.1', '1.0.0.1'], 'global'], ['google', 'Google 8.8.8.8', ['8.8.8.8', '8.8.4.4'], 'global'], ['quad9', 'Quad9 Security', ['9.9.9.9', '149.112.112.112'], 'global'], ['opendns', 'OpenDNS', ['208.67.222.222', '208.67.220.220'], 'global'], ['level3b', 'Level 3 B (4.2.2.1)', ['4.2.2.1', '4.2.2.2'], 'global'], ['adguard', 'AdGuard', ['94.140.14.14', '94.140.15.15'], 'global'], ['yandex', 'Yandex', ['77.88.8.1', '77.88.8.8'], 'global'], ['comodo', 'Comodo Secure', ['8.26.56.26', '8.20.247.20'], 'global'],
+    ['cloudflare_family', 'Cloudflare Malware + Adult Blocking', ['1.1.1.3', '1.0.0.3'], 'family'], ['adguard_family', 'AdGuard Family', ['94.140.14.15', '94.140.15.16'], 'family'], ['yandex_safe', 'Yandex Safe', ['77.88.8.88', '77.88.8.2'], 'secure'],
+  ].map(([id, label, servers, group, isp]) => ({ id, label, servers, group, isp }));
+  const dnsOpts = { auto: 'Auto — best for my network (ISP first, then fastest)' }; DNS.forEach(p => { dnsOpts[p.id] = p.label; });
+  TW.find(t => t.id === 'dns_fast').options = dnsOpts;
+  TW.find(t => t.id === 'dns_fast').defaultOption = 'auto';
+  const dnsScan = () => { const lat = { shatel: 9, tci: null, pishgaman: null, shecan: 14, electro: 18, begzar: 22, radar: null, 403: null, cloudflare: 41, google: 58, quad9: 77, opendns: 96, level3b: 71, adguard: 83, yandex: 132, comodo: 160, cloudflare_family: 44, adguard_family: 88, yandex_safe: 140 };
+    const results = DNS.map(p => ({ id: p.id, label: p.label, group: p.group, servers: p.servers, ms: lat[p.id] ?? null, answers: lat[p.id] == null ? 0 : (p.id === 'google' ? 5 : 8), queries: 8 })).sort((a, b) => (a.ms == null) - (b.ms == null) || (a.ms || 0) - (b.ms || 0));
+    const isp = q.get('isp') === 'none' ? '' : (q.get('isp') || 'shatel'); return { at: Date.now(), isp, ispName: { shatel: 'Shatel', tci: 'TCI (Mokhabrat)' }[isp] || '', best: isp === 'shatel' ? 'shatel' : 'shecan', results }; };
+  let lastScan = q.get('dns') === '1' ? dnsScan() : null;
+  let account = { username: 'hawre', active: true, expires: Date.now() + 23 * 864e5, created: Date.now() - 140 * 864e5, machines: 2, max: 2, support: '@fpsboost', prices: { 1: 150000, 3: 390000, 12: 1290000 }, payments: [{ at: Date.now() - 7 * 864e5, months: 1, amount: 150000, status: 'paid', ref: '184773920' }, { at: Date.now() - 40 * 864e5, months: 1, amount: 150000, status: 'paid', ref: '173662011' }, { at: Date.now() - 41 * 864e5, months: 3, amount: 390000, status: 'failed', ref: '' }] };
   const state = () => TW.map(t => ({ ...t, applied: applied.has(t.id), hasBackup: applied.has(t.id) }));
   const auth = () => ({ loggedIn, username: loggedIn ? 'hawre' : '', active: loggedIn && active, expires: Date.now() + 23 * 864e5, checked: Date.now(), offline: q.get('offline') === '1' });
   const presets = [
@@ -56,7 +68,11 @@
   let upd = { status: q.get('upd') || 'uptodate', current: '1.0.0', latest: '1.1.0', progress: 42, file: '', error: '' };
   const emit = (n, d) => window.__ev && window.__ev(n, d);
   const methods = {
-    'app.boot': async () => ({ info: { name: 'FPS Boost', version: '1.0.0', isAdmin: q.get('admin') !== '0', pingHosts: ['1.1.1.1', '8.8.8.8', 'google.com'], debug: false, serverUrl: 'https://fpsboost.ir' }, settings, auth: auth(), state: q.get('cached') === '0' ? null : state(), presets, tools, guard, update: upd, system: { os: 'Windows 11 Pro 24H2', cpu: 'Intel Core i5-12400F', cores: 12, ramGb: 16, gpu: 'NVIDIA GeForce RTX 3060' }, dns: ['cloudflare', 'google', 'shecan', 'electro', 'begzar', 'radar', '403'] }),
+    'app.boot': async () => ({ info: { name: 'FPS Boost', version: '1.0.2', isAdmin: q.get('admin') !== '0', pingHosts: ['1.1.1.1', '8.8.8.8', 'google.com'], debug: false, serverUrl: 'https://fpsboost.ir' }, settings, auth: auth(), state: q.get('cached') === '0' ? null : state(), presets, tools, guard, update: upd, system: { os: 'Windows 11 Pro 24H2', cpu: 'Intel Core i5-12400F', cores: 12, ramGb: 16, gpu: 'NVIDIA GeForce RTX 3060' }, dns: DNS, dnsScan: lastScan }),
+    'dns.scan': async () => { await wait(Number(q.get('scanMs') || 1800)); lastScan = dnsScan(); return lastScan; },
+    'auth.account': async () => { await wait(500); if (q.get('acc') === 'down') throw new Error('cannot reach https://fpsboost.ir'); return account; },
+    'auth.password': async (cur, next) => { await wait(600); if (cur !== 'pw') throw new Error('the current password is wrong'); return true; },
+    'auth.devices': async () => { await wait(500); account = { ...account, machines: 1 }; return { machines: 1 }; },
     'app.open': async () => null, 'app.win': async () => null, 'app.quit': async () => null,
     'auth.login': async (u, p) => { await wait(600); if (!u || !p || p === 'wrong') throw new Error('wrong username or password'); loggedIn = true; return auth(); },
     'auth.status': async () => { await wait(300); return auth(); }, 'auth.logout': async () => { loggedIn = false; return auth(); },
@@ -67,7 +83,7 @@
     'tweaks.revertAll': async (cat) => { const ids = TW.filter(t => applied.has(t.id) && (!cat || t.category === cat)).map(t => t.id); for (let i = 0; i < ids.length; i++) { await wait(100); applied.delete(ids[i]); emit('progress', { op: 'restore', done: i + 1, total: ids.length, id: ids[i] }); } return ids.map(id => ({ id, applied: false })); },
     'presets.apply': async (id) => { const p = presets.find(x => x.id === id); for (let i = 0; i < p.tweaks.length; i++) { await wait(120); applied.add(p.tweaks[i]); emit('progress', { op: 'preset', done: i + 1, total: p.tweaks.length, id: p.tweaks[i], preset: id }); } return p.tweaks.map(id => ({ id, applied: true })); },
     'tools.action': async (id) => { await wait(900); if (id === 'ram_clean') return { id, message: T('Freed 1340 MB', '1340 مگابایت آزاد شد') }; if (id === 'clean_temp') return { id, message: T('Freed 412 MB', '412 مگابایت آزاد شد') }; return { id, message: T('Done', 'انجام شد'), reboot: id === 'winsock_reset' }; },
-    'tools.ping': async (hosts) => { await wait(1200); return (hosts.length ? hosts : ['1.1.1.1', '8.8.8.8', 'google.com']).map((host, i) => ({ host, avg: i === 2 ? null : [31, 48][i], min: 29, max: 55, loss: i === 2 ? 4 : 0 })); },
+    'tools.ping': async (hosts) => { await wait(900); return (hosts.length ? hosts : ['1.1.1.1', '8.8.8.8', 'google.com']).map((host, i) => ({ host, avg: i === 2 ? null : [31, 48][i], min: 29, max: 55, loss: i === 2 ? 4 : 0 })); },
     'guard.status': async () => guard, 'guard.clean': async () => { await wait(800); guard = { ...guard, freedMb: guard.freedMb + 900, availMb: guard.availMb + 900 }; emit('guard', guard); return { mb: 900 }; },
     'update.check': async () => { upd = { ...upd, status: 'checking' }; emit('update', upd); await wait(800); upd = { ...upd, status: 'available' }; emit('update', upd); return upd; },
     'update.download': async () => { for (let p = 0; p <= 100; p += 20) { await wait(150); upd = { ...upd, status: 'downloading', progress: p }; emit('update', upd); } upd = { ...upd, status: 'ready', progress: 100 }; emit('update', upd); return upd; },

@@ -9,8 +9,10 @@ app/
   main_windows.go        wiring: flags, data folder, RPC handlers, tray menu, window open/close, update loop
   internal/engine        Sys interface (registry + commands), Backup (backup.json), Tweak, RegTweak/ServiceTweak/PowercfgTweak, Engine
   internal/tweaks        the 30 tweaks (fps / network) + game presets + the Guard's game exe list
+  internal/dns           resolver list (Shatel / TCI / Pishgaman ISP resolvers, Shecan & co, the DNS Jumper lists), the concurrent
+                         benchmark (dns.scan), ISP detection (server ASN → DHCP ranges) and the "auto" pick behind dns_fast
   internal/sysimpl       the real Sys: golang.org/x/sys/windows/registry + hidden commands; registry-only system info
-  internal/auth          fpsboost.ir login, Ed25519-signed answers, offline grace (auth.json)
+  internal/auth          fpsboost.ir login, Ed25519-signed answers, offline grace (auth.json); account page, password change, device reset
   internal/update        self-update: signed manifest → download → sha256 → FPSBoost-Setup.exe /S
   internal/guard         background loop: game detection, priority, 0.5 ms timer, RAM clean, tweak enforcement
   internal/win           Win32: frameless window, tray + menu, message loop, process/memory helpers, schtasks logon task

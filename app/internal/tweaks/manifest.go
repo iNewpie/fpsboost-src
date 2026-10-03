@@ -3,10 +3,12 @@
 package tweaks
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
 
+	"fpsboost.ir/app/internal/dns"
 	. "fpsboost.ir/app/internal/engine"
 )
 
@@ -194,29 +196,48 @@ func powerPlan() *Tweak {
 
 const ifaces = HKLM + `\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces`
 
-// DNSProvider is one choice of the dns_fast tweak.
-type DNSProvider struct {
-	Label   string
-	Servers []string
-}
+// DNS resolvers live in internal/dns (ISP / anti-sanction / DNS Jumper lists + the benchmark). The dns_fast tweak
+// offers every provider plus dns.Auto: scan, detect the ISP and pick (Shatel → 85.15.1.14, TCI → 217.218.127.127 …
+// when they answer, otherwise the fastest public resolver).
 
-var DNSOrder = []string{"cloudflare", "google", "shecan", "electro", "begzar", "radar", "403"}
-var DNSProviders = map[string]DNSProvider{
-	"cloudflare": {"Cloudflare 1.1.1.1", []string{"1.1.1.1", "1.0.0.1"}},
-	"google":     {"Google 8.8.8.8", []string{"8.8.8.8", "8.8.4.4"}},
-	"shecan":     {"Shecan (شکن — anti-sanction)", []string{"178.22.122.100", "185.51.200.2"}},
-	"electro":    {"Electro (الکترو — anti-sanction)", []string{"78.157.42.100", "78.157.42.101"}},
-	"begzar":     {"Begzar (بگذر — anti-sanction)", []string{"185.55.226.26", "185.55.225.25"}},
-	"radar":      {"Radar Game (رادار — gaming)", []string{"10.202.10.10", "10.202.10.11"}},
-	"403":        {"403.online (anti-sanction)", []string{"10.202.10.202", "10.202.10.102"}},
-}
+// DNSOrder: option ids in display order (auto first).
+var DNSOrder = append([]string{dns.Auto}, dns.IDs()...)
+
+// DetectISP returns the ISP id ("" = unknown). main replaces it with a version that asks the site worker for the
+// connection's ASN first; this default reads the DHCP-assigned resolvers from the registry.
+var DetectISP = func(s Sys) string { return dns.ISPFromIPs(dns.DHCPNameServers(s)) }
+
+// ScanDNS benchmarks the resolvers (replaceable in tests).
+var ScanDNS = func(ctx context.Context) []dns.Result { return dns.Scan(ctx, nil, nil, dns.Options{}) }
+
+// LastAutoPick is the provider the last "auto" apply chose (for the UI; "" = none yet).
+var LastAutoPick string
 
 func dnsOptions() map[string]string {
-	m := map[string]string{}
-	for k, p := range DNSProviders {
-		m[k] = p.Label
+	m := map[string]string{dns.Auto: "Auto — best for my network (ISP first, then fastest)"}
+	for _, p := range dns.Providers {
+		m[p.ID] = p.Label
 	}
 	return m
+}
+
+// ResolveDNSOption turns dns.Auto into a concrete provider id (scan + ISP), passes other ids through.
+func ResolveDNSOption(s Sys, option string) (string, error) {
+	if option != dns.Auto && option != "" {
+		if dns.Find(option) == nil {
+			return "", fmt.Errorf("unknown DNS provider %q", option)
+		}
+		return option, nil
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
+	defer cancel()
+	isp := DetectISP(s)
+	best := dns.Best(ScanDNS(ctx), isp)
+	if best == "" {
+		return "", fmt.Errorf("no DNS server answered — check the connection and try again")
+	}
+	LastAutoPick = best
+	return best, nil
 }
 
 var Network = []*Tweak{
@@ -402,9 +423,9 @@ const adaptersScript = `Get-NetAdapter -Physical | Where-Object Status -eq 'Up' 
 func dnsFast() *Tweak {
 	m := meta("dns_fast", "network", "safe", true, false,
 		T("Fast DNS on every connection", "DNS سریع روی همهٔ اتصال‌ها"),
-		T("Replaces the ISP resolver on all active adapters. Cloudflare/Google for speed; Shecan, Electro, Begzar, 403 for sanctioned sites; Radar for game servers. Undo restores what you had (DHCP or your own servers).", "DNS اپراتور را روی همهٔ کارت‌های فعال عوض می‌کند. کلادفلر/گوگل برای سرعت؛ شکن، الکترو، بگذر، ۴۰۳ برای سایت‌های تحریمی؛ رادار برای سرورهای بازی. بازگشت، تنظیم قبلی شما را برمی‌گرداند (DHCP یا سرورهای خودتان)."))
+		T("Sets the resolver on all active adapters. Auto scans every server and picks your ISP's own (Shatel, TCI/Mokhabrat, Pishgaman) when it answers, else the fastest public one. Shecan, Electro, Begzar, 403 for sanctioned sites; Radar for game servers; 50+ public resolvers from the DNS Jumper list. Undo restores what you had.", "DNS را روی همهٔ کارت‌های فعال تنظیم می‌کند. حالت خودکار همهٔ سرورها را اسکن می‌کند و اگر DNS اپراتور خودتان (شاتل، مخابرات، پیشگامان) جواب بدهد همان را، وگرنه سریع‌ترین DNS عمومی را انتخاب می‌کند. شکن، الکترو، بگذر، ۴۰۳ برای سایت‌های تحریمی؛ رادار برای سرورهای بازی؛ بیش از ۵۰ DNS عمومی از لیست DNS Jumper. بازگشت، تنظیم قبلی را برمی‌گرداند."))
 	m.Options = dnsOptions()
-	m.DefaultOption = "cloudflare"
+	m.DefaultOption = dns.Auto
 	t := &Tweak{Meta: m}
 	// check reads the registry only (fast): every interface that has an address must carry one of our provider lists
 	t.Check = func(c *Ctx) (bool, error) {
@@ -426,10 +447,11 @@ func dnsFast() *Tweak {
 		return live > 0, nil
 	}
 	t.Apply = func(c *Ctx) error {
-		prov, ok := DNSProviders[c.Option]
-		if !ok {
-			prov = DNSProviders["cloudflare"]
+		id, err := ResolveDNSOption(c.Sys, c.Option)
+		if err != nil {
+			return err
 		}
+		prov := dns.Find(id)
 		ads, err := adapters(c.Sys)
 		if err != nil {
 			return err
@@ -517,7 +539,7 @@ func ifaceLive(s Sys, key string) bool {
 
 func isProviderList(ns string) bool {
 	got := strings.Join(ipList(ns), ",")
-	for _, p := range DNSProviders {
+	for _, p := range dns.Providers {
 		if got == strings.Join(p.Servers, ",") || got == p.Servers[0] {
 			return true
 		}

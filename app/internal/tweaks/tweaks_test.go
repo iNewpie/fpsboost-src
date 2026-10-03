@@ -1,12 +1,14 @@
 package tweaks_test
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
 	"testing"
 	"time"
 
+	"fpsboost.ir/app/internal/dns"
 	"fpsboost.ir/app/internal/engine"
 	"fpsboost.ir/app/internal/tweaks"
 )
@@ -250,4 +252,65 @@ func TestStateJSONShape(t *testing.T) {
 		}
 	}
 	fmt.Println(string(raw)[:80])
+}
+
+func TestDNSAutoPicksTheISPResolverThenTheFastest(t *testing.T) {
+	f := newFake()
+	const IF = `HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces`
+	f.set(IF+`\{A}`, "DhcpIPAddress", engine.RegValue{Type: "REG_SZ", Value: "192.168.1.5"})
+	f.set(IF+`\{A}`, "DhcpNameServer", engine.RegValue{Type: "REG_SZ", Value: "217.218.127.127 217.218.155.155"}) // a TCI line
+	var setCmds []string
+	f.cmd = func(cmd string, args []string) engine.RunResult {
+		if cmd == "powershell" {
+			script := args[len(args)-1]
+			if strings.Contains(script, "Get-NetAdapter") {
+				return engine.RunResult{Out: `{"idx":7,"alias":"Ethernet","static":"","servers":["192.168.1.1"]}`}
+			}
+			if strings.Contains(script, "Set-DnsClientServerAddress") {
+				setCmds = append(setCmds, script)
+			}
+		}
+		return engine.RunResult{Code: 0}
+	}
+	ms := func(n int) *int { return &n }
+	oldScan, oldISP := tweaks.ScanDNS, tweaks.DetectISP
+	defer func() { tweaks.ScanDNS, tweaks.DetectISP = oldScan, oldISP }()
+	// 1) TCI answers → its resolver, even though Cloudflare is faster
+	tweaks.ScanDNS = func(context.Context) []dns.Result {
+		return []dns.Result{
+			{ID: "cloudflare", Group: dns.GroupGlobal, Ms: ms(20), Answers: 8, Queries: 8},
+			{ID: "tci", Group: dns.GroupISP, Ms: ms(35), Answers: 8, Queries: 8},
+		}
+	}
+	e := engine.New(tweaks.All, f, engine.NewBackup(""))
+	if r := e.Apply("dns_fast", dns.Auto); r.Error != "" {
+		t.Fatalf("apply auto: %+v", r)
+	}
+	if len(setCmds) != 1 || !strings.Contains(setCmds[0], "217.218.127.127,217.218.155.155") || tweaks.LastAutoPick != "tci" {
+		t.Fatalf("TCI line must get the TCI resolver: %v (pick %q)", setCmds, tweaks.LastAutoPick)
+	}
+	// 2) TCI silent → the fastest public resolver
+	setCmds = nil
+	tweaks.ScanDNS = func(context.Context) []dns.Result {
+		return []dns.Result{
+			{ID: "shecan", Group: dns.GroupIran, Ms: ms(12), Answers: 8, Queries: 8},
+			{ID: "cloudflare", Group: dns.GroupGlobal, Ms: ms(20), Answers: 8, Queries: 8},
+			{ID: "tci", Group: dns.GroupISP, Answers: 0, Queries: 8},
+		}
+	}
+	_ = e.Revert("dns_fast")
+	setCmds = nil
+	if r := e.Apply("dns_fast", ""); r.Error != "" {
+		t.Fatalf("apply (empty option = auto): %+v", r)
+	}
+	if len(setCmds) != 1 || !strings.Contains(setCmds[0], "178.22.122.100,185.51.200.2") {
+		t.Fatalf("fallback must be the fastest answering resolver: %v", setCmds)
+	}
+	// 3) nothing answers → a clear error, nothing changed
+	tweaks.ScanDNS = func(context.Context) []dns.Result { return []dns.Result{{ID: "tci", Group: dns.GroupISP, Queries: 8}} }
+	_ = e.Revert("dns_fast")
+	setCmds = nil
+	if r := e.Apply("dns_fast", dns.Auto); r.Error == "" || len(setCmds) != 0 {
+		t.Fatalf("want an error and no change: %+v %v", r, setCmds)
+	}
 }

@@ -31,6 +31,7 @@ type Data struct {
 	GuardTimer    bool            `json:"guardTimer"`    // 0.5 ms timer while a game runs
 	GuardEnforce  bool            `json:"guardEnforce"`  // re-apply tweaks Windows reverted
 	LastPing      json.RawMessage `json:"lastPing,omitempty"`
+	LastDNS       json.RawMessage `json:"lastDns,omitempty"` // the last DNS scan (dns.scan) for the first paint
 	Win           Window          `json:"win"`
 	LastVersion   string          `json:"lastVersion,omitempty"` // version that ran last (a change = "updated to …" toast)
 	Seen          map[string]bool `json:"seen,omitempty"`        // one-time hints shown (tray balloon …)

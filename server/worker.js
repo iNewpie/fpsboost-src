@@ -12,7 +12,11 @@
                              enrolled once on the first sign-in (secret kept in the DO); ADMIN_2FA_RESET="1" re-opens the enrolment
      /api/app/login          the desktop app: {username, password, machine} → {token, expires, ...}
      /api/app/status         {token, machine, nonce} → {d, sig} signed Ed25519 (APP_SIGN_KEY) — d = {active, expires, username, now, nonce, machine}
-    /api/app/update         {version, machine, nonce} → signed {latest, url, sha256} from APP_LATEST / DOWNLOAD_URL / APP_SHA256 (self-update)
+     /api/app/update         {version, machine, nonce} → signed {latest, url, sha256} from APP_LATEST / DOWNLOAD_URL / APP_SHA256 (self-update)
+     /api/app/net            {machine, nonce} → signed {asn, org, country, ip} — Cloudflare's view of the connection (the app picks the ISP's DNS from it)
+     /api/app/account        {token} → signed {username, active, expires, created, machines, max, support, prices, payments[]}
+     /api/app/password       {token, current, password} → signed {ok} — the in-app password change (current password required)
+     /api/app/devices        {token} → signed {machines} — forget the other PCs, keep this one
 
    Vars (wrangler.toml): APP_NAME, PRICES (JSON months→Toman), DOWNLOAD_URL, MAX_MACHINES, ZARINPAL_SANDBOX
    Secrets: ADMIN_USER, ADMIN_PASS, ZARINPAL_MERCHANT, SESSION_SECRET (+ optional var ADMIN_2FA_RESET="1" while re-enrolling a lost authenticator)
@@ -28,7 +32,7 @@ import { ICON_SVG, ICON_IMG } from './icons.js';
 import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, prices } from './pages.js';
 import { adminAuthPage, adminDash } from './admin.js';
 
-const BUILD = '2026-10-01b';
+const BUILD = '2026-10-03a';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
@@ -272,13 +276,38 @@ async function appApi(request, env, p, ip) {
   if (p === '/api/app/update') {   // no account needed: { version } → signed { latest, url, sha256 } so only this worker can point the app at an installer
     return appAnswer(env, b, { latest: String(env.APP_LATEST || ''), url: String(env.DOWNLOAD_URL || ''), sha256: String(env.APP_SHA256 || '').toLowerCase(), current: String(b.version || '').slice(0, 20) });
   }
+  if (p === '/api/app/net') {      // no account needed: what Cloudflare sees of the connection → the app's ISP detection (Shatel / TCI resolver choice)
+    const cf = request.cf || {};
+    return appAnswer(env, b, { asn: Number(cf.asn) || 0, org: String(cf.asOrganization || ''), country: String(cf.country || ''), ip });
+  }
+  // the rest needs a valid app token whose device is still on the account
+  const parts = await verifySigned(env, String(b.token || '')); if (!parts) return Response.json({ error: 'token expired, log in again' }, { status: 401 });
+  const u = await db(env, { op: 'user.byId', id: parts[0] }); if (!u || u.disabled) return Response.json({ error: 'account disabled' }, { status: 403 });
+  let machines = []; try { machines = JSON.parse(u.machines || '[]'); } catch (e) {}
+  if (parts[2] && !machines.includes(parts[2])) return Response.json({ error: 'this device was removed from the account, log in again' }, { status: 403 });
   if (p === '/api/app/status') {
-    const parts = await verifySigned(env, String(b.token || '')); if (!parts) return Response.json({ error: 'token expired, log in again' }, { status: 401 });
-    const u = await db(env, { op: 'user.byId', id: parts[0] }); if (!u || u.disabled) return Response.json({ error: 'account disabled' }, { status: 403 });
-    let machines = []; try { machines = JSON.parse(u.machines || '[]'); } catch (e) {}
-    if (parts[2] && !machines.includes(parts[2])) return Response.json({ error: 'this device was removed from the account, log in again' }, { status: 403 });
     await db(env, { op: 'user.update', id: u.id, last_seen: Date.now() });
     return appAnswer(env, b, { username: u.username, active: isActive(u), expires: u.expires || 0 });
+  }
+  if (p === '/api/app/account') {   // the in-app account page: plan, devices, payment history, prices, support contact
+    const pays = await db(env, { op: 'payment.listByUser', user_id: u.id });
+    return appAnswer(env, b, { username: u.username, active: isActive(u), expires: u.expires || 0, created: u.created || 0, machines: machines.length, max,
+      support: String(env.SUPPORT || ''), prices: prices(env),
+      payments: (Array.isArray(pays) ? pays : []).slice(0, 8).map(x => ({ at: x.created, months: x.months, amount: x.amount, status: x.status, ref: x.ref_id || '' })) });
+  }
+  if (p === '/api/app/password') {  // {current, password}: the current password is checked (so a stolen token alone cannot change it); tokens stay valid
+    if (braked(ip)) return Response.json({ error: 'too many attempts, wait 10 minutes' }, { status: 429 });
+    const current = String(b.current || ''), password = String(b.password || '');
+    if (current.length > 200 || !(await verifyPassword(current, u))) { failed(ip); return Response.json({ error: 'the current password is wrong' }, { status: 400 }); }
+    if (password.length < 8 || password.length > 200) return Response.json({ error: 'the new password needs 8 to 200 characters' }, { status: 400 });
+    const { hash, salt } = await hashPassword(password);
+    await db(env, { op: 'user.update', id: u.id, pass_hash: hash, salt });
+    return appAnswer(env, b, { ok: true });
+  }
+  if (p === '/api/app/devices') {   // forget every other PC; this one stays signed in
+    const keep = parts[2] ? [parts[2]] : [];
+    await db(env, { op: 'user.update', id: u.id, machines: JSON.stringify(keep) });
+    return appAnswer(env, b, { machines: keep.length });
   }
   return Response.json({ error: 'not found' }, { status: 404 });
 }

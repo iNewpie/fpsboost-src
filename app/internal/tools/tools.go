@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"fpsboost.ir/app/internal/engine"
@@ -188,36 +189,43 @@ type PingResult struct {
 
 var msRe = regexp.MustCompile(`[=<](\d+)\s*ms`)
 
-// Ping runs Windows ping (4 echoes) per host; works on any Windows language (parses the digits before "ms").
+// Ping runs Windows ping per host — all hosts at once, 4 echoes with a 1 s reply window, so the whole test takes about
+// as long as the slowest host instead of the sum. Works on any Windows language (parses the digits before "ms").
 func Ping(s engine.Sys, hosts []string) []PingResult {
-	out := make([]PingResult, 0, len(hosts))
-	for _, h := range hosts {
-		r := s.Run(15*time.Second, "ping", "-n", "4", "-w", "1500", h)
-		var times []int
-		for _, m := range msRe.FindAllStringSubmatch(r.Out, -1) {
-			n, _ := strconv.Atoi(m[1])
-			times = append(times, n)
-		}
-		pr := PingResult{Host: h, Loss: 4 - len(times)}
-		if len(times) > 0 {
-			sum, mn, mx := 0, times[0], times[0]
-			for _, v := range times {
-				sum += v
-				if v < mn {
-					mn = v
-				}
-				if v > mx {
-					mx = v
-				}
+	out := make([]PingResult, len(hosts))
+	var wg sync.WaitGroup
+	for i, h := range hosts {
+		wg.Add(1)
+		go func(i int, h string) {
+			defer wg.Done()
+			r := s.Run(12*time.Second, "ping", "-n", "4", "-w", "1000", h)
+			var times []int
+			for _, m := range msRe.FindAllStringSubmatch(r.Out, -1) {
+				n, _ := strconv.Atoi(m[1])
+				times = append(times, n)
 			}
-			avg := int(float64(sum)/float64(len(times)) + 0.5)
-			pr.Avg, pr.Min, pr.Max = &avg, mn, mx
-		}
-		if pr.Loss < 0 {
-			pr.Loss = 0
-		}
-		out = append(out, pr)
+			pr := PingResult{Host: h, Loss: 4 - len(times)}
+			if len(times) > 0 {
+				sum, mn, mx := 0, times[0], times[0]
+				for _, v := range times {
+					sum += v
+					if v < mn {
+						mn = v
+					}
+					if v > mx {
+						mx = v
+					}
+				}
+				avg := int(float64(sum)/float64(len(times)) + 0.5)
+				pr.Avg, pr.Min, pr.Max = &avg, mn, mx
+			}
+			if pr.Loss < 0 {
+				pr.Loss = 0
+			}
+			out[i] = pr
+		}(i, h)
 	}
+	wg.Wait()
 	return out
 }
 

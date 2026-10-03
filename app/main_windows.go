@@ -5,6 +5,7 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"encoding/json"
 	"errors"
@@ -24,6 +25,7 @@ import (
 
 	"fpsboost.ir/app/internal/auth"
 	"fpsboost.ir/app/internal/config"
+	"fpsboost.ir/app/internal/dns"
 	"fpsboost.ir/app/internal/engine"
 	"fpsboost.ir/app/internal/guard"
 	"fpsboost.ir/app/internal/settings"
@@ -57,6 +59,12 @@ type application struct {
 	stateRun    bool
 	restoreOnce sync.Once
 	quitting    bool
+
+	ispMu  sync.Mutex
+	isp    string    // detected ISP id ("" = unknown)
+	ispAt  time.Time // when the server was last asked
+	dnsMu  sync.Mutex
+	dnsRun bool
 
 	updMu     sync.Mutex
 	lastCheck time.Time // last /api/app/update call (window open re-checks after 10 min)
@@ -99,6 +107,7 @@ func main() {
 		return
 	}
 	a.auth = au
+	tweaks.DetectISP = func(engine.Sys) string { return a.detectISP() }
 
 	switch {
 	case *restore:
@@ -468,12 +477,13 @@ func (a *application) registerHandlers() {
 			"guard":    a.guard.Status(),
 			"update":   a.updater.State(),
 			"system":   sysimpl.Info(runtime.NumCPU()),
-			"dns":      tweaks.DNSOrder,
+			"dns":      dns.Providers,
+			"dnsScan":  a.settings.Get().LastDNS,
 		}, nil
 	})
 	h.Handle("app.open", func(args []json.RawMessage) (any, error) {
 		u, _ := arg[string](args, 0)
-		if u == config.ServerURL || strings.HasPrefix(u, config.ServerURL+"/") {
+		if u == config.ServerURL || strings.HasPrefix(u, config.ServerURL+"/") || strings.HasPrefix(u, "https://t.me/") || strings.HasPrefix(u, "mailto:") {
 			win.OpenURL(u)
 		}
 		return nil, nil
@@ -521,6 +531,31 @@ func (a *application) registerHandlers() {
 	})
 	h.Handle("auth.status", func(args []json.RawMessage) (any, error) { return a.auth.Status(), nil })
 	h.Handle("auth.logout", func(args []json.RawMessage) (any, error) { return a.auth.Logout(), nil })
+	h.Handle("auth.account", func(args []json.RawMessage) (any, error) {
+		acc, err := a.auth.Account()
+		if err != nil {
+			a.emit("auth", a.auth.View())
+			return nil, err
+		}
+		a.emit("auth", a.auth.View())
+		return acc, nil
+	})
+	h.Handle("auth.password", func(args []json.RawMessage) (any, error) {
+		cur, _ := arg[string](args, 0)
+		next, _ := arg[string](args, 1)
+		if err := a.auth.ChangePassword(cur, next); err != nil {
+			return nil, err
+		}
+		return true, nil
+	})
+	h.Handle("auth.devices", func(args []json.RawMessage) (any, error) {
+		n, err := a.auth.ResetDevices()
+		if err != nil {
+			a.emit("auth", a.auth.View())
+			return nil, err
+		}
+		return map[string]any{"machines": n}, nil
+	})
 
 	h.Handle("tweaks.state", func(args []json.RawMessage) (any, error) { return a.liveState(), nil })
 	h.Handle("tweaks.apply", a.gated(func(args []json.RawMessage) (any, error) {
@@ -589,6 +624,10 @@ func (a *application) registerHandlers() {
 		a.settings.Update(func(d *settings.Data) { d.LastPing = raw })
 		return res, nil
 	})
+	h.Handle("dns.scan", func(args []json.RawMessage) (any, error) {
+		ids, _ := arg[[]string](args, 0)
+		return a.dnsScan(ids)
+	})
 	h.Handle("guard.status", func(args []json.RawMessage) (any, error) { return a.guard.Status(), nil })
 	h.Handle("guard.clean", a.gated(func(args []json.RawMessage) (any, error) {
 		mb, err := a.guard.CleanNow()
@@ -620,6 +659,68 @@ func (a *application) registerHandlers() {
 		return d, nil
 	})
 	h.Handle("system.info", func(args []json.RawMessage) (any, error) { return sysimpl.Info(runtime.NumCPU()), nil })
+}
+
+/* ---- DNS: ISP detection + the resolver benchmark ---- */
+
+// detectISP: the server's view of the connection (Cloudflare ASN / organisation, cached 10 min), else the DHCP-assigned
+// resolvers in the registry.
+func (a *application) detectISP() string {
+	a.ispMu.Lock()
+	defer a.ispMu.Unlock()
+	if time.Since(a.ispAt) < 10*time.Minute {
+		return a.isp
+	}
+	a.ispAt = time.Now()
+	a.isp = ""
+	if n, err := a.auth.Net(); err == nil {
+		a.isp = dns.ISPFromASN(n.ASN)
+		if a.isp == "" {
+			a.isp = dns.ISPFromOrg(n.Org)
+		}
+		if a.isp == "" && n.IP != "" {
+			a.isp = dns.ISPFromIPs([]string{n.IP})
+		}
+	}
+	if a.isp == "" {
+		a.isp = dns.ISPFromIPs(dns.DHCPNameServers(a.sys))
+	}
+	return a.isp
+}
+
+// DNSScan is what dns.scan answers (and what settings.json caches as lastDns).
+type DNSScan struct {
+	At      int64        `json:"at"`
+	ISP     string       `json:"isp"`
+	ISPName string       `json:"ispName,omitempty"`
+	Best    string       `json:"best"`
+	Results []dns.Result `json:"results"`
+}
+
+// dnsScan benchmarks the resolvers (one run at a time) and remembers the outcome for the next start.
+func (a *application) dnsScan(ids []string) (*DNSScan, error) {
+	a.dnsMu.Lock()
+	if a.dnsRun {
+		a.dnsMu.Unlock()
+		return nil, errors.New("a DNS scan is already running")
+	}
+	a.dnsRun = true
+	a.dnsMu.Unlock()
+	defer func() {
+		a.dnsMu.Lock()
+		a.dnsRun = false
+		a.dnsMu.Unlock()
+	}()
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	isp := a.detectISP()
+	res := dns.Scan(ctx, ids, nil, dns.Options{})
+	out := &DNSScan{At: time.Now().UnixMilli(), ISP: isp, ISPName: dns.ISPNames[isp], Best: dns.Best(res, isp), Results: res}
+	if len(ids) == 0 {
+		raw, _ := json.Marshal(out)
+		a.settings.Update(func(d *settings.Data) { d.LastDNS = raw })
+	}
+	return out, nil
 }
 
 /* ---- tweak state: cached first paint + one live run at a time ---- */

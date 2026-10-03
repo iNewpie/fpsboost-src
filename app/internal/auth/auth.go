@@ -257,3 +257,124 @@ func (a *Auth) offlineView(errMsg string) View {
 
 // Active is the gate for tweaks: cached answer (refreshing when due).
 func (a *Auth) Active() bool { return a.Status().Active }
+
+func (a *Auth) token() string {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return a.load().Token
+}
+
+// authed posts with the stored token; a 401/403 answer logs the app out (the UI shows the login screen).
+func (a *Auth) authed(path string, body map[string]any) (map[string]any, error) {
+	tok := a.token()
+	if tok == "" {
+		return nil, errors.New("not logged in")
+	}
+	if body == nil {
+		body = map[string]any{}
+	}
+	body["token"] = tok
+	d, err := a.Post(path, body)
+	if err != nil {
+		var he *HTTPError
+		if errors.As(err, &he) && (he.Status == 401 || he.Status == 403) && path != "/api/app/password" {
+			a.mu.Lock()
+			a.c = &cache{}
+			a.save()
+			a.mu.Unlock()
+		}
+		return nil, err
+	}
+	return d, nil
+}
+
+// Payment is one row of the account's payment history.
+type Payment struct {
+	At     int64  `json:"at"`
+	Months int    `json:"months"`
+	Amount int64  `json:"amount"`
+	Status string `json:"status"`
+	Ref    string `json:"ref,omitempty"`
+}
+
+// Account is the server's view of the account (the in-app account page).
+type Account struct {
+	Username string           `json:"username"`
+	Active   bool             `json:"active"`
+	Expires  int64            `json:"expires"`
+	Created  int64            `json:"created"`
+	Machines int              `json:"machines"`
+	Max      int              `json:"max"`
+	Support  string           `json:"support,omitempty"` // owner's support contact: email, https:// link or @telegram
+	Prices   map[string]int64 `json:"prices,omitempty"`  // months → Toman
+	Payments []Payment        `json:"payments"`
+}
+
+// Account fetches the account page data and refreshes the cached subscription from it.
+func (a *Auth) Account() (*Account, error) {
+	d, err := a.authed("/api/app/account", nil)
+	if err != nil {
+		return nil, err
+	}
+	acc := &Account{Username: str(d["username"]), Active: boolean(d["active"]), Expires: num(d["expires"]), Created: num(d["created"]), Machines: int(num(d["machines"])), Max: int(num(d["max"])), Support: str(d["support"]), Prices: map[string]int64{}}
+	if pr, ok := d["prices"].(map[string]any); ok {
+		for k, v := range pr {
+			acc.Prices[k] = num(v)
+		}
+	}
+	if ps, ok := d["payments"].([]any); ok {
+		for _, x := range ps {
+			if m, ok := x.(map[string]any); ok {
+				acc.Payments = append(acc.Payments, Payment{At: num(m["at"]), Months: int(num(m["months"])), Amount: num(m["amount"]), Status: str(m["status"]), Ref: str(m["ref"])})
+			}
+		}
+	}
+	if acc.Payments == nil {
+		acc.Payments = []Payment{}
+	}
+	a.mu.Lock()
+	c := a.load()
+	c.Active, c.Expires, c.Username, c.Checked, c.Offline = acc.Active, acc.Expires, acc.Username, a.nowMs(), false
+	a.save()
+	a.mu.Unlock()
+	return acc, nil
+}
+
+// ChangePassword verifies the current password server-side and sets the new one. Other devices' app tokens and
+// website sessions stay valid (tokens are not derived from the password).
+func (a *Auth) ChangePassword(current, next string) error {
+	if len(next) < 8 {
+		return errors.New("the new password needs at least 8 characters")
+	}
+	if len(next) > 200 {
+		return errors.New("the new password is too long")
+	}
+	_, err := a.authed("/api/app/password", map[string]any{"current": current, "password": next})
+	return err
+}
+
+// ResetDevices forgets every other PC on the account; this one stays logged in. Returns the device count afterwards.
+func (a *Auth) ResetDevices() (int, error) {
+	d, err := a.authed("/api/app/devices", nil)
+	if err != nil {
+		return 0, err
+	}
+	return int(num(d["machines"])), nil
+}
+
+// Net is what the server sees of this connection.
+type Net struct {
+	ASN     int    `json:"asn"`
+	Org     string `json:"org"`
+	Country string `json:"country"`
+	IP      string `json:"ip"`
+}
+
+// Net asks the server for the connection's ASN / organisation (ISP detection). No account needed.
+func (a *Auth) Net() (*Net, error) {
+	d, err := a.Post("/api/app/net", map[string]any{})
+	if err != nil {
+		return nil, err
+	}
+	return &Net{ASN: int(num(d["asn"])), Org: str(d["org"]), Country: str(d["country"]), IP: str(d["ip"])}, nil
+}
