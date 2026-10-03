@@ -18,7 +18,7 @@ app/
   internal/win           Win32: frameless window, tray + menu, message loop, process/memory helpers, schtasks logon task
   internal/webui         WebView2 host: embedded assets over https://app.fpsboost.internal, JSON-RPC bridge, events
   ui/                    index.html + app.css + app.js (+ mock.js for browser preview), assets (icons, Vazirmatn)
-  build/                 icon, winres.json (manifest: requireAdministrator, per-monitor DPI), installer.nsi, art, WebView2 bootstrapper
+  build/                 icon, winres.json (manifest: requireAdministrator, per-monitor DPI), installer.nsi, art
   scripts/build.sh       go-winres → GOOS=windows go build → makensis   → dist/fpsboost.exe, dist/FPSBoost-Setup.exe
   scripts/release.sh     sha256 → server/wrangler.toml APP_LATEST/APP_SHA256 → GitHub release iNewpie/fpsboost
 ```
@@ -64,7 +64,10 @@ bash scripts/build.sh          # "== FPS Boost x.y.z (signed)": fpsboost.exe, FP
 - Data folder `%APPDATA%\fpsboost` (same as the Electron versions): backup.json, auth.json, settings.json, state.json,
   guard.json, app.log, update/, webview/ (WebView2 user data).
 - Flags: `--tray` (start hidden; the logon task uses it), `--restore` (revert everything + remove the task; the
-  uninstaller calls it), `--unregister`, `--debug` (devtools, context menu), `--state file.json`, `--version`.
+  uninstaller calls it), `--quit` (ask the running instance to exit and wait — the installer uses it instead of
+  taskkill), `--unregister`, `--debug` (devtools, context menu), `--state file.json`, `--version`.
+- WebView2: nothing is bundled (1.0.4+). The installer and the app point at Microsoft's download page when the runtime
+  is missing; Windows 11 and updated Windows 10 ship it.
 - Frameless window: the caption is removed in WM_NCCALCSIZE, side/bottom borders stay Windows-owned; the top 6 px of the
   client area belong to the parent window (top resize + drag). Dragging the title bar uses WebView2's
   `app-region: drag` (runtime ≥ 123) with a JS → Go `WM_NCLBUTTONDOWN` fallback.

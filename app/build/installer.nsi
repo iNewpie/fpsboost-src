@@ -1,6 +1,7 @@
 ; FPS Boost installer (NSIS 3, MUI2). Built on Linux by scripts/build.sh with electron-builder's makensis.
-; Flow: close the running app → remove the old Electron install if present → install WebView2 if missing → copy the exe →
-; shortcuts + Add/Remove entry → optional launch. Silent: FPSBoost-Setup.exe /S (the app's self-update uses this).
+; Flow: close the running app (its own --quit) → remove the old Electron install if present → copy the exe → point at the
+; WebView2 download if the runtime is missing → shortcuts + Add/Remove entry → optional launch. Silent: FPSBoost-Setup.exe /S
+; (the app's self-update uses this). Nothing is dropped into TEMP and no executable is bundled besides the app itself.
 Unicode true
 ManifestDPIAware true
 RequestExecutionLevel admin
@@ -87,10 +88,8 @@ LangString UnConfirm ${LANG_ENGLISH} "FPS Boost will be removed from your comput
 LangString UnConfirm ${LANG_FARSI} "FPS Boost از کامپیوتر شما حذف می‌شود. اول همهٔ تنظیمات ویندوز که تغییر داده بود برمی‌گردند."
 LangString NeedWin10 ${LANG_ENGLISH} "FPS Boost needs 64-bit Windows 10 or 11."
 LangString NeedWin10 ${LANG_FARSI} "FPS Boost به ویندوز ۱۰ یا ۱۱ شصت‌وچهار بیتی نیاز دارد."
-LangString WV2Install ${LANG_ENGLISH} "Installing the Microsoft Edge WebView2 runtime…"
-LangString WV2Install ${LANG_FARSI} "در حال نصب Microsoft Edge WebView2…"
-LangString WV2Failed ${LANG_ENGLISH} "The WebView2 runtime could not be installed (no internet?). FPS Boost will offer the download when it starts."
-LangString WV2Failed ${LANG_FARSI} "WebView2 نصب نشد (اینترنت قطع است؟). FPS Boost هنگام اجرا لینک دانلود را نشان می‌دهد."
+LangString WV2Missing ${LANG_ENGLISH} "FPS Boost needs the Microsoft Edge WebView2 runtime, which is missing on this PC. Open Microsoft's download page now? (FPS Boost will ask again when it starts.)"
+LangString WV2Missing ${LANG_FARSI} "FPS Boost به Microsoft Edge WebView2 نیاز دارد که روی این کامپیوتر نصب نیست. صفحهٔ دانلود مایکروسافت باز شود؟ (FPS Boost هنگام اجرا دوباره می‌پرسد.)"
 
 Function .onInit
   ${IfNot} ${RunningX64}
@@ -115,10 +114,19 @@ Function LaunchApp
   Exec '"$INSTDIR\${EXE}"'
 FunctionEnd
 
+; Close a running FPS Boost: ask it to exit through its own --quit (1.0.4+, waits for the exit), fall back to taskkill
+; only for the old versions that do not know the flag.
 !macro KillApp
-  nsExec::ExecToLog 'taskkill /F /IM ${EXE} /T'
-  nsExec::ExecToLog 'taskkill /F /IM "FPS Boost.exe" /T'
-  Sleep 400
+  ${If} ${FileExists} "$INSTDIR\${EXE}"
+    ExecWait '"$INSTDIR\${EXE}" --quit' $0
+    ${If} $0 != 0
+      nsExec::ExecToLog 'taskkill /F /IM ${EXE} /T'
+    ${EndIf}
+  ${EndIf}
+  ${If} ${FileExists} "$INSTDIR\FPS Boost.exe"
+    nsExec::ExecToLog 'taskkill /F /IM "FPS Boost.exe" /T'
+  ${EndIf}
+  Sleep 300
 !macroend
 
 Section "FPS Boost" SecMain
@@ -145,7 +153,9 @@ Section "FPS Boost" SecMain
   SetOutPath "$INSTDIR"
   File "..\dist\${EXE}"
 
-  ; WebView2 runtime: per-machine or per-user key present = installed (also true for every Windows 11)
+  ; WebView2 runtime: per-machine or per-user key present = installed (true for every Windows 11 and every updated
+  ; Windows 10). Nothing is bundled: Microsoft's bootstrapper needs the internet anyway, so when the runtime is missing
+  ; the Microsoft download page is offered (the app shows the same dialog on every start until it is installed).
   ClearErrors
   ReadRegStr $0 HKLM "${WV2_KEY}" "pv"
   ${If} ${Errors}
@@ -156,19 +166,11 @@ Section "FPS Boost" SecMain
   ${EndIf}
   ${If} $0 == ""
   ${OrIf} $0 == "0.0.0.0"
-    ; under Wine (local test builds) the bootstrapper cannot run
     ${IfNot} ${FileExists} "$SYSDIR\winemenubuilder.exe"
-      DetailPrint "$(WV2Install)"
-      SetOutPath "$TEMP"
-      File "MicrosoftEdgeWebview2Setup.exe"
-      ExecWait '"$TEMP\MicrosoftEdgeWebview2Setup.exe" /silent /install' $2
-      Delete "$TEMP\MicrosoftEdgeWebview2Setup.exe"
-      ${If} $2 != 0
-        DetailPrint "$(WV2Failed)"
-        IfSilent +2
-        MessageBox MB_OK|MB_ICONEXCLAMATION "$(WV2Failed)"
-      ${EndIf}
-      SetOutPath "$INSTDIR"
+      DetailPrint "$(WV2Missing)"
+      IfSilent +3
+      MessageBox MB_YESNO|MB_ICONQUESTION "$(WV2Missing)" IDNO +2
+      ExecShell "open" "https://developer.microsoft.com/microsoft-edge/webview2/#download"
     ${EndIf}
   ${EndIf}
 

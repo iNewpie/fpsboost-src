@@ -4,6 +4,7 @@ package win
 
 import (
 	"sync"
+	"time"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -127,6 +128,48 @@ func SingleInstance(name string) bool {
 		return false
 	}
 	return true
+}
+
+// OnQuitRequest creates the named event and calls fn (from a background goroutine) once another process signals it.
+func OnQuitRequest(event string, fn func()) {
+	h, err := windows.CreateEvent(nil, 1, 0, wstr(event))
+	if err != nil {
+		return
+	}
+	go func() {
+		windows.WaitForSingleObject(h, windows.INFINITE)
+		fn()
+	}()
+}
+
+// QuitOther signals the running instance's quit event and waits until its single-instance mutex is free. False when
+// no instance was running (nothing to do, reported as success) is not distinguished: the result is "the instance is
+// gone within the timeout".
+func QuitOther(mutex, event string, timeout time.Duration) bool {
+	h, err := windows.OpenEvent(windows.EVENT_MODIFY_STATE, false, wstr(event))
+	if err != nil {
+		// no instance with the event (not running, or an older version): tell the caller to fall back
+		return !otherRunning(mutex)
+	}
+	windows.SetEvent(h)
+	windows.CloseHandle(h)
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		if !otherRunning(mutex) {
+			return true
+		}
+		time.Sleep(200 * time.Millisecond)
+	}
+	return false
+}
+
+func otherRunning(mutex string) bool {
+	m, err := windows.CreateMutex(nil, false, wstr(mutex))
+	exists := err == windows.ERROR_ALREADY_EXISTS
+	if m != 0 {
+		windows.CloseHandle(m)
+	}
+	return exists
 }
 
 // HasTray reports whether the tray icon exists.

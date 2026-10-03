@@ -55,8 +55,13 @@ flag the file and under which name — that tells us whether a build change help
   the most heavily weighted "suspicious" strings.
 - The exe keeps its symbol table (`-ldflags -w`, not `-s -w`) from 1.0.3+: fully stripped Go binaries score worse in
   Defender's ML models; the cost is ~2 MB.
-- No packer, no obfuscation, no self-extraction tricks: the installer is plain NSIS with the Microsoft-signed WebView2
-  bootstrapper inside, exactly as thousands of apps ship it.
+- No packer, no obfuscation, no self-extraction tricks: the installer is plain NSIS. From 1.0.4 it bundles no second
+  executable (the WebView2 bootstrapper is gone — it needed the internet anyway, so the Microsoft download page is
+  offered instead), drops nothing into TEMP, and closes a running app through the app's own `--quit` instead of
+  `taskkill /F`. "Drop an exe into TEMP and run it" and "kill processes by name" are two of the strongest installer
+  heuristics in Defender's model.
+- VirusTotal history: 1.0.2 → 2/68 (Microsoft Bearfoos.B!ml + Trapmine ML), 1.0.3 → 3/71 (Microsoft Phonzy.B!ml,
+  Trapmine ML, Bkav generic). Every signature-based engine clean in both.
 
 ## 4. Until the certificate arrives
 

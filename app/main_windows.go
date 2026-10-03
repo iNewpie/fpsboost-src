@@ -40,6 +40,10 @@ import (
 //go:embed ui
 var uiFS embed.FS
 
+// quitEvent is the named event the installer signals (fpsboost.exe --quit) so a running instance exits cleanly instead
+// of being killed.
+const quitEvent = `Local\FPSBoost.Quit`
+
 func init() { runtime.LockOSThread() }
 
 type application struct {
@@ -82,6 +86,7 @@ func main() {
 	revertID := flag.String("revert", "", "revert one tweak id and exit")
 	outFile := flag.String("out", "", "where --apply / --revert write their JSON result")
 	version := flag.Bool("version", false, "print the version")
+	quit := flag.Bool("quit", false, "ask the running instance to exit and wait for it (the installer uses it)")
 	flag.Parse()
 	if *version {
 		fmt.Println(config.Version)
@@ -136,12 +141,29 @@ func main() {
 		return
 	}
 
+	if *quit {
+		if win.QuitOther(`Local\FPSBoost.App`, quitEvent, 20*time.Second) {
+			return
+		}
+		os.Exit(1)
+	}
 	if !win.SingleInstance(`Local\FPSBoost.App`) {
 		if !*tray {
 			win.WakeOther()
 		}
 		return
 	}
+	win.OnQuitRequest(quitEvent, func() {
+		log.Printf("quit requested by another process (installer)")
+		a.quitting = true
+		a.app.Dispatch(func() {
+			if a.host != nil && a.host.IsOpen() {
+				a.host.Window().Close()
+			} else {
+				a.app.Quit()
+			}
+		})
+	})
 	win.LoadIcons("APP")
 	a.app = win.NewApp()
 
