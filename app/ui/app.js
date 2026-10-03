@@ -19,7 +19,7 @@ const I18N = {
   en: {
     lang: 'فارسی', login_sub: 'Sign in with your fpsboost.ir account', username: 'Username', password: 'Password', login: 'Sign in', signing_in: 'Signing in…', no_account: 'Create an account', forgot: 'Forgot password?', logout: 'Log out',
     nav_home: 'Home', nav_fps: 'FPS Boost', nav_network: 'Network', nav_games: 'Games', nav_guard: 'Guard', nav_tools: 'Tools', nav_settings: 'Settings',
-    hi: 'Hi, {u}', home_sub: 'Your PC at a glance', score: 'Boost score', tiles_active: 'Tweaks active', tiles_ping: 'Last ping', tiles_guard: 'Guard', never: 'not tested yet', no_reply: 'no reply', guard_idle: 'Watching', guard_off: 'Off', guard_nosub: 'Needs a plan', guard_game: 'Boosting',
+    hi: 'Hi, {u}', home_sub: 'Your PC at a glance', score: 'Boost score', tiles_active: 'Tweaks active', tiles_ping: 'Last ping', tiles_guard: 'Guard', never: 'not tested yet', no_reply: 'no reply', guard_idle: 'Watching', guard_off: 'Off', guard_nosub: 'No plan', guard_game: 'Boosting',
     boost_title: 'One-click boost', boost_sub: 'Applies every recommended FPS and network tweak. A restore point is created first; everything can be undone here.', boost_now: 'Boost now', boosting: 'Boosting…', restore_all: 'Restore everything', restore_sub: 'Puts back every original value.',
     this_pc: 'This PC', os: 'Windows', cpu: 'Processor', gpu: 'Graphics', ram: 'Memory', cores: 'Threads', activity: 'Activity', activity_empty: 'Nothing yet — apply a tweak or run a tool.',
     fps_title: 'FPS Boost', fps_sub: 'Windows settings that cost frames. Flip a switch to apply, flip it back to undo.', net_title: 'Network', net_sub: 'Lower ping and steadier connections for online games.', count: '{a} of {n} active', rec_count: '{a} of {n} recommended',
@@ -42,7 +42,7 @@ const I18N = {
   fa: {
     lang: 'English', login_sub: 'با حساب fpsboost.ir وارد شوید', username: 'نام کاربری', password: 'رمز عبور', login: 'ورود', signing_in: 'در حال ورود…', no_account: 'ساخت حساب', forgot: 'رمز را فراموش کرده‌اید؟', logout: 'خروج',
     nav_home: 'خانه', nav_fps: 'افزایش FPS', nav_network: 'شبکه', nav_games: 'بازی‌ها', nav_guard: 'گارد', nav_tools: 'ابزارها', nav_settings: 'تنظیمات',
-    hi: 'سلام، {u}', home_sub: 'وضعیت کامپیوتر شما در یک نگاه', score: 'امتیاز بوست', tiles_active: 'تنظیمات فعال', tiles_ping: 'آخرین پینگ', tiles_guard: 'گارد', never: 'هنوز تست نشده', no_reply: 'بدون پاسخ', guard_idle: 'در حال پایش', guard_off: 'خاموش', guard_nosub: 'نیاز به پلن', guard_game: 'در حال بوست',
+    hi: 'سلام، {u}', home_sub: 'وضعیت کامپیوتر شما در یک نگاه', score: 'امتیاز بوست', tiles_active: 'تنظیمات فعال', tiles_ping: 'آخرین پینگ', tiles_guard: 'گارد', never: 'هنوز تست نشده', no_reply: 'بدون پاسخ', guard_idle: 'در حال پایش', guard_off: 'خاموش', guard_nosub: 'بدون پلن', guard_game: 'در حال بوست',
     boost_title: 'بوست یک‌کلیکی', boost_sub: 'همهٔ تنظیمات پیشنهادی FPS و شبکه را اعمال می‌کند. اول یک نقطهٔ بازیابی ساخته می‌شود و همه‌چیز از همین‌جا قابل بازگشت است.', boost_now: 'بوست کن', boosting: 'در حال بوست…', restore_all: 'بازگشت همه', restore_sub: 'همهٔ مقدارهای اصلی را برمی‌گرداند.',
     this_pc: 'این کامپیوتر', os: 'ویندوز', cpu: 'پردازنده', gpu: 'گرافیک', ram: 'رم', cores: 'ترد', activity: 'فعالیت‌ها', activity_empty: 'هنوز چیزی نیست — یک تنظیم اعمال کنید یا ابزاری اجرا کنید.',
     fps_title: 'افزایش FPS', fps_sub: 'تنظیماتی از ویندوز که فریم می‌خورند. کلید را بزنید تا اعمال شود، برگردانید تا لغو شود.', net_title: 'شبکه', net_sub: 'پینگ کمتر و اتصال پایدارتر برای بازی آنلاین.', count: '{a} از {n} فعال', rec_count: '{a} از {n} پیشنهادی',

@@ -9,5 +9,5 @@ VER=$(tr -d ' \n' < VERSION); EXE=dist/FPSBoost-Setup.exe
 SHA=$(sha256sum "$EXE" | cut -d' ' -f1)
 sed -i -E "s/^APP_LATEST = \"[^\"]*\"/APP_LATEST = \"$VER\"/; s/^APP_SHA256 = \"[^\"]*\"/APP_SHA256 = \"$SHA\"/" ../server/wrangler.toml
 grep -E "^APP_(LATEST|SHA256)" ../server/wrangler.toml
-if gh release view "v$VER" -R iNewpie/fpsboost >/dev/null 2>&1; then gh release upload "v$VER" "$EXE" --clobber -R iNewpie/fpsboost; else gh release create "v$VER" "$EXE" -R iNewpie/fpsboost -t "FPS Boost $VER" -n "${NOTES:-FPS Boost $VER}"; fi
+if gh release view "v$VER" -R iNewpie/fpsboost >/dev/null 2>&1; then gh release upload "v$VER" "$EXE" --clobber -R iNewpie/fpsboost; gh release edit "v$VER" --draft=false -R iNewpie/fpsboost; else gh release create "v$VER" "$EXE" -R iNewpie/fpsboost -t "FPS Boost $VER" -n "${NOTES:-FPS Boost $VER}"; fi
 echo; echo "released v$VER ($(du -h "$EXE" | cut -f1), sha256 $SHA)"; echo "now: cd .. && bash server/deploy.sh   (publishes the version to installed apps)"
