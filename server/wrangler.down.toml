@@ -1,0 +1,16 @@
+# fpsboost.ir — the discontinued stub (replaces the live worker, same name + domain, keeps the Store data).
+#   cd server && set -a && . ./.env && set +a && npx --yes wrangler@4 deploy -c wrangler.down.toml
+name = "fpsboost-site"
+main = "discontinued.js"
+compatibility_date = "2026-09-01"
+workers_dev = false
+routes = [{ pattern = "fpsboost.ir", custom_domain = true }]
+
+# the Durable Object stays bound (empty class) so the accounts / payments SQLite is not deleted
+[[durable_objects.bindings]]
+name = "STORE"
+class_name = "Store"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Store"]
