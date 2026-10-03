@@ -9,8 +9,8 @@ routes = [{ pattern = "fpsboost.ir", custom_domain = true }]   # the zone must b
 APP_NAME = "FPS Boost"
 PRICES = '{"1": 150000, "3": 390000, "12": 1290000}'   # months → Toman
 DOWNLOAD_URL = "https://github.com/iNewpie/fpsboost/releases/latest/download/FPSBoost-Setup.exe"   # where /download sends people (the installer)
-APP_LATEST = "1.0.1"                      # newest app version — the app updates itself when this is higher (app/scripts/release.sh writes these two)
-APP_SHA256 = "b66dcd88e9bfe0bb129892a223cb028993173505d22fb51e52ae2fa5408d7ed9"                           # SHA-256 of that installer; the app refuses to install a download that does not match
+APP_LATEST = "1.0.2"                      # newest app version — the app updates itself when this is higher (app/scripts/release.sh writes these two)
+APP_SHA256 = "eb9355572f1161f484c8deccc988081f98f10993faa4812f097fe205cc53c804"                           # SHA-256 of that installer; the app refuses to install a download that does not match
 SUPPORT = ""                              # shown in the footer + /terms: an email, a https:// link or a @telegram handle
 MAX_MACHINES = "2"                        # PCs per account
 TRIAL_DAYS = "0"                          # free days for a fresh account (0 = none)
