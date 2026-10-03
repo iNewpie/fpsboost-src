@@ -314,3 +314,69 @@ func TestDNSAutoPicksTheISPResolverThenTheFastest(t *testing.T) {
 		t.Fatalf("want an error and no change: %+v %v", r, setCmds)
 	}
 }
+
+func TestPagefileFixedUsesRAMAndRestoresSystemManaged(t *testing.T) {
+	f := newFake()
+	const MM = `HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management`
+	f.set(MM, "PagingFiles", engine.RegValue{Type: "REG_MULTI_SZ", Value: []string{`?:\pagefile.sys`}})
+	oldRAM, oldDrive := tweaks.TotalRAMMB, tweaks.SystemDrive
+	defer func() { tweaks.TotalRAMMB, tweaks.SystemDrive = oldRAM, oldDrive }()
+	tweaks.TotalRAMMB = func() int { return 8192 }
+	tweaks.SystemDrive = func() string { return "C:" }
+	if tweaks.PagefileSizeMB(8192) != 12288 || tweaks.PagefileSizeMB(2048) != 4096 || tweaks.PagefileSizeMB(32768) != 16384 {
+		t.Fatal("size rule: 1.5× RAM, 4–16 GB")
+	}
+	e := engine.New(tweaks.All, f, engine.NewBackup(""))
+	if r := e.Apply("pagefile_fixed", ""); r.Error != "" || !*r.Applied || !r.Reboot {
+		t.Fatalf("apply %+v", r)
+	}
+	v, _ := f.RegGet(MM, "PagingFiles")
+	if got := fmt.Sprint(v.Value); got != `[C:\pagefile.sys 12288 12288]` {
+		t.Fatalf("PagingFiles = %s", got)
+	}
+	if r := e.Revert("pagefile_fixed"); r.Error != "" || *r.Applied {
+		t.Fatalf("revert %+v", r)
+	}
+	v, _ = f.RegGet(MM, "PagingFiles")
+	if got := fmt.Sprint(v.Value); got != `[?:\pagefile.sys]` {
+		t.Fatalf("after revert PagingFiles = %s (want system managed)", got)
+	}
+	// RAM unknown → a clear error, nothing written
+	tweaks.TotalRAMMB = func() int { return 0 }
+	if r := e.Apply("pagefile_fixed", ""); r.Error == "" {
+		t.Fatal("unknown RAM must fail")
+	}
+}
+
+func TestHiddenPowercfgSettingIsUnhiddenBeforeReading(t *testing.T) {
+	f := newFake()
+	hidden := true
+	var cmds []string
+	f.cmd = func(cmd string, args []string) engine.RunResult {
+		line := cmd + " " + strings.Join(args, " ")
+		cmds = append(cmds, line)
+		if cmd == "powercfg" {
+			if len(args) > 0 && args[0] == "/attributes" {
+				hidden = false
+				return engine.RunResult{Code: 0}
+			}
+			if len(args) > 0 && args[0] == "/q" {
+				if hidden {
+					return engine.RunResult{Code: 0, Out: "Subgroup GUID: 54533251-82be-4824-96c1-47b60b740d00  (Processor power management)\n"}
+				}
+				return engine.RunResult{Code: 0, Out: "Current AC Power Setting Index: 0x00000001\n    Current DC Power Setting Index: 0x00000001\n"}
+			}
+		}
+		return engine.RunResult{Code: 0}
+	}
+	e := engine.New(tweaks.All, f, engine.NewBackup(""))
+	if r := e.Apply("core_parking_off", ""); r.Error != "" {
+		t.Fatalf("core parking must apply once unhidden: %+v", r)
+	}
+	if !strings.Contains(strings.Join(cmds, "\n"), "/attributes 54533251-82be-4824-96c1-47b60b740d00 0cc5b647-c1df-4637-891a-dec35c318583 -ATTRIB_HIDE") {
+		t.Fatalf("expected the ATTRIB_HIDE removal: %v", cmds)
+	}
+	if !strings.Contains(strings.Join(cmds, "\n"), "/setacvalueindex SCHEME_CURRENT 54533251-82be-4824-96c1-47b60b740d00 0cc5b647-c1df-4637-891a-dec35c318583 100") {
+		t.Fatalf("expected the value to be set: %v", cmds)
+	}
+}

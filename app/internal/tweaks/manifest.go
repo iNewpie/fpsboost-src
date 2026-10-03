@@ -5,6 +5,7 @@ package tweaks
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -107,6 +108,19 @@ var FPS = []*Tweak{
 		T("Allow a global 0.5 ms system timer", "اجازهٔ تایمر سراسری ۰٫۵ میلی‌ثانیه"),
 		T("Windows 10 2004+ and 11 ignore timer requests from other processes. With this, the background Guard's 0.5 ms timer applies to your game too — steadier frame pacing and lower input delay.", "ویندوز ۱۰ ۲۰۰۴ به بالا و ۱۱ درخواست تایمر برنامه‌های دیگر را نادیده می‌گیرند. با این گزینه تایمر ۰٫۵ میلی‌ثانیه‌ای گارد پس‌زمینه برای بازی شما هم اعمال می‌شود — فریم‌پیسینگ پایدارتر و تأخیر ورودی کمتر.")),
 		DW(HKLM+`\SYSTEM\CurrentControlSet\Control\Session Manager\kernel`, "GlobalTimerResolutionRequests", 1)),
+	RegTweak(meta("hags_off", "fps", "advanced", false, true,
+		T("Turn OFF hardware-accelerated GPU scheduling (freeze fix)", "خاموش کردن زمان‌بندی سخت‌افزاری GPU (رفع فریز)"),
+		T("The opposite of HAGS on: on older or integrated GPUs, HAGS causes multi-second screen freezes and stutter in Valorant (Unreal Engine 5) and other games. Off = the CPU schedules the GPU again. Needs a restart.", "برعکس HAGS روشن: روی کارت‌های قدیمی یا داخلی، HAGS باعث فریزهای چندثانیه‌ای و لگ در والورانت (آنریل ۵) و بازی‌های دیگر می‌شود. خاموش = CPU دوباره GPU را زمان‌بندی می‌کند. نیاز به ریستارت.")),
+		DW(HKLM+`\SYSTEM\CurrentControlSet\Control\GraphicsDrivers`, "HwSchMode", 1)),
+	RegTweak(meta("mpo_off", "fps", "advanced", false, true,
+		T("Disable Multi-Plane Overlay (black screens, flicker, freezes)", "غیرفعال کردن Multi-Plane Overlay (صفحهٔ سیاه، پرش، فریز)"),
+		T("MPO lets the desktop compositor hand game frames to the display driver directly; on many NVIDIA/AMD/Intel drivers it causes stutter, flicker, black screens and freezes when alt-tabbing or in fullscreen games. Microsoft's own workaround. Needs a restart.", "MPO اجازه می‌دهد فریم‌های بازی مستقیم به درایور نمایشگر برسند؛ روی خیلی از درایورهای انویدیا/AMD/اینتل باعث لگ، پرش تصویر، صفحهٔ سیاه و فریز هنگام Alt+Tab یا در بازی فول‌اسکرین می‌شود. راه‌حل خود مایکروسافت. نیاز به ریستارت.")),
+		DW(HKLM+`\SOFTWARE\Microsoft\Windows\Dwm`, "OverlayTestMode", 5)),
+	pagefileFixed(),
+	RegTweak(meta("hvci_off", "fps", "advanced", false, true,
+		T("Turn off Memory Integrity (core isolation)", "خاموش کردن Memory Integrity (ایزوله‌سازی هسته)"),
+		T("Hypervisor-protected code integrity costs 5–15% CPU on older processors and adds frame-time spikes. Off = that overhead is gone. It is a real security feature (blocks some driver exploits); turn it back on when you stop gaming on this PC. Needs a restart.", "Memory Integrity روی پردازنده‌های قدیمی ۵ تا ۱۵٪ CPU می‌خورد و جهش فریم‌تایم اضافه می‌کند. خاموش = این سربار می‌رود. یک ویژگی امنیتی واقعی است (جلوی بعضی اکسپلویت‌های درایور را می‌گیرد)؛ وقتی دیگر با این سیستم بازی نمی‌کنید روشنش کنید. نیاز به ریستارت.")),
+		DW(HKLM+`\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity`, "Enabled", 0)),
 	PowercfgTweak(meta("core_parking_off", "fps", "advanced", false, false,
 		T("Disable CPU core parking", "غیرفعال کردن پارک شدن هسته‌های CPU"),
 		T("Keeps every core awake instead of parking idle ones. Removes the micro-stutter when a game suddenly needs more threads.", "همهٔ هسته‌ها را بیدار نگه می‌دارد به‌جای پارک کردن هسته‌های بیکار. میکرو‌لگ وقتی بازی ناگهان ترد بیشتری می‌خواهد از بین می‌رود.")),
@@ -119,6 +133,115 @@ var FPS = []*Tweak{
 		T("Disable Windows Search indexing", "غیرفعال کردن ایندکس Windows Search"),
 		T("The indexer rescans your drives in the background. Off = no disk spikes mid-game; Start menu search still works, just slower for files.", "ایندکسر در پس‌زمینه درایوها را دوباره اسکن می‌کند. خاموش = بدون جهش دیسک وسط بازی؛ جستجوی Start کار می‌کند، فقط برای فایل‌ها کندتر.")),
 		"WSearch"),
+}
+
+/* ---- fixed page file: no on-the-fly growth, no "out of memory" freezes on 8 GB PCs ---- */
+
+// TotalRAMMB is set by main (GlobalMemoryStatusEx); 0 = unknown (tests, non-Windows).
+var TotalRAMMB = func() int { return 0 }
+
+// SystemDrive is where pagefile.sys lives ("C:" unless Windows says otherwise).
+var SystemDrive = func() string {
+	if d := strings.TrimSpace(os.Getenv("SystemDrive")); d != "" {
+		return d
+	}
+	return "C:"
+}
+
+const memMgmt = HKLM + `\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management`
+
+// PagefileSizeMB: 1.5× RAM, at least 4 GB, at most 16 GB — a fixed file Windows never has to grow mid-game.
+func PagefileSizeMB(ramMB int) int {
+	n := ramMB * 3 / 2
+	if n < 4096 {
+		n = 4096
+	}
+	if n > 16384 {
+		n = 16384
+	}
+	return n
+}
+
+func pagefileLine(drive string, mb int) string {
+	return fmt.Sprintf(`%s\pagefile.sys %d %d`, drive, mb, mb)
+}
+
+type pagefileBackup struct {
+	Paging *RegValue `json:"paging"` // PagingFiles before (nil = value absent = system managed)
+}
+
+func pagefileFixed() *Tweak {
+	t := &Tweak{Meta: meta("pagefile_fixed", "fps", "advanced", false, true,
+		T("Fixed-size page file (1.5× RAM)", "فایل صفحه‌بندی با اندازهٔ ثابت (۱٫۵ برابر رم)"),
+		T("Windows grows the page file on the fly when a game runs out of RAM — on 8 GB PCs with Unreal Engine 5 games (Valorant) that growth is the multi-second freeze. A fixed file of 1.5× your RAM (4–16 GB) on the Windows drive means no growth, no fragmentation, no 'out of memory' crash. Undo returns to system-managed. Needs a restart.", "وقتی بازی رم کم می‌آورد ویندوز فایل صفحه‌بندی را همان لحظه بزرگ می‌کند — روی سیستم‌های ۸ گیگ با بازی‌های آنریل ۵ (والورانت) همین رشد، همان فریز چندثانیه‌ای است. فایل ثابت ۱٫۵ برابر رم (۴ تا ۱۶ گیگ) روی درایو ویندوز یعنی بدون رشد، بدون تکه‌تکه شدن، بدون کرش «کمبود حافظه». بازگشت = مدیریت خودکار ویندوز. نیاز به ریستارت."))}
+	want := func() (string, error) {
+		ram := TotalRAMMB()
+		if ram <= 0 {
+			return "", fmt.Errorf("RAM size unknown on this PC")
+		}
+		return pagefileLine(SystemDrive(), PagefileSizeMB(ram)), nil
+	}
+	t.Check = func(c *Ctx) (bool, error) {
+		w, err := want()
+		if err != nil {
+			return false, nil
+		}
+		v, err := c.Sys.RegGet(memMgmt, "PagingFiles")
+		if err != nil || v == nil {
+			return false, err
+		}
+		for _, line := range multiSZ(v.Value) {
+			if strings.EqualFold(strings.TrimSpace(line), w) {
+				return true, nil
+			}
+		}
+		return false, nil
+	}
+	t.Apply = func(c *Ctx) error {
+		w, err := want()
+		if err != nil {
+			return err
+		}
+		cur, err := c.Sys.RegGet(memMgmt, "PagingFiles")
+		if err != nil {
+			return err
+		}
+		if _, err := c.Backup.SaveOnce(c.ID, pagefileBackup{Paging: cur}); err != nil {
+			return err
+		}
+		return c.Sys.RegSet(memMgmt, "PagingFiles", RegValue{Type: "REG_MULTI_SZ", Value: []string{w}})
+	}
+	t.Revert = func(c *Ctx) error {
+		var b pagefileBackup
+		if c.Backup.Get(c.ID, &b) && b.Paging != nil {
+			if err := c.Sys.RegSet(memMgmt, "PagingFiles", *b.Paging); err != nil {
+				return err
+			}
+		} else { // system managed
+			if err := c.Sys.RegSet(memMgmt, "PagingFiles", RegValue{Type: "REG_MULTI_SZ", Value: []string{`?:\pagefile.sys`}}); err != nil {
+				return err
+			}
+		}
+		return c.Backup.Clear(c.ID)
+	}
+	return t
+}
+
+// multiSZ turns a registry MULTI_SZ value (live: []string, from JSON: []any, or a plain string) into lines.
+func multiSZ(v any) []string {
+	switch x := v.(type) {
+	case []string:
+		return x
+	case []any:
+		out := make([]string, 0, len(x))
+		for _, e := range x {
+			out = append(out, fmt.Sprint(e))
+		}
+		return out
+	case string:
+		return []string{x}
+	}
+	return nil
 }
 
 /* ---- power plan: Ultimate Performance when Windows has it, else High performance ---- */

@@ -29,6 +29,13 @@ var Presets = []Preset{
 		Tips: []Text{T("In-game: Multithreaded Rendering ON, Material/Texture Quality Low, VSync OFF, Limit FPS Always OFF.", "داخل بازی: Multithreaded Rendering روشن، Material/Texture روی Low، VSync خاموش، Limit FPS خاموش."),
 			T("Raw Input Buffer ON (Settings → General) for the lowest mouse latency.", "Raw Input Buffer روشن (Settings → General) برای کمترین تأخیر ماوس.")},
 		Exes: []string{"VALORANT-Win64-Shipping.exe"}},
+	{ID: "val_freeze", Name: "Valorant · freeze fix (low-end PC)", Icon: "val.webp", Tweaks: []string{"game_dvr_off", "game_bar_off", "fse_off", "background_apps_off", "power_plan_high", "mm_games_priority", "hags_off", "mpo_off", "pagefile_fixed", "sysmain_off"},
+		Tips: []Text{T("For the multi-second screen freezes since the Unreal Engine 5 update: this bundle turns HAGS and MPO off, fixes the page file and stops SysMain thrashing the disk. Restart Windows afterwards — three of them only take effect then.", "برای فریزهای چندثانیه‌ای بعد از آپدیت آنریل ۵: این بسته HAGS و MPO را خاموش می‌کند، فایل صفحه‌بندی را ثابت می‌کند و جلوی فشار SysMain به دیسک را می‌گیرد. بعدش ویندوز را ریستارت کنید — سه تای آن‌ها فقط بعد از ریستارت اثر می‌کنند."),
+			T("Then run Tools → Clear shader caches once: a damaged DirectX/NVIDIA shader cache freezes the game at the same spot every time; Valorant rebuilds it on the next start.", "بعد یک بار Tools → پاک کردن کش شیدرها را بزنید: کش شیدر خراب، بازی را هر بار در همان نقطه فریز می‌کند؛ والورانت دفعهٔ بعد دوباره می‌سازد."),
+			T("In-game: Fullscreen (not Borderless), VSync OFF, Material/Texture/Detail Low, Anti-aliasing None, Vignette/Bloom/Distortion OFF; Multithreaded Rendering ON (OFF only on 2-core CPUs); cap Limit FPS Always a little above your monitor's refresh rate.", "داخل بازی: Fullscreen (نه Borderless)، VSync خاموش، Material/Texture/Detail روی Low، Anti-aliasing روی None، Vignette/Bloom/Distortion خاموش؛ Multithreaded Rendering روشن (فقط روی CPU دو هسته‌ای خاموش)؛ Limit FPS Always را کمی بالاتر از رفرش‌ریت مانیتور بگذارید."),
+			T("Restart (not Shut down) after driver or Vanguard updates — Fast Startup keeps the old Vanguard driver loaded, a common cause of freezes on the loading screen.", "بعد از آپدیت درایور یا Vanguard، Restart بزنید نه Shut down — Fast Startup درایور قدیمی Vanguard را نگه می‌دارد، دلیل رایج فریز در صفحهٔ لودینگ."),
+			T("8 GB RAM or an HDD? Keep Discord and the browser closed while playing; the game alone needs about 6 GB since the engine update.", "رم ۸ گیگ یا هارد HDD دارید؟ دیسکورد و مرورگر را هنگام بازی ببندید؛ خود بازی بعد از آپدیت موتور حدود ۶ گیگ می‌خواهد.")},
+		Exes: []string{"VALORANT-Win64-Shipping.exe"}},
 	{ID: "cs2", Name: "Counter-Strike 2", Icon: "cs2.webp", Tweaks: join(base, []string{"fse_off", "mouse_accel_off"}, net),
 		Tips: []Text{T("Steam launch options: -high -novid -nojoy", "گزینه‌های اجرا در استیم: -high -novid -nojoy"), T("NVIDIA Reflex: Enabled + Boost; Shader Detail Low; MSAA 2x or off.", "NVIDIA Reflex روی Enabled + Boost؛ Shader Detail روی Low؛ MSAA روی 2x یا خاموش.")},
 		Exes: []string{"cs2.exe"}},
@@ -63,7 +70,9 @@ var GameExes = func() map[string]string {
 	m := map[string]string{}
 	for _, p := range Presets {
 		for _, e := range p.Exes {
-			m[lower(e)] = p.Name
+			if _, seen := m[lower(e)]; !seen { // the first preset names the game (the Valorant freeze bundle shares its exe)
+				m[lower(e)] = p.Name
+			}
 		}
 	}
 	for name, exes := range map[string][]string{

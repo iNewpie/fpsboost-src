@@ -113,6 +113,7 @@ func main() {
 	}
 	a.auth = au
 	tweaks.DetectISP = func(engine.Sys) string { return a.detectISP() }
+	tweaks.TotalRAMMB = func() int { total, _, _ := win.Memory(); return total }
 
 	switch {
 	case *restore:

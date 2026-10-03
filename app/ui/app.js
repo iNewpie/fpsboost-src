@@ -77,7 +77,7 @@ const I18N = {
     acc_pay: 'پرداخت‌ها', acc_pay_none: 'هنوز پرداختی نیست.', acc_pay_months: '{n} ماهه', toman: 'تومان', pay_paid: 'پرداخت شد', pay_pending: 'در انتظار', pay_failed: 'ناموفق', acc_prices: 'پلن‌ها', per_month: '{n} ماهه', per_months: '{n} ماهه',
   },
 };
-const ICONS = { game_dvr_off: 'eye-off', game_mode_on: 'pad', fse_off: 'monitor', mm_games_priority: 'layers', hags_on: 'gpu', mouse_accel_off: 'mouse', background_apps_off: 'layers', power_throttling_off: 'power', visual_fx_perf: 'monitor', game_bar_off: 'pad', telemetry_off: 'eye-off', widgets_off: 'layers', tips_off: 'info', win32_priority: 'cpu', power_plan_high: 'power', startup_delay_off: 'clock', menu_delay_off: 'zap', sticky_keys_off: 'keyboard', paging_executive_off: 'ram', timer_global: 'clock', core_parking_off: 'cpu', sysmain_off: 'ram', wsearch_off: 'eye-off', nagle_off: 'zap', network_throttling_off: 'wifi', qos_reserve_off: 'wifi', delivery_optimization_off: 'download', tcp_tuning: 'net', dns_fast: 'dns', wifi_power_max: 'wifi' };
+const ICONS = { game_dvr_off: 'eye-off', game_mode_on: 'pad', fse_off: 'monitor', mm_games_priority: 'layers', hags_on: 'gpu', mouse_accel_off: 'mouse', background_apps_off: 'layers', power_throttling_off: 'power', visual_fx_perf: 'monitor', game_bar_off: 'pad', telemetry_off: 'eye-off', widgets_off: 'layers', tips_off: 'info', win32_priority: 'cpu', power_plan_high: 'power', startup_delay_off: 'clock', menu_delay_off: 'zap', sticky_keys_off: 'keyboard', paging_executive_off: 'ram', timer_global: 'clock', core_parking_off: 'cpu', sysmain_off: 'ram', wsearch_off: 'eye-off', nagle_off: 'zap', network_throttling_off: 'wifi', qos_reserve_off: 'wifi', delivery_optimization_off: 'download', tcp_tuning: 'net', dns_fast: 'dns', wifi_power_max: 'wifi', hags_off: 'gpu', mpo_off: 'monitor', pagefile_fixed: 'ram', hvci_off: 'shield' };
 
 /* ---- state ---- */
 const S = { lang: 'en', page: 'home', info: {}, settings: {}, auth: {}, tweaks: null, presets: [], tools: [], guard: {}, upd: {}, system: {}, dns: [], dnsScan: null, dnsMore: false, account: null, accErr: '', filter: { fps: 'all', network: 'all' }, busy: new Set(), log: [], ping: null, live: false, max: false };
@@ -503,7 +503,7 @@ on('restore', (r) => { if (r.status === 'created') toast(t('restore_point_made')
 
 /* ---- events ---- */
 document.addEventListener('click', (e) => {
-  const el = e.target.closest('[data-page],[data-win],[data-open],[data-href],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-run],[data-lang],[data-upd],[data-dns],#boost,#unboost,#pingbtn,#dnsbtn,#dnsmore,#logout,#cleannow,#acc-refresh,#acc-devices');
+  const el = e.target.closest('button[data-page],[data-win],[data-open],[data-href],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-run],[data-lang],[data-upd],[data-dns],#boost,#unboost,#pingbtn,#dnsbtn,#dnsmore,#logout,#cleannow,#acc-refresh,#acc-devices');
   if (!el) return;
   if (el.dataset.page) go(el.dataset.page);
   else if (el.dataset.href) { e.preventDefault(); api('app.open', el.dataset.href); }

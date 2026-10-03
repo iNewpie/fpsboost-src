@@ -166,11 +166,14 @@ var hexRe = regexp.MustCompile(`0x[0-9a-fA-F]{8}`)
 // Setting Index: 0x…" values are always the last two hex words of the output.
 func powercfgRead(s Sys, sub, setting string) (ac, dc uint64, err error) {
 	r := s.Run(shortTimeout, "powercfg", "/q", "SCHEME_CURRENT", sub, setting)
-	if r.Code != 0 {
-		return 0, 0, errNotAvailable
-	}
 	hx := hexRe.FindAllString(r.Out, -1)
-	if len(hx) < 2 {
+	if r.Code != 0 || len(hx) < 2 {
+		// hidden settings (core parking, many processor knobs) are invisible to /q until their ATTRIB_HIDE is cleared
+		s.Run(shortTimeout, "powercfg", "/attributes", sub, setting, "-ATTRIB_HIDE")
+		r = s.Run(shortTimeout, "powercfg", "/q", "SCHEME_CURRENT", sub, setting)
+		hx = hexRe.FindAllString(r.Out, -1)
+	}
+	if r.Code != 0 || len(hx) < 2 {
 		return 0, 0, errNotAvailable
 	}
 	ac, _ = strconv.ParseUint(hx[len(hx)-2][2:], 16, 64)
