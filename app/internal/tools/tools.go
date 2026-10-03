@@ -32,6 +32,10 @@ type Action struct {
 type Env struct {
 	Temp, SystemRoot, LocalAppData string
 	Start                          func(exe, cmdLine string) error
+	// the restore snapshot (main wires these to the restore package): make a new one, load the last one, its folder
+	Snapshot    func() (engine.Text, error)
+	LoadRestore func() (engine.Text, error)
+	RestoreDir  string
 }
 
 func t(en, fa string) engine.Text { return engine.Text{En: en, Fa: fa} }
@@ -51,17 +55,33 @@ func Actions(env Env, ramClean func() (freedMB int, err error)) []*Action {
 				}
 				return t(fmt.Sprintf("Freed %d MB", mb), fmt.Sprintf("%d مگابایت آزاد شد", mb)), nil
 			}},
-		{ID: "restore_point", Icon: "shield", Title: t("Create a System Restore point", "ساخت نقطهٔ بازیابی ویندوز (System Restore)"),
-			Desc: t("A Windows snapshot you can roll back to from Settings → Recovery, independent of this app. Made automatically before the first boost.", "یک عکس فوری از ویندوز که از Settings → Recovery می‌توانید به آن برگردید، مستقل از این برنامه. قبل از اولین بوست خودکار ساخته می‌شود."),
-			Run: func(s engine.Sys) (engine.Text, error) {
-				r, err := RestorePoint(s)
-				if err != nil {
+		{ID: "restore_point", Icon: "shield", Title: t("Create a restore point now", "ساخت نقطهٔ بازیابی همین حالا"),
+			Desc: t("A Windows System Restore point plus FPS Boost's own restore files (a .reg of every setting it can touch and your power plan) in the fpsboost folder. Made automatically before the first change; make a new one before you tweak again after a big Windows update.", "نقطهٔ بازیابی ویندوز به‌علاوهٔ فایل‌های بازیابی خود FPS Boost (یک .reg از همهٔ تنظیماتی که می‌تواند دست بزند و پاور پلن شما) در پوشهٔ fpsboost. قبل از اولین تغییر خودکار ساخته می‌شود؛ بعد از آپدیت بزرگ ویندوز، قبل از تغییرات جدید یکی تازه بسازید."),
+			Run: func(engine.Sys) (engine.Text, error) {
+				if env.Snapshot == nil {
+					return engine.Text{}, fmt.Errorf("not available on this system")
+				}
+				return env.Snapshot()
+			}},
+		{ID: "restore_open", Icon: "folder", Title: t("Open the restore folder", "باز کردن پوشهٔ بازیابی"),
+			Desc: t("Shows the restore-….reg, power-….pow and README files in Explorer. Keep a copy somewhere safe if you like — the .reg works even if this app is uninstalled.", "فایل‌های restore-….reg، power-….pow و README را در Explorer نشان می‌دهد. اگر خواستید یک کپی جای امن نگه دارید — فایل .reg حتی بعد از حذف برنامه کار می‌کند."),
+			Run: func(engine.Sys) (engine.Text, error) {
+				if env.Start == nil || env.RestoreDir == "" {
+					return engine.Text{}, fmt.Errorf("not available on this system")
+				}
+				_ = os.MkdirAll(env.RestoreDir, 0o755)
+				if err := env.Start("explorer.exe", `explorer.exe "`+env.RestoreDir+`"`); err != nil {
 					return engine.Text{}, err
 				}
-				if r.Skipped {
-					return t("A restore point from the last 24 h already exists", "نقطهٔ بازیابی ۲۴ ساعت اخیر از قبل وجود دارد"), nil
+				return t("Opened", "باز شد"), nil
+			}},
+		{ID: "restore_load", Icon: "history", Reboot: true, Title: t("Load the previous restore (undo everything)", "بازگردانی نقطهٔ بازیابی قبلی (لغو همه‌چیز)"),
+			Desc: t("Puts the registry and power plan back to the snapshot taken before FPS Boost's first change, and forgets the app's own backups so the Guard does not re-apply anything. Use it when 'Restore everything' was not enough. Restart Windows afterwards.", "رجیستری و پاور پلن را به عکس فوری قبل از اولین تغییر FPS Boost برمی‌گرداند و بکاپ‌های خود برنامه را فراموش می‌کند تا گارد چیزی را دوباره اعمال نکند. وقتی «بازگشت همه» کافی نبود استفاده کنید. بعدش ویندوز را ریستارت کنید."),
+			Run: func(engine.Sys) (engine.Text, error) {
+				if env.LoadRestore == nil {
+					return engine.Text{}, fmt.Errorf("not available on this system")
 				}
-				return t("Restore point created", "نقطهٔ بازیابی ساخته شد"), nil
+				return env.LoadRestore()
 			}},
 		{ID: "flush_dns", Icon: "dns", Title: t("Flush DNS cache", "پاک کردن کش DNS"),
 			Desc: t("Forget cached name lookups — fixes sites that resolve to a dead or slow address.", "رکوردهای کش‌شده را فراموش می‌کند — سایت‌هایی که به آدرس مرده یا کند می‌روند درست می‌شوند."),

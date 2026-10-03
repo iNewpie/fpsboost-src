@@ -35,6 +35,7 @@ type Data struct {
 	Win           Window          `json:"win"`
 	LastVersion   string          `json:"lastVersion,omitempty"` // version that ran last (a change = "updated to …" toast)
 	Seen          map[string]bool `json:"seen,omitempty"`        // one-time hints shown (tray balloon …)
+	Restore       json.RawMessage `json:"restore,omitempty"`     // the restore snapshot made before the first change (restore.Info)
 }
 
 func Defaults() Data {

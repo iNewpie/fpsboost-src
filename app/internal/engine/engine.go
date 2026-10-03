@@ -35,8 +35,37 @@ type Tweak struct {
 	Apply  func(c *Ctx) error
 	Revert func(c *Ctx) error
 
-	regValues []RegVal // set by RegTweak: a declarative registry tweak (cheap to check, safe to re-apply)
+	regValues []RegVal             // set by RegTweak: a declarative registry tweak (cheap to check, safe to re-apply)
+	services  []string             // set by ServiceTweak / ServicesTweak: the services it disables
+	regTrees  []string             // extra registry trees a hand-written tweak touches (for the restore snapshot)
+	pins      func(s Sys) []RegVal // hand-written tweaks: the exact values they will write, discovered at runtime
 }
+
+// Pins lists the registry values the tweak writes on this PC (key + name; the value is ignored): the declared values
+// of a RegTweak, or what a hand-written tweak reports through WithPins. The restore snapshot records each one's
+// current state so importing the snapshot puts exactly these back (or deletes them when they did not exist).
+func (t *Tweak) Pins(s Sys) []RegVal {
+	out := append([]RegVal{}, t.regValues...)
+	if t.pins != nil {
+		out = append(out, t.pins(s)...)
+	}
+	return out
+}
+
+// WithPins sets the runtime value lister of a hand-written tweak.
+func (t *Tweak) WithPins(f func(s Sys) []RegVal) *Tweak { t.pins = f; return t }
+
+// RegValues lists the values a declarative registry tweak writes (nil for hand-written tweaks).
+func (t *Tweak) RegValues() []RegVal { return t.regValues }
+
+// Services lists the services a service tweak disables (nil otherwise).
+func (t *Tweak) Services() []string { return t.services }
+
+// Trees lists the registry trees a hand-written tweak touches, set with WithTrees (nil otherwise).
+func (t *Tweak) Trees() []string { return t.regTrees }
+
+// WithTrees records the registry trees a hand-written tweak touches so the restore snapshot can export them.
+func (t *Tweak) WithTrees(keys ...string) *Tweak { t.regTrees = append(t.regTrees, keys...); return t }
 
 // Ctx is handed to a tweak's functions.
 type Ctx struct {

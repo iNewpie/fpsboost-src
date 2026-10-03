@@ -20,7 +20,7 @@ const I18N = {
     lang: 'فارسی', login_sub: 'Sign in with your fpsboost.ir account', username: 'Username', password: 'Password', login: 'Sign in', signing_in: 'Signing in…', no_account: 'Create an account', forgot: 'Forgot password?', logout: 'Log out',
     nav_home: 'Home', nav_fps: 'FPS Boost', nav_network: 'Network', nav_games: 'Games', nav_guard: 'Guard', nav_tools: 'Tools', nav_settings: 'Settings',
     hi: 'Hi, {u}', home_sub: 'Your PC at a glance', score: 'Boost score', tiles_active: 'Tweaks active', tiles_ping: 'Last ping', tiles_guard: 'Guard', never: 'not tested yet', no_reply: 'no reply', guard_idle: 'Watching', guard_off: 'Off', guard_nosub: 'No plan', guard_game: 'Boosting',
-    boost_title: 'One-click boost', boost_sub: 'Applies every recommended FPS and network tweak. A restore point is created first; everything can be undone here.', boost_now: 'Boost now', boosting: 'Boosting…', restore_all: 'Restore everything', restore_sub: 'Puts back every original value.',
+    boost_title: 'One-click boost', boost_sub: 'Applies every recommended FPS and network tweak. A restore point is created first; everything can be undone here.', rp_title: 'Restore point', rp_sub: 'Made before the first change: a Windows System Restore point plus FPS Boost\'s own restore files in the fpsboost folder. If anything breaks, load them here or double-click the .reg file.', rp_none: 'Not created yet — it is made automatically before your first tweak.', rp_made: 'Made {d}', rp_files: 'Files: {r}{p}', rp_win_created: 'Windows restore point created', rp_win_skipped: 'Windows restore point of that day reused', rp_win_unavailable: 'Windows System Restore is off on this PC — the .reg file is your fallback', rp_create: 'Create new', rp_open: 'Open folder', rp_load: 'Load previous restore', rp_confirm: 'Click again to load it', rp_working: 'Creating a restore point first…', rp_done: 'Restore point saved: {r}', rp_loaded: 'Restore loaded — restart Windows', boost_now: 'Boost now', boosting: 'Boosting…', restore_all: 'Restore everything', restore_sub: 'Puts back every original value.',
     this_pc: 'This PC', os: 'Windows', cpu: 'Processor', gpu: 'Graphics', ram: 'Memory', cores: 'Threads', activity: 'Activity', activity_empty: 'Nothing yet — apply a tweak or run a tool.',
     fps_title: 'FPS Boost', fps_sub: 'Windows settings that cost frames. Flip a switch to apply, flip it back to undo.', net_title: 'Network', net_sub: 'Lower ping and steadier connections for online games.', count: '{a} of {n} active', rec_count: '{a} of {n} recommended',
     apply_recommended: 'Apply recommended', revert_all: 'Restore', all: 'All', rec: 'Recommended', adv: 'Advanced', reboot: 'restart needed', applied: 'on', not_applied: 'off', unknown: 'unknown', checking: 'Checking your PC…', checking_short: 'checking…',
@@ -51,7 +51,7 @@ const I18N = {
     lang: 'English', login_sub: 'با حساب fpsboost.ir وارد شوید', username: 'نام کاربری', password: 'رمز عبور', login: 'ورود', signing_in: 'در حال ورود…', no_account: 'ساخت حساب', forgot: 'رمز را فراموش کرده‌اید؟', logout: 'خروج',
     nav_home: 'خانه', nav_fps: 'افزایش FPS', nav_network: 'شبکه', nav_games: 'بازی‌ها', nav_guard: 'گارد', nav_tools: 'ابزارها', nav_settings: 'تنظیمات',
     hi: 'سلام، {u}', home_sub: 'وضعیت کامپیوتر شما در یک نگاه', score: 'امتیاز بوست', tiles_active: 'تنظیمات فعال', tiles_ping: 'آخرین پینگ', tiles_guard: 'گارد', never: 'هنوز تست نشده', no_reply: 'بدون پاسخ', guard_idle: 'در حال پایش', guard_off: 'خاموش', guard_nosub: 'بدون پلن', guard_game: 'در حال بوست',
-    boost_title: 'بوست یک‌کلیکی', boost_sub: 'همهٔ تنظیمات پیشنهادی FPS و شبکه را اعمال می‌کند. اول یک نقطهٔ بازیابی ساخته می‌شود و همه‌چیز از همین‌جا قابل بازگشت است.', boost_now: 'بوست کن', boosting: 'در حال بوست…', restore_all: 'بازگشت همه', restore_sub: 'همهٔ مقدارهای اصلی را برمی‌گرداند.',
+    boost_title: 'بوست یک‌کلیکی', boost_sub: 'همهٔ تنظیمات پیشنهادی FPS و شبکه را اعمال می‌کند. اول یک نقطهٔ بازیابی ساخته می‌شود و همه‌چیز از همین‌جا قابل بازگشت است.', rp_title: 'نقطهٔ بازیابی', rp_sub: 'قبل از اولین تغییر ساخته می‌شود: نقطهٔ بازیابی ویندوز به‌علاوهٔ فایل‌های بازیابی خود FPS Boost در پوشهٔ fpsboost. اگر چیزی خراب شد از همین‌جا بارگذاری کنید یا روی فایل .reg دوبار کلیک کنید.', rp_none: 'هنوز ساخته نشده — قبل از اولین تغییر خودکار ساخته می‌شود.', rp_made: 'ساخته‌شده {d}', rp_files: 'فایل‌ها: {r}{p}', rp_win_created: 'نقطهٔ بازیابی ویندوز ساخته شد', rp_win_skipped: 'نقطهٔ بازیابی ویندوز همان روز استفاده شد', rp_win_unavailable: 'System Restore ویندوز روی این سیستم خاموش است — فایل .reg پشتیبان شماست', rp_create: 'ساخت جدید', rp_open: 'باز کردن پوشه', rp_load: 'بازگردانی نقطهٔ قبلی', rp_confirm: 'برای بارگذاری دوباره کلیک کنید', rp_working: 'اول یک نقطهٔ بازیابی ساخته می‌شود…', rp_done: 'نقطهٔ بازیابی ذخیره شد: {r}', rp_loaded: 'بازیابی انجام شد — ویندوز را ریستارت کنید', boost_now: 'بوست کن', boosting: 'در حال بوست…', restore_all: 'بازگشت همه', restore_sub: 'همهٔ مقدارهای اصلی را برمی‌گرداند.',
     this_pc: 'این کامپیوتر', os: 'ویندوز', cpu: 'پردازنده', gpu: 'گرافیک', ram: 'رم', cores: 'ترد', activity: 'فعالیت‌ها', activity_empty: 'هنوز چیزی نیست — یک تنظیم اعمال کنید یا ابزاری اجرا کنید.',
     fps_title: 'افزایش FPS', fps_sub: 'تنظیماتی از ویندوز که فریم می‌خورند. کلید را بزنید تا اعمال شود، برگردانید تا لغو شود.', net_title: 'شبکه', net_sub: 'پینگ کمتر و اتصال پایدارتر برای بازی آنلاین.', count: '{a} از {n} فعال', rec_count: '{a} از {n} پیشنهادی',
     apply_recommended: 'اعمال پیشنهادی', revert_all: 'بازگشت', all: 'همه', rec: 'پیشنهادی', adv: 'پیشرفته', reboot: 'نیاز به ریستارت', applied: 'روشن', not_applied: 'خاموش', unknown: 'نامشخص', checking: 'در حال بررسی سیستم…', checking_short: 'بررسی…',
@@ -80,9 +80,10 @@ const I18N = {
   },
 };
 const ICONS = { game_dvr_off: 'eye-off', game_mode_on: 'pad', fse_off: 'monitor', mm_games_priority: 'layers', hags_on: 'gpu', mouse_accel_off: 'mouse', background_apps_off: 'layers', power_throttling_off: 'power', visual_fx_perf: 'monitor', game_bar_off: 'pad', telemetry_off: 'eye-off', widgets_off: 'layers', tips_off: 'info', win32_priority: 'cpu', power_plan_high: 'power', startup_delay_off: 'clock', menu_delay_off: 'zap', sticky_keys_off: 'keyboard', paging_executive_off: 'ram', timer_global: 'clock', core_parking_off: 'cpu', sysmain_off: 'ram', wsearch_off: 'eye-off', nagle_off: 'zap', network_throttling_off: 'wifi', qos_reserve_off: 'wifi', delivery_optimization_off: 'download', tcp_tuning: 'net', dns_fast: 'dns', wifi_power_max: 'wifi', hags_off: 'gpu', mpo_off: 'monitor', pagefile_fixed: 'ram', hvci_off: 'shield', usb_suspend_off: 'usb', pcie_aspm_off: 'gpu', disk_sleep_off: 'disk', cpu_min_100: 'cpu', cooling_active: 'fan', sleep_never_ac: 'clock', slideshow_paused: 'monitor', nic_power_mgmt_off: 'net', fast_startup_off: 'power', diagtrack_off: 'eye-off', svc_unused_off: 'layers', wer_off: 'warn', geolocation_off: 'radar', hyperv_guest_off: 'layers', bluetooth_off: 'bluetooth', print_off: 'printer', imaging_off: 'eye', mixed_reality_off: 'monitor', netbios_helper_off: 'net', iphelper_off: 'net', telemetry_tasks_off: 'clock', defrag_schedule_off: 'disk', wu_notify_only: 'download', store_autoupdate_off: 'download', cortana_off: 'eye-off', privacy_off: 'eye-off', win_sounds_off: 'volume-x' };
+// tools reuse ICONS by tool id through a.icon; the restore tools use 'folder' and 'history' symbols (index.html)
 
 /* ---- state ---- */
-const S = { lang: 'en', page: 'home', info: {}, settings: {}, auth: {}, tweaks: null, presets: [], tools: [], guard: {}, upd: {}, system: {}, dns: [], dnsScan: null, dnsMore: false, account: null, accErr: '', filter: { fps: 'all', network: 'all' }, busy: new Set(), log: [], ping: null, live: false, max: false, runs: {}, open: new Set() };
+const S = { lang: 'en', page: 'home', info: {}, settings: {}, auth: {}, tweaks: null, presets: [], tools: [], guard: {}, upd: {}, system: {}, dns: [], dnsScan: null, dnsMore: false, account: null, accErr: '', filter: { fps: 'all', network: 'all' }, busy: new Set(), log: [], ping: null, live: false, max: false, runs: {}, open: new Set(), rpWorking: false, rpConfirm: 0 };
 const t = (k, v) => { let s = (I18N[S.lang] || I18N.en)[k] ?? I18N.en[k] ?? k; if (v) for (const [a, b] of Object.entries(v)) s = s.replaceAll('{' + a + '}', b); return s; };
 const tx = (o) => (o && (o[S.lang] || o.en)) || '';
 const loc = () => S.lang === 'fa' ? 'fa-IR' : 'en-GB';
@@ -183,8 +184,35 @@ function renderHome() {
   const info = S.system || {};
   $('#pcinfo').innerHTML = [[t('os'), info.os], [t('cpu'), info.cpu], [t('gpu'), info.gpu], [t('ram'), info.ramGb ? num(info.ramGb + ' GB') : ''], [t('cores'), info.cores ? num(info.cores) : '']].filter(x => x[1]).map(([k, v]) => `<dt>${k}</dt><dd title="${esc(v)}">${v}</dd>`).join('');
   $('#sysline').textContent = [info.cpu, info.gpu].filter(Boolean).join(' · ') || t('home_sub');
+  renderRestore();
   renderGuard();
   renderLog();
+}
+
+/* ---- restore point card ---- */
+function renderRestore() {
+  const box = $('#rpcard'); if (!box) return;
+  const rp = S.settings.restore || null, busy = S.rpWorking || S.busy.has('rp'), sub = !!S.auth.active;
+  const win = rp ? (rp.windows === 'created' ? 'created' : rp.windows === 'skipped' ? 'skipped' : 'unavailable') : '';
+  const pill = rp ? (win === 'unavailable' ? 'idle' : 'ok') : 'off';
+  box.innerHTML = `<h3><svg><use href="#i-history"/></svg><span>${t('rp_title')}</span><i class="pill ${pill}">${busy ? t('running') : rp ? t('rp_made', { d: fmtDate(rp.at) + ' ' + fmtTime(rp.at) }) : t('rp_none').split(' — ')[0]}</i></h3>
+    <p class="muted">${t('rp_sub')}</p>
+    ${rp ? `<p class="rp-f mono" dir="ltr">${esc(t('rp_files', { r: rp.regFile, p: rp.powerFile ? ' · ' + rp.powerFile : '' }))}</p><p class="rp-w ${win}"><svg><use href="#i-${win === 'unavailable' ? 'warn' : 'check'}"/></svg>${t('rp_win_' + win)}</p>` : `<p class="muted">${t('rp_none')}</p>`}
+    <div class="lrow rp-a"><button class="pri sm" data-rp="create" ${busy || !sub ? 'disabled' : ''}>${busy ? `<i class="spin"></i>${t('running')}` : `<svg><use href="#i-shield"/></svg>${t('rp_create')}`}</button><button class="ghost sm" data-rp="open" ${!rp ? 'disabled' : ''}><svg><use href="#i-folder"/></svg>${t('rp_open')}</button><button class="ghost sm ${S.rpConfirm ? 'warn' : ''}" data-rp="load" ${!rp || busy || !sub ? 'disabled' : ''}><svg><use href="#i-history"/></svg>${S.rpConfirm ? t('rp_confirm') : t('rp_load')}</button></div>`;
+}
+async function restoreAction(what) {
+  if (S.busy.has('rp')) return;
+  if (what === 'open') { try { await api('tools.action', 'restore_open'); } catch (e) { fail(e); } return; }
+  if (what === 'load') {
+    if (!S.rpConfirm || Date.now() - S.rpConfirm > 6000) { S.rpConfirm = Date.now(); renderRestore(); setTimeout(() => { if (S.rpConfirm && Date.now() - S.rpConfirm >= 6000) { S.rpConfirm = 0; renderRestore(); } }, 6200); return; }
+    S.rpConfirm = 0;
+  }
+  S.busy.add('rp'); renderRestore();
+  try {
+    if (what === 'create') { const info = await api('restore.create'); S.settings.restore = info; toast(t('rp_done', { r: info.regFile }), 'ok'); addLog(t('rp_done', { r: info.regFile }), 'ok'); }
+    else { await api('restore.load'); toast(t('rp_loaded'), 'ok'); addLog(t('rp_loaded'), 'ok'); toast(t('reboot_hint')); await refreshState(); }
+  } catch (e) { fail(e); }
+  S.busy.delete('rp'); renderRestore();
 }
 
 /* ---- guard ---- */
@@ -541,13 +569,14 @@ on('guard', (g) => { S.guard = g; renderGuard(); renderHome(); });
 on('update', (u) => { S.upd = u; renderUpdate(); });
 on('settings', (s) => { S.settings = s; applyLite(); renderGuard(); renderSettings(); });
 on('win', (w) => { S.max = !!w.max; $('#maxico use').setAttribute('href', S.max ? '#i-restore' : '#i-max'); });
-on('restore', (r) => { if (r.status === 'created') toast(t('restore_point_made'), 'ok'); else if (r.status === 'skipped') toast(t('restore_point_skip')); else toast(t('restore_point_err', { e: r.error || '' }), 'bad'); });
+on('restore', (r) => { S.rpWorking = r.status === 'working'; if (r.status === 'working') toast(t('rp_working')); else if (r.status === 'done') { S.settings.restore = r.info; toast(t('rp_done', { r: r.info.regFile }), 'ok'); addLog(t('rp_done', { r: r.info.regFile }), 'ok'); } else if (r.status === 'error') toast(t('restore_point_err', { e: r.error || '' }), 'bad'); renderRestore(); });
 
 /* ---- events ---- */
 document.addEventListener('click', (e) => {
-  const el = e.target.closest('button[data-page],[data-win],[data-open],[data-href],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-toggle-preset],[data-run],[data-lang],[data-upd],[data-dns],#boost,#unboost,#pingbtn,#dnsbtn,#dnsmore,#logout,#cleannow,#acc-refresh,#acc-devices');
+  const el = e.target.closest('button[data-page],[data-win],[data-open],[data-href],.lang,[data-rec],[data-revert],.chip,[data-opt-preset],[data-toggle-preset],[data-run],[data-lang],[data-upd],[data-dns],[data-rp],#boost,#unboost,#pingbtn,#dnsbtn,#dnsmore,#logout,#cleannow,#acc-refresh,#acc-devices');
   if (!el) return;
   if (el.dataset.page) go(el.dataset.page);
+  else if (el.dataset.rp) restoreAction(el.dataset.rp);
   else if (el.dataset.href) { e.preventDefault(); api('app.open', el.dataset.href); }
   else if (el.dataset.dns) applyDNS(el.dataset.dns);
   else if (el.id === 'dnsbtn') runDNSScan();

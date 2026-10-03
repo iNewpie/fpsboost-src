@@ -514,3 +514,64 @@ func contains(list []string, s string) bool {
 	}
 	return false
 }
+
+func TestTCPTuningReadsThroughPowerShellAndWritesThroughNetsh(t *testing.T) {
+	f := newFake()
+	cur := map[string]any{"AutoTuningLevelLocal": 0, "EcnCapability": 1, "Timestamps": "Enabled"} // PowerShell 5.1 gives numbers for enums
+	var netsh []string
+	f.cmd = func(cmd string, args []string) engine.RunResult {
+		switch cmd {
+		case "powershell":
+			b, _ := json.Marshal(cur)
+			return engine.RunResult{Out: string(b)}
+		case "netsh":
+			kv := strings.SplitN(args[len(args)-1], "=", 2)
+			netsh = append(netsh, kv[0]+"="+kv[1])
+			switch kv[0] {
+			case "autotuninglevel":
+				cur["AutoTuningLevelLocal"] = map[string]int{"disabled": 0, "highlyrestricted": 1, "restricted": 2, "normal": 3, "experimental": 4}[kv[1]]
+			case "ecncapability":
+				cur["EcnCapability"] = map[string]int{"disabled": 0, "enabled": 1}[kv[1]]
+			case "timestamps":
+				cur["Timestamps"] = map[string]string{"disabled": "Disabled", "enabled": "Enabled"}[kv[1]]
+			}
+			return engine.RunResult{Code: 0}
+		}
+		return engine.RunResult{Code: 1, Err: "not faked"}
+	}
+	e := engine.New(tweaks.All, f, engine.NewBackup(""))
+	if st := state(e, "tcp_tuning"); st.Applied == nil || *st.Applied || st.Error != "" {
+		t.Fatalf("should read as off without error: %+v", st)
+	}
+	if r := e.Apply("tcp_tuning", ""); r.Error != "" || !*r.Applied {
+		t.Fatalf("apply %+v (netsh %v)", r, netsh)
+	}
+	if strings.Join(netsh, " ") != "autotuninglevel=normal ecncapability=disabled timestamps=disabled rss=enabled" {
+		t.Fatalf("netsh calls: %v", netsh)
+	}
+	for _, c := range f.calls {
+		if c[0] == "powershell" && strings.Contains(strings.Join(c, " "), "Set-NetTCPSetting") {
+			t.Fatal("Set-NetTCPSetting is read-only on Windows 10 1709+/11 and must not be used")
+		}
+	}
+	var bk map[string]string
+	if !e.Backup.Get("tcp_tuning", &bk) || bk["AutoTuningLevelLocal"] != "Disabled" || bk["EcnCapability"] != "Enabled" || bk["Timestamps"] != "Enabled" {
+		t.Fatalf("backup must hold the names: %v", bk)
+	}
+	netsh = nil
+	if r := e.Revert("tcp_tuning"); r.Error != "" || *r.Applied {
+		t.Fatalf("revert %+v", r)
+	}
+	if strings.Join(netsh, " ") != "autotuninglevel=disabled ecncapability=enabled timestamps=enabled" {
+		t.Fatalf("revert must restore the originals through netsh: %v", netsh)
+	}
+}
+
+func TestRestoreTreesCoverEveryTweak(t *testing.T) {
+	// every hand-written tweak that writes to the registry declares its trees, so the snapshot .reg really covers it
+	for _, id := range []string{"nagle_off", "dns_fast", "pagefile_fixed", "nic_power_mgmt_off", "win_sounds_off"} {
+		if len(tweaks.ByID(id).Trees()) == 0 {
+			t.Fatalf("%s must declare its registry trees", id)
+		}
+	}
+}

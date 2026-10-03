@@ -107,6 +107,15 @@ func (b *Backup) Clear(id string) error {
 	return b.flush()
 }
 
+// ClearAll forgets every original — after the user loaded a restore snapshot the stored originals are stale, and the
+// Guard must not re-apply tweaks on top of the restored system.
+func (b *Backup) ClearAll() error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	b.data = map[string]json.RawMessage{}
+	return b.flush()
+}
+
 // IDs lists the tweaks that have an original stored.
 func (b *Backup) IDs() []string {
 	b.mu.Lock()

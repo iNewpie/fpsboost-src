@@ -8,6 +8,7 @@ when the window closes to the tray).
 app/
   main_windows.go        wiring: flags, data folder, RPC handlers, tray menu, window open/close, update loop
   internal/engine        Sys interface (registry + commands), Backup (backup.json), Tweak, RegTweak/ServiceTweak/PowercfgTweak, Engine
+  internal/restore       the restore snapshot made before the first change (.reg + .pow + Windows restore point), see Runtime notes
   internal/tweaks        the 61 tweaks (fps / network, incl. the stage-guide set in stage.go) + game presets + the Guard's game exe list
   internal/dns           resolver list (Shatel / TCI / Pishgaman ISP resolvers, Shecan & co, the DNS Jumper lists), the concurrent
                          benchmark (dns.scan), ISP detection (server ASN → DHCP ranges) and the "auto" pick behind dns_fast
@@ -63,6 +64,11 @@ bash scripts/build.sh          # "== FPS Boost x.y.z (signed)": fpsboost.exe, FP
 ## Runtime notes
 - Data folder `%APPDATA%\fpsboost` (same as the Electron versions): backup.json, auth.json, settings.json, state.json,
   guard.json, app.log, update/, webview/ (WebView2 user data).
+- **Restore snapshot** (`internal/restore`): no tweak is applied until `restore/` holds a snapshot — a Windows System Restore
+  point (when System Restore is on) plus `restore-<stamp>.reg` (every registry tree the tweaks touch, with `=-` lines for the
+  values they would add), `power-<stamp>.pow` (the active plan) and a README. Home page card + Tools: create a new one,
+  open the folder, load the last one (`reg import` + `powercfg /import`, then backup.json is cleared so the Guard does not
+  re-apply anything). The .reg file works by double-click even without the app.
 - Flags: `--tray` (start hidden; the logon task uses it), `--restore` (revert everything + remove the task; the
   uninstaller calls it), `--quit` (ask the running instance to exit and wait — the installer uses it instead of
   taskkill), `--unregister`, `--debug` (devtools, context menu), `--state file.json`, `--version`.

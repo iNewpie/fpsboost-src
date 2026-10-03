@@ -12,7 +12,7 @@ import (
 // ServicesTweak disables (and stops) every listed service that is installed; services missing on this PC are skipped.
 // Check = at least one is installed and every installed one is disabled. Revert restores each one's start type.
 func ServicesTweak(m Meta, services ...string) *Tweak {
-	t := &Tweak{Meta: m}
+	t := &Tweak{Meta: m, services: services}
 	key := func(svc string) string { return servicesKey + `\` + svc }
 	t.Check = func(c *Ctx) (bool, error) {
 		found := false

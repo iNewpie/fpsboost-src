@@ -28,6 +28,7 @@ import (
 	"fpsboost.ir/app/internal/dns"
 	"fpsboost.ir/app/internal/engine"
 	"fpsboost.ir/app/internal/guard"
+	"fpsboost.ir/app/internal/restore"
 	"fpsboost.ir/app/internal/settings"
 	"fpsboost.ir/app/internal/sysimpl"
 	"fpsboost.ir/app/internal/tools"
@@ -59,10 +60,10 @@ type application struct {
 	host     *webui.Host
 	debug    bool
 
-	stateMu     sync.Mutex
-	stateRun    bool
-	restoreOnce sync.Once
-	quitting    bool
+	stateMu   sync.Mutex
+	stateRun  bool
+	restoreMu sync.Mutex // one snapshot / load at a time
+	quitting  bool
 
 	ispMu  sync.Mutex
 	isp    string    // detected ISP id ("" = unknown)
@@ -172,7 +173,7 @@ func main() {
 	a.guard.Active = a.auth.Active
 	a.guard.Enforce = a.engine.Enforce
 	a.guard.OnChange = func(s guard.Status) { a.emit("guard", s); a.trayTip() }
-	a.actions = tools.Actions(tools.Env{Temp: os.Getenv("TEMP"), SystemRoot: os.Getenv("SystemRoot"), LocalAppData: os.Getenv("LOCALAPPDATA"), Start: win.StartVisible}, a.guard.CleanNow)
+	a.actions = tools.Actions(tools.Env{Temp: os.Getenv("TEMP"), SystemRoot: os.Getenv("SystemRoot"), LocalAppData: os.Getenv("LOCALAPPDATA"), Start: win.StartVisible, RestoreDir: a.restoreDir(), Snapshot: a.snapshotTool, LoadRestore: a.loadRestoreTool}, a.guard.CleanNow)
 	a.updater = update.New(a.auth, config.Version, filepath.Join(a.dataDir, "update"), func(s update.State) { a.emit("update", s); a.notifyUpdate(s) })
 	a.updater.Launch = win.StartDetached
 
@@ -584,6 +585,9 @@ func (a *application) registerHandlers() {
 	h.Handle("tweaks.apply", a.gated(func(args []json.RawMessage) (any, error) {
 		id, _ := arg[string](args, 0)
 		opt, _ := arg[string](args, 1)
+		if err := a.ensureRestore(); err != nil {
+			return nil, err
+		}
 		r := a.engine.Apply(id, opt)
 		go a.liveState()
 		return r, nil
@@ -596,7 +600,9 @@ func (a *application) registerHandlers() {
 	}))
 	h.Handle("tweaks.applyRecommended", a.gated(func(args []json.RawMessage) (any, error) {
 		cat, _ := arg[string](args, 0)
-		a.restorePoint()
+		if err := a.ensureRestore(); err != nil {
+			return nil, err
+		}
 		ids := a.engine.Recommended(cat)
 		res := a.engine.ApplyMissing(ids, func(done, total int, r engine.Result) {
 			a.emit("progress", map[string]any{"op": "boost", "done": done, "total": total, "id": r.ID, "error": r.Error, "skipped": r.Skipped})
@@ -618,12 +624,22 @@ func (a *application) registerHandlers() {
 		if p == nil {
 			return nil, errors.New("unknown preset")
 		}
-		a.restorePoint()
+		if err := a.ensureRestore(); err != nil {
+			return nil, err
+		}
 		res := a.engine.ApplyMissing(p.Tweaks, func(done, total int, r engine.Result) {
 			a.emit("progress", map[string]any{"op": "preset", "done": done, "total": total, "id": r.ID, "preset": id, "error": r.Error, "skipped": r.Skipped, "reboot": r.Reboot})
 		})
 		go a.liveState()
 		return res, nil
+	}))
+	h.Handle("restore.create", a.gated(func(args []json.RawMessage) (any, error) { return a.snapshot() }))
+	h.Handle("restore.load", a.gated(func(args []json.RawMessage) (any, error) {
+		info, err := a.loadRestore()
+		if err != nil {
+			return nil, err
+		}
+		return map[string]any{"info": info, "reboot": true}, nil
 	}))
 	h.Handle("tools.action", a.gated(func(args []json.RawMessage) (any, error) {
 		id, _ := arg[string](args, 0)
@@ -787,19 +803,97 @@ func (a *application) liveState() []engine.State {
 	return st
 }
 
-// restorePoint makes a System Restore point once per session, in the background, before the first batch of changes.
-func (a *application) restorePoint() {
-	a.restoreOnce.Do(func() {
-		go func() {
-			r, err := tools.RestorePoint(a.sys)
-			switch {
-			case err != nil:
-				a.emit("restore", map[string]any{"status": "error", "error": err.Error()})
-			case r.Skipped:
-				a.emit("restore", map[string]any{"status": "skipped"})
-			default:
-				a.emit("restore", map[string]any{"status": "created"})
-			}
-		}()
-	})
+// restoreDir is where the restore snapshot lives: %APPDATA%\fpsboost\restore.
+func (a *application) restoreDir() string { return filepath.Join(a.dataDir, "restore") }
+
+// restoreInfo is the stored snapshot (nil = none yet).
+func (a *application) restoreInfo() *restore.Info {
+	raw := a.settings.Get().Restore
+	if len(raw) == 0 {
+		return nil
+	}
+	var info restore.Info
+	if json.Unmarshal(raw, &info) != nil || info.RegFile == "" {
+		return nil
+	}
+	return &info
+}
+
+// winRestorePoint adapts tools.RestorePoint for the restore package.
+func (a *application) winRestorePoint(s engine.Sys) (string, error) {
+	r, err := tools.RestorePoint(s)
+	if err != nil {
+		return "", err
+	}
+	if r.Skipped {
+		return "skipped", nil
+	}
+	return "created", nil
+}
+
+// snapshot makes a fresh restore snapshot (Windows restore point + the .reg / .pow files) and remembers it. The UI gets
+// "restore" events: {status: working} first, then {status: done, info} or {status: error, error}.
+func (a *application) snapshot() (*restore.Info, error) {
+	a.restoreMu.Lock()
+	defer a.restoreMu.Unlock()
+	a.emit("restore", map[string]any{"status": "working"})
+	info, err := restore.Snapshot(a.sys, a.restoreDir(), tweaks.All, a.winRestorePoint)
+	if err != nil {
+		log.Printf("restore snapshot: %v", err)
+		a.emit("restore", map[string]any{"status": "error", "error": err.Error()})
+		return nil, err
+	}
+	raw, _ := json.Marshal(info)
+	a.settings.Update(func(d *settings.Data) { d.Restore = raw })
+	log.Printf("restore snapshot: %s (%d trees, power %q, windows %s)", info.RegFile, info.Keys, info.PowerFile, info.Windows)
+	a.emit("restore", map[string]any{"status": "done", "info": info})
+	return info, nil
+}
+
+// ensureRestore is the gate in front of every change: no tweak is applied until a restore snapshot exists.
+func (a *application) ensureRestore() error {
+	if a.restoreInfo() != nil {
+		return nil
+	}
+	if _, err := a.snapshot(); err != nil {
+		return fmt.Errorf("a restore point could not be created, so nothing was changed: %v", err)
+	}
+	return nil
+}
+
+// loadRestore imports the snapshot again and forgets the app's own backups (the Guard must not re-apply anything).
+func (a *application) loadRestore() (*restore.Info, error) {
+	info := a.restoreInfo()
+	if info == nil {
+		return nil, errors.New("no restore snapshot yet")
+	}
+	a.restoreMu.Lock()
+	defer a.restoreMu.Unlock()
+	if err := restore.Load(a.sys, info); err != nil {
+		return nil, err
+	}
+	_ = a.engine.Backup.ClearAll()
+	log.Printf("restore snapshot %s loaded", info.RegFile)
+	go a.liveState()
+	return info, nil
+}
+
+func (a *application) snapshotTool() (engine.Text, error) {
+	info, err := a.snapshot()
+	if err != nil {
+		return engine.Text{}, err
+	}
+	w := map[string]engine.Text{"created": {En: "Windows restore point created", Fa: "نقطهٔ بازیابی ویندوز ساخته شد"}, "skipped": {En: "today's Windows restore point reused", Fa: "نقطهٔ بازیابی امروز ویندوز استفاده شد"}}[info.Windows]
+	if w.En == "" {
+		w = engine.Text{En: "Windows System Restore is off on this PC", Fa: "System Restore ویندوز روی این سیستم خاموش است"}
+	}
+	return engine.Text{En: fmt.Sprintf("Saved %s in the restore folder — %s", info.RegFile, w.En), Fa: fmt.Sprintf("%s در پوشهٔ بازیابی ذخیره شد — %s", info.RegFile, w.Fa)}, nil
+}
+
+func (a *application) loadRestoreTool() (engine.Text, error) {
+	info, err := a.loadRestore()
+	if err != nil {
+		return engine.Text{}, err
+	}
+	return engine.Text{En: fmt.Sprintf("%s loaded — restart Windows", info.RegFile), Fa: fmt.Sprintf("%s بارگذاری شد — ویندوز را ریستارت کنید", info.RegFile)}, nil
 }

@@ -62,7 +62,9 @@
   ];
   const tools = [
     { id: 'ram_clean', icon: 'ram', title: T('Free RAM now', 'آزادسازی رم همین حالا'), desc: T('Trims idle apps and purges the standby cache — what the background Guard does when a game starts.', 'برنامه‌های بیکار را فشرده و کش standby را خالی می‌کند.') },
-    { id: 'restore_point', icon: 'shield', title: T('Create a System Restore point', 'ساخت نقطهٔ بازیابی ویندوز'), desc: T('A Windows snapshot you can roll back to from Settings → Recovery.', 'یک عکس فوری از ویندوز که می‌توانید به آن برگردید.') },
+    { id: 'restore_point', icon: 'shield', title: T('Create a restore point now', 'ساخت نقطهٔ بازیابی همین حالا'), desc: T('A Windows System Restore point plus FPS Boost\'s own restore files in the fpsboost folder.', 'نقطهٔ بازیابی ویندوز به‌علاوهٔ فایل‌های بازیابی خود FPS Boost.') },
+    { id: 'restore_open', icon: 'folder', title: T('Open the restore folder', 'باز کردن پوشهٔ بازیابی'), desc: T('Shows the .reg, .pow and README files in Explorer.', 'فایل‌ها را در Explorer نشان می‌دهد.') },
+    { id: 'restore_load', icon: 'history', reboot: true, title: T('Load the previous restore (undo everything)', 'بازگردانی نقطهٔ بازیابی قبلی'), desc: T('Puts the registry and power plan back to the snapshot.', 'رجیستری و پاور پلن را به عکس فوری قبلی برمی‌گرداند.') },
     { id: 'flush_dns', icon: 'dns', title: T('Flush DNS cache', 'پاک کردن کش DNS'), desc: T('Forget cached name lookups.', 'رکوردهای کش‌شده را فراموش می‌کند.') },
     { id: 'ip_renew', icon: 'net', title: T('Renew the IP address', 'گرفتن IP جدید'), desc: T('Releases and renews the DHCP lease on every adapter.', 'اجارهٔ DHCP را دوباره می‌گیرد.') },
     { id: 'sfc_scan', icon: 'tool', title: T('Repair Windows system files (DISM + SFC)', 'ترمیم فایل‌های سیستمی ویندوز'), desc: T('Opens a window that runs DISM and sfc /scannow. 10–30 minutes.', 'پنجره‌ای با DISM و sfc /scannow باز می‌کند.') },
@@ -98,6 +100,8 @@
     'update.check': async () => { upd = { ...upd, status: 'checking' }; emit('update', upd); await wait(800); upd = { ...upd, status: 'available' }; emit('update', upd); return upd; },
     'update.download': async () => { for (let p = 0; p <= 100; p += 20) { await wait(150); upd = { ...upd, status: 'downloading', progress: p }; emit('update', upd); } upd = { ...upd, status: 'ready', progress: 100 }; emit('update', upd); return upd; },
     'update.install': async () => true,
+    'restore.create': async () => { await wait(1500); settings.restore = { at: Date.now(), dir: 'C:\\Users\\hawre\\AppData\\Roaming\\fpsboost\\restore', regFile: 'restore-2026-10-03_2015.reg', powerFile: 'power-2026-10-03_2015.pow', windows: q.get('rpwin') || 'created', keys: 41 }; return settings.restore; },
+    'restore.load': async () => { await wait(1200); return { info: settings.restore, reboot: true }; },
     'settings.set': async (patch) => { settings = { ...settings, ...patch }; guard.enabled = settings.guard; return settings; },
     'system.info': async () => ({ os: 'Windows 11 Pro 24H2', cpu: 'Intel Core i5-12400F', cores: 12, ramGb: 16, gpu: 'NVIDIA GeForce RTX 3060' }),
   };

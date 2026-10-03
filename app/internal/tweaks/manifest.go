@@ -116,7 +116,7 @@ var FPS = []*Tweak{
 		T("Disable Multi-Plane Overlay (black screens, flicker, freezes)", "غیرفعال کردن Multi-Plane Overlay (صفحهٔ سیاه، پرش، فریز)"),
 		T("MPO lets the desktop compositor hand game frames to the display driver directly; on many NVIDIA/AMD/Intel drivers it causes stutter, flicker, black screens and freezes when alt-tabbing or in fullscreen games. Microsoft's own workaround. Needs a restart.", "MPO اجازه می‌دهد فریم‌های بازی مستقیم به درایور نمایشگر برسند؛ روی خیلی از درایورهای انویدیا/AMD/اینتل باعث لگ، پرش تصویر، صفحهٔ سیاه و فریز هنگام Alt+Tab یا در بازی فول‌اسکرین می‌شود. راه‌حل خود مایکروسافت. نیاز به ریستارت.")),
 		DW(HKLM+`\SOFTWARE\Microsoft\Windows\Dwm`, "OverlayTestMode", 5)),
-	pagefileFixed(),
+	pagefileFixed().WithTrees(memMgmt).WithPins(func(Sys) []RegVal { return []RegVal{{Key: memMgmt, Name: "PagingFiles"}} }),
 	RegTweak(meta("hvci_off", "fps", "advanced", false, true,
 		T("Turn off Memory Integrity (core isolation)", "خاموش کردن Memory Integrity (ایزوله‌سازی هسته)"),
 		T("Hypervisor-protected code integrity costs 5–15% CPU on older processors and adds frame-time spikes. Off = that overhead is gone. It is a real security feature (blocks some driver exploits); turn it back on when you stop gaming on this PC. Needs a restart.", "Memory Integrity روی پردازنده‌های قدیمی ۵ تا ۱۵٪ CPU می‌خورد و جهش فریم‌تایم اضافه می‌کند. خاموش = این سربار می‌رود. یک ویژگی امنیتی واقعی است (جلوی بعضی اکسپلویت‌های درایور را می‌گیرد)؛ وقتی دیگر با این سیستم بازی نمی‌کنید روشنش کنید. نیاز به ریستارت.")),
@@ -364,7 +364,7 @@ func ResolveDNSOption(s Sys, option string) (string, error) {
 }
 
 var Network = []*Tweak{
-	nagle(),
+	nagle().WithTrees(ifaces).WithPins(ifacePins("TcpAckFrequency", "TCPNoDelay")),
 	RegTweak(meta("network_throttling_off", "network", "safe", true, false,
 		T("Remove the network throttling limit", "حذف محدودیت Network Throttling"),
 		T("Windows caps non-multimedia network traffic at 10 packets/ms while media plays. Off = your game traffic is never throttled.", "ویندوز هنگام پخش رسانه، ترافیک غیرچندرسانه‌ای را به ۱۰ پکت در میلی‌ثانیه محدود می‌کند. خاموش = ترافیک بازی هیچ‌وقت محدود نمی‌شود.")),
@@ -378,7 +378,7 @@ var Network = []*Tweak{
 		T("Delivery Optimization shares update files with strangers over your connection. Off = no surprise upload eating your ping.", "Delivery Optimization فایل‌های آپدیت را با غریبه‌ها روی اینترنت شما به اشتراک می‌گذارد. خاموش = آپلود ناگهانی پینگ شما را نمی‌خورد.")),
 		DW(HKLM+`\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization`, "DODownloadMode", 0)),
 	tcpTuning(),
-	dnsFast(),
+	dnsFast().WithTrees(ifaces).WithPins(ifacePins("NameServer")),
 	PowercfgTweak(meta("wifi_power_max", "network", "safe", false, false,
 		T("Wi-Fi adapter: maximum performance", "کارت Wi-Fi: حداکثر کارایی"),
 		T("Stops Windows putting the wireless adapter to sleep between packets — the cause of ping spikes on laptops. Only exists on PCs with Wi-Fi.", "جلوی خواباندن کارت وایرلس بین پکت‌ها را می‌گیرد — دلیل جهش پینگ روی لپ‌تاپ‌ها. فقط روی سیستم‌های دارای Wi-Fi وجود دارد.")),
@@ -474,25 +474,61 @@ func nagle() *Tweak {
 	return t
 }
 
+// tcpSettings is what we read (PowerShell) and store as the backup. Enum names; Windows PowerShell 5.1 serialises
+// enums as numbers, so the fields accept both.
 type tcpSettings struct {
 	AutoTuningLevelLocal string `json:"AutoTuningLevelLocal"`
 	EcnCapability        string `json:"EcnCapability"`
 	Timestamps           string `json:"Timestamps"`
 }
 
+var autoTuningNames = []string{"Disabled", "HighlyRestricted", "Restricted", "Normal", "Experimental"}
+var onOffNames = []string{"Disabled", "Enabled"}
+
+// enumName turns 3 / 3.0 / "3" / "Normal" into "Normal".
+func enumName(v any, names []string) string {
+	if n, ok := Num(v); ok && int(n) >= 0 && int(n) < len(names) {
+		if _, isStr := v.(string); !isStr || strings.Trim(fmt.Sprint(v), "0123456789") == "" {
+			return names[int(n)]
+		}
+	}
+	return strings.TrimSpace(fmt.Sprint(v))
+}
+
+// On Windows 10 1709+ and 11 the built-in "Internet" template is read-only (Set-NetTCPSetting fails with access denied)
+// and the effective template is InternetCustom; netsh int tcp set global writes every template, so apply / revert go
+// through netsh and only the check reads through PowerShell.
+const tcpReadScript = `$s = Get-NetTCPSetting | Where-Object { $_.SettingName -eq 'InternetCustom' -or $_.SettingName -eq 'Internet' } | Sort-Object { if ($_.SettingName -eq 'InternetCustom') { 0 } else { 1 } } | Select-Object -First 1; [pscustomobject]@{ AutoTuningLevelLocal = [string]$s.AutoTuningLevelLocal; EcnCapability = [string]$s.EcnCapability; Timestamps = [string]$s.Timestamps } | ConvertTo-Json -Compress`
+
 func tcpTuning() *Tweak {
 	t := &Tweak{Meta: meta("tcp_tuning", "network", "safe", true, false,
 		T("TCP tuning: autotuning normal, ECN and timestamps off, RSS on", "تنظیم TCP: autotuning نرمال، ECN و timestamps خاموش، RSS روشن"),
 		T("The Windows TCP stack settings that give the best throughput and latency on consumer connections. Reverted to your previous values on undo.", "تنظیمات TCP ویندوز که بهترین سرعت و تأخیر را روی اینترنت خانگی می‌دهد. با بازگشت، مقادیر قبلی شما برمی‌گردد."))}
 	read := func(c *Ctx) (*tcpSettings, error) {
-		var s tcpSettings
-		if err := PSJSON(c.Sys, 40*time.Second, "Get-NetTCPSetting -SettingName Internet | Select-Object AutoTuningLevelLocal, EcnCapability, Timestamps | ConvertTo-Json -Compress", &s); err != nil {
+		var raw map[string]any
+		if err := PSJSON(c.Sys, 40*time.Second, tcpReadScript, &raw); err != nil {
 			return nil, err
 		}
-		return &s, nil
+		s := &tcpSettings{AutoTuningLevelLocal: enumName(raw["AutoTuningLevelLocal"], autoTuningNames), EcnCapability: enumName(raw["EcnCapability"], onOffNames), Timestamps: enumName(raw["Timestamps"], onOffNames)}
+		if s.AutoTuningLevelLocal == "" {
+			return nil, fmt.Errorf("could not read the TCP settings")
+		}
+		return s, nil
 	}
 	want := tcpSettings{"Normal", "Disabled", "Disabled"}
 	eq := func(a, b string) bool { return strings.EqualFold(strings.TrimSpace(a), b) }
+	set := func(c *Ctx, s tcpSettings) error {
+		for _, kv := range [][2]string{{"autotuninglevel", s.AutoTuningLevelLocal}, {"ecncapability", s.EcnCapability}, {"timestamps", s.Timestamps}} {
+			v := strings.ToLower(word(kv[1]))
+			if v == "" {
+				continue
+			}
+			if _, err := Must(c.Sys, 20*time.Second, "netsh", "int", "tcp", "set", "global", kv[0]+"="+v); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 	t.Check = func(c *Ctx) (bool, error) {
 		s, err := read(c)
 		if err != nil {
@@ -506,18 +542,17 @@ func tcpTuning() *Tweak {
 				return err
 			}
 		}
-		if _, err := PS(c.Sys, 40*time.Second, "Set-NetTCPSetting -SettingName Internet -AutoTuningLevelLocal Normal -EcnCapability Disabled -Timestamps Disabled"); err != nil {
+		if err := set(c, want); err != nil {
 			return err
 		}
 		c.Sys.Run(20*time.Second, "netsh", "int", "tcp", "set", "global", "rss=enabled")
 		return nil
 	}
 	t.Revert = func(c *Ctx) error {
-		var b tcpSettings
-		if c.Backup.Get(c.ID, &b) && b.AutoTuningLevelLocal != "" {
-			if _, err := PS(c.Sys, 40*time.Second, fmt.Sprintf("Set-NetTCPSetting -SettingName Internet -AutoTuningLevelLocal %s -EcnCapability %s -Timestamps %s", word(b.AutoTuningLevelLocal), word(b.EcnCapability), word(b.Timestamps))); err != nil {
-				return err
-			}
+		b := want // no backup: the Windows defaults are exactly these values
+		c.Backup.Get(c.ID, &b)
+		if err := set(c, b); err != nil {
+			return err
 		}
 		return c.Backup.Clear(c.ID)
 	}
@@ -681,6 +716,20 @@ func ipList(s string) []string {
 		}
 	}
 	return out
+}
+
+// ifacePins lists name(s) under every Tcpip interface key — what nagle_off / dns_fast write.
+func ifacePins(names ...string) func(Sys) []RegVal {
+	return func(s Sys) []RegVal {
+		keys, _ := s.RegSubkeys(ifaces)
+		var out []RegVal
+		for _, k := range keys {
+			for _, n := range names {
+				out = append(out, RegVal{Key: k, Name: n})
+			}
+		}
+		return out
+	}
 }
 
 // All = every tweak in display order (FPS, then the stage-guide set, then network; the UI filters by category).

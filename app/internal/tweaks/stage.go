@@ -78,7 +78,13 @@ var Stage = []*Tweak{
 		false, ps(subDesktop, setSlideshow, 1)),
 
 	/* ---- device power management (4.2) ---- */
-	nicPowerManagement(),
+	nicPowerManagement().WithTrees(netClass).WithPins(func(s Sys) []RegVal {
+		var out []RegVal
+		for _, k := range nicKeys(s) {
+			out = append(out, RegVal{Key: k, Name: "PnPCapabilities"})
+		}
+		return out
+	}),
 
 	/* ---- Fast Startup (4.3) ---- */
 	RegTweak(meta("fast_startup_off", "fps", "safe", false, false,
@@ -181,7 +187,13 @@ var Stage = []*Tweak{
 		DW(HKCU+`\Software\Microsoft\Siuf\Rules`, "NumberOfSIUFInPeriod", 0)),
 
 	/* ---- Windows sounds (7.1) ---- */
-	windowsSounds(),
+	windowsSounds().WithTrees(schemesKey).WithPins(func(s Sys) []RegVal {
+		out := []RegVal{{Key: schemesKey, Name: ""}}
+		for _, k := range soundEventKeys(s) {
+			out = append(out, RegVal{Key: k, Name: ""})
+		}
+		return out
+	}),
 }
 
 /* ---- network adapters: "Allow the computer to turn off this device to save power" unticked ---- */

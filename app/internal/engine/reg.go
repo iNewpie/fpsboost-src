@@ -107,7 +107,7 @@ type serviceBackup struct {
 // ServiceTweak disables a service (and stops it); revert restores its start type and starts it again.
 func ServiceTweak(m Meta, service string) *Tweak {
 	key := servicesKey + `\` + service
-	t := &Tweak{Meta: m}
+	t := &Tweak{Meta: m, services: []string{service}}
 	t.Check = func(c *Ctx) (bool, error) {
 		start, ok := RegUint(c.Sys, key, "Start")
 		if !ok {
