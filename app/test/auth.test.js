@@ -44,8 +44,9 @@ test('status: offline grace keeps active, 401 logs out', async () => {
   await auth.login('bob', 'pw');
   auth.cache.checked = Date.now() - 120000;   // past the 60 s cache
   mode = 'down'; let s = await auth.status(); assert.equal(s.active, true); assert.equal(s.offline, true);
-  auth.cache.checked = Date.now() - 8 * 86400000; s = await auth.status(); assert.equal(s.active, false);   // grace over
-  mode = '401'; s = await auth.status(); assert.equal(s.loggedIn, false);
+  auth.cache.checked = Date.now() - 8 * 86400000; s = await auth.status(); assert.equal(s.active, false);   // grace over (no new request: retried at most once a minute)
+  mode = '401'; s = await auth.status(); assert.equal(s.loggedIn, true, 'still within the retry minute — the server is not asked');
+  auth.lastTry = Date.now() - 61000; s = await auth.status(); assert.equal(s.loggedIn, false);
 });
 test('presets only reference existing tweaks and have icons + tips', () => {
   const ids = new Set(TWEAKS.map(t => t.id));

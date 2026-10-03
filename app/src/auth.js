@@ -48,16 +48,22 @@ class Auth {
   async status() {
     const c = this.load(); if (!c.token) return this.view();
     if (Date.now() - (c.checked || 0) < 60000 && !c.offline) return this.view({ offline: false });
+    // offline: retry the server at most once a minute — otherwise every click would wait out the 10 s timeout
+    if (c.offline && Date.now() - (this.lastTry || 0) < 60000) return this.offlineView(c, this.lastError);
+    this.lastTry = Date.now();
     try {
       const j = await this.post('/api/app/status', { token: c.token });
       Object.assign(c, { active: j.active, expires: j.expires, username: j.username, checked: Date.now(), offline: false }); this.save();
       return this.view({ offline: false });
     } catch (e) {
       if (e.status === 401 || e.status === 403) { this.cache = {}; this.save(); return this.view({ error: e.message }); }   // token/device rejected: log in again
-      c.offline = true;
-      const fresh = Date.now() - (c.checked || 0) < this.graceMs;
-      return { ...this.view({ offline: true, error: e.message }), active: fresh && !!c.active && (c.expires || 0) > Date.now() };
+      c.offline = true; this.lastError = e.message;
+      return this.offlineView(c, e.message);
     }
+  }
+  offlineView(c, error) {
+    const fresh = Date.now() - (c.checked || 0) < this.graceMs;
+    return { ...this.view({ offline: true, error }), active: fresh && !!c.active && (c.expires || 0) > Date.now() };
   }
 }
 module.exports = Auth;

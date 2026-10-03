@@ -1,6 +1,6 @@
 /* The page: login → app shell (Home / FPS / Network / Games / Tools / Settings). Everything goes through window.api. */
 const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
-let lang = 'en', info = {}, status = {}, tweaks = [], actions = [], presets = [], settings = {}, sys = null, upd = { status: 'idle' };
+let lang = 'en', info = {}, status = {}, tweaks = [], checking = false, live = null, actions = [], presets = [], settings = {}, sys = null, upd = { status: 'idle' };
 const filters = { fps: 'all', network: 'all' }, logItems = [];
 const t = (k, vars = {}) => Object.entries(vars).reduce((s, [a, b]) => s.replace('{' + a + '}', b), (I18N[lang] || I18N.en)[k] || I18N.en[k] || k);
 const L = (obj) => (obj && (obj[lang] || obj.en)) || '';
@@ -40,14 +40,28 @@ async function showMain() {
   $('#login').hidden = true; $('#main').hidden = false;
   $('#tbuser').hidden = false; $('#tbuser span').textContent = status.username || '';
   if (!sys) api.systemInfo().then(r => { if (r.ok) { sys = r.data; renderPc(); } });
-  await refresh();
+  if (!tweaks.length) { const c = await api.cachedState(); if (c.ok && Array.isArray(c.data)) tweaks = c.data; }   // last known state: drawn at once
+  renderAll();
+  refresh();
+  api.status().then(r => { if (r.ok && r.data) { status = r.data; if (!status.loggedIn) return location.reload(); renderAll(); } });
 }
 function go(page) { $$('.nav-i').forEach(b => b.classList.toggle('on', b.dataset.page === page)); $$('main > section').forEach(s => s.hidden = s.dataset.page !== page); $('.content').scrollTop = 0; }
-async function refresh() {
-  try { tweaks = await call(api.state); } catch (e) { toast(t('error') + ': ' + e.message); }
-  try { status = await call(api.status); } catch (e) {}
-  renderAll();
+/* the live tweak check runs in the background (seconds on a slow PC); the page stays usable and shows "checking…" */
+let again = false;
+function refresh() {
+  if (live) { again = true; return live; }   // something changed while a check was running: its answer is stale, check again
+  checking = true; renderLists(); renderHome();
+  return (live = (async () => {
+    let st = null; try { st = await call(api.state); } catch (e) { toast(t('error') + ': ' + e.message); }
+    live = null;
+    if (again) { again = false; return refresh(); }
+    if (st) tweaks = st;
+    try { status = await call(api.status); } catch (e) {}
+    checking = false; renderAll();
+  })());
 }
+/* results of apply / revert carry the new state of those tweaks: show them now, the full check follows */
+const takeResults = (rs) => { for (const r of [].concat(rs || [])) { const tw = r && byId(r.id); if (tw && typeof r.applied === 'boolean') { tw.applied = r.applied; tw.error = null; } } renderAll(); };
 function renderAll() {
   if ($('#main').hidden) return;
   renderHeader(); renderHome(); renderLists(); renderGames(); renderActions(); renderSettings(); renderPc(); renderLog();
@@ -93,7 +107,8 @@ function renderLists() {
     const items = tweaks.filter(x => x.category === cat), f = filters[cat];
     const shown = items.filter(x => f === 'all' || (f === 'rec' ? x.recommended : !x.recommended));
     $(`#${cat}-count`).textContent = t('count', { a: num(items.filter(x => x.applied).length), n: num(items.length) });
-    $(`#list-${cat}`).innerHTML = shown.map(twRow).join('');
+    $(`#list-${cat}`).innerHTML = shown.length ? shown.map(twRow).join('') : checking ? `<p class="wait">${t('checking')}</p>` : '';
+    $(`#${cat}-count`).classList.toggle('wait', checking);
     $$(`[data-filter-for="${cat}"] .chip`).forEach(c => c.classList.toggle('on', c.dataset.f === f));
   }
 }
@@ -140,9 +155,9 @@ document.addEventListener('change', async (e) => {
   const cb = e.target.closest('input[data-tw]');
   if (cb) {
     const id = cb.dataset.tw, row = cb.closest('.tw'), sel = row.querySelector('select'), on = cb.checked; row.classList.add('busy'); cb.disabled = true;
-    try { const r = await call(on ? api.apply : api.revert, id, sel ? sel.value : undefined); log(t(on ? 'log_apply' : 'log_revert', { t: title(id) })); if (r.reboot) toast(t('reboot_hint')); }
-    catch (err) { toast(t('error') + ': ' + err.message); log(t('error') + ': ' + title(id) + ' — ' + err.message, true); }
-    await refresh(); return;
+    try { const r = await call(on ? api.apply : api.revert, id, sel ? sel.value : undefined); takeResults(r); log(t(on ? 'log_apply' : 'log_revert', { t: title(id) })); if (r.reboot) toast(t('reboot_hint')); }
+    catch (err) { toast(t('error') + ': ' + err.message); log(t('error') + ': ' + title(id) + ' — ' + err.message, true); renderLists(); }
+    refresh(); return;
   }
   if (e.target.id === 's-lite') { settings = (await api.saveSettings({ lite: e.target.checked })).data || settings; renderSettings(); }
   if (e.target.id === 's-auto') { settings = (await api.saveSettings({ autoUpdate: e.target.checked })).data || settings; renderUpdate(); if (e.target.checked && upd.status === 'available') api.updateDownload(); }
@@ -166,14 +181,14 @@ document.addEventListener('click', async (e) => {
   }
   if (btn.dataset.optimize) {
     const p = presets.find(x => x.id === btn.dataset.optimize); btn.disabled = true; btn.textContent = t('running');
-    try { const rs = await call(api.applyPreset, p.id); const ok = report(rs, 'rec'); log(t('log_preset', { g: p.name, n: num(ok) })); } catch (err) { toast(t('error') + ': ' + err.message); }
-    await refresh(); go('games'); return;
+    try { const rs = await call(api.applyPreset, p.id); takeResults(rs); const ok = report(rs, 'rec'); log(t('log_preset', { g: p.name, n: num(ok) })); } catch (err) { toast(t('error') + ': ' + err.message); renderGames(); }
+    refresh(); go('games'); return;
   }
   if (btn.dataset.rec || btn.dataset.revert || btn.id === 'boost' || btn.id === 'unboost') {
     const cat = btn.dataset.rec || btn.dataset.revert, rec = !!btn.dataset.rec || btn.id === 'boost';
     const lbl = btn.querySelector('span') || btn, was = lbl.textContent; btn.disabled = true; lbl.textContent = rec && btn.id === 'boost' ? t('boosting') : t('running');
-    try { const rs = await call(rec ? api.applyRecommended : api.revertAll, cat); const ok = report(rs, rec ? 'rec' : 'rev'); log(t(rec ? 'log_boost' : 'log_restore', { n: num(ok) })); } catch (err) { toast(t('error') + ': ' + err.message); }
-    lbl.textContent = was; await refresh(); return;
+    try { const rs = await call(rec ? api.applyRecommended : api.revertAll, cat); takeResults(rs); const ok = report(rs, rec ? 'rec' : 'rev'); log(t(rec ? 'log_boost' : 'log_restore', { n: num(ok) })); } catch (err) { toast(t('error') + ': ' + err.message); }
+    lbl.textContent = was; btn.disabled = !status.active; refresh(); return;
   }
   if (btn.id === 'pingbtn') {
     btn.disabled = true; btn.textContent = t('ping_running'); const hosts = $('#pinghosts').value.trim().split(/\s+/).filter(Boolean).slice(0, 8);
@@ -186,13 +201,12 @@ document.addEventListener('click', async (e) => {
 
 /* ---- start ---- */
 (async () => {
-  info = (await api.info()).data || {}; settings = (await api.settings()).data || {};
+  // all local answers at once; the server is asked later, in the background (showMain) — never before the first screen
   if (api.onUpdate) api.onUpdate((st) => { upd = st; if (!$('#main').hidden) renderUpdate(); });
-  if (api.updateState) upd = (await api.updateState()).data || upd;
+  const [i, s, u, a, p, c] = await Promise.all([api.info(), api.settings(), api.updateState(), api.actions(), api.presets(), api.cachedStatus()]);
+  info = i.data || {}; settings = s.data || {}; upd = u.data || upd; actions = a.data || []; presets = p.data || []; status = c.data || {};
   $('#pinghosts').value = (info.pingHosts || []).join(' ');
   $('#version1').textContent = $('#version2').textContent = 'v' + (info.version || '');
-  actions = (await api.actions()).data || []; presets = (await api.presets()).data || [];
   setLang(settings.lang || (navigator.language.startsWith('fa') ? 'fa' : 'en'), false);
-  status = (await api.status()).data || {};
   if (status.loggedIn) await showMain(); else { $('#login').hidden = false; $('#lu').focus(); }
 })();

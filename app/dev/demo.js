@@ -4,6 +4,7 @@
   if (window.api) return;
   const ok = (data) => Promise.resolve({ ok: true, data });
   const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  const STATE_MS = Number(new URLSearchParams(location.search).get('stateMs') || 2500);
   const demo = new URLSearchParams(location.search);
   let loggedIn = demo.get('login') !== '0', active = demo.get('active') !== '0';
   const applied = new Set(['game_dvr_off', 'game_mode_on', 'power_plan_high', 'mouse_accel_off', 'nagle_off', 'dns_fast', 'telemetry_off']);
@@ -15,7 +16,8 @@
     open: (u) => { window.open(u, '_blank'); return ok(); }, relaunch: () => ok(),
     login: async (u, p) => { await wait(600); if (!u || !p) return { ok: false, error: 'wrong username or password' }; loggedIn = true; return ok(status()); },
     status: () => ok(status()), logout: () => { loggedIn = false; return ok(status()); },
-    state: () => ok(DEMO_TWEAKS.map(tw => ({ ...tw, applied: applied.has(tw.id), error: null, hasBackup: applied.has(tw.id) }))),
+    state: async () => { await wait(STATE_MS); return ok(DEMO_TWEAKS.map(tw => ({ ...tw, applied: applied.has(tw.id), error: null, hasBackup: applied.has(tw.id) }))); },   // slow, like a real PC
+    cachedState: () => ok(null), cachedStatus: () => ok(status()),
     apply: async (id) => { await wait(500); applied.add(id); return ok({ id, applied: true, reboot: !!(DEMO_TWEAKS.find(t => t.id === id) || {}).reboot }); },
     revert: async (id) => { await wait(400); applied.delete(id); return ok({ id, applied: false }); },
     applyRecommended: async (cat) => { await wait(1200); const rs = DEMO_TWEAKS.filter(t => t.recommended && (!cat || t.category === cat)).map(t => { applied.add(t.id); return { id: t.id, applied: true, reboot: !!t.reboot }; }); return ok(rs.concat([{ id: 'restore_point', info: { skipped: false } }])); },

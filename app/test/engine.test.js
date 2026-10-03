@@ -2,7 +2,7 @@
 // Run: npm test  (node --test) — no Windows needed.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { Engine, MemoryBackup, regTweak, parseRegValue } = require('../src/engine');
+const { Engine, MemoryBackup, regTweak, makeCtx, parseRegValue } = require('../src/engine');
 const TWEAKS = require('../tweaks/manifest');
 const tools = require('../src/tools');
 
@@ -20,7 +20,13 @@ function fakeWindows(initial = {}) {
     if (cmd === 'reg') {
       const [op, rawKey, flag, name, , type, , value] = args; const key = short(rawKey);
       if (op === 'query' && flag === '/v') { const e = reg.get(key + '\\' + name); return e ? { code: 0, out: `\r\n${key}\r\n    ${name}    ${e.type}    ${e.type === 'REG_DWORD' ? '0x' + (e.value >>> 0).toString(16) : e.value}\r\n` } : { code: 1, out: '', err: 'ERROR: The system was unable to find the specified registry key or value.' }; }
-      if (op === 'query') { const subs = [...new Set([...reg.keys()].filter(k => k.startsWith(key + '\\')).map(k => key + '\\' + k.slice(key.length + 1).split('\\')[0]))]; return { code: 0, out: subs.map(long).join('\r\n') + '\r\n' }; }
+      if (op === 'query') {   // like real reg.exe: the key line, its values, a blank line, then the subkeys; exit 1 if nothing is there
+        const below = [...reg.keys()].filter(k => k.startsWith(key + '\\')).map(k => k.slice(key.length + 1));
+        if (!below.length) return { code: 1, out: '', err: 'ERROR: The system was unable to find the specified registry key or value.' };
+        const vals = below.filter(n => !n.includes('\\')).map(n => { const e = reg.get(key + '\\' + n); return `    ${n}    ${e.type}    ${e.type === 'REG_DWORD' ? '0x' + (e.value >>> 0).toString(16) : e.value}`; });
+        const subs = [...new Set(below.filter(n => n.includes('\\')).map(n => key + '\\' + n.split('\\')[0]))];
+        return { code: 0, out: ['', long(key), ...vals, '', ...subs.map(long)].join('\r\n') + '\r\n' };
+      }
       if (op === 'add') { reg.set(key + '\\' + name, { type, value: type === 'REG_DWORD' ? Number(value) : value }); return { code: 0, out: 'The operation completed successfully.' }; }
       if (op === 'delete') { reg.delete(key + '\\' + name); return { code: 0, out: '' }; }
     }
@@ -68,6 +74,20 @@ test('every tweak has both languages, a category and works against the fake', as
     const a = await engine.apply(tw.id, tw.defaultOption); assert.equal(a.applied, true, tw.id + ' should be applied');
     const r = await engine.revert(tw.id); assert.equal(r.applied, false, tw.id + ' should be reverted');
   }
+});
+
+test('state(): one reg query per key, same answers as checking each tweak on its own', async () => {
+  const IF = 'HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces';
+  const fw = fakeWindows({ [`${IF}\\{A}\\DhcpIPAddress`]: { type: 'REG_SZ', value: '1' }, [`${IF}\\{B}\\DhcpIPAddress`]: { type: 'REG_SZ', value: '2' } });
+  const engine = new Engine({ tweaks: TWEAKS, runner: fw.runner, backup: new MemoryBackup() });
+  for (const id of ['game_dvr_off', 'nagle_off', 'power_plan_high']) await engine.apply(id);
+  fw.calls.length = 0;
+  const st = await engine.state();
+  const regCalls = fw.calls.filter(c => c[0] === 'reg');
+  assert.ok(regCalls.every(c => c[1] === 'query' && c.length === 3), 'state() only reads whole keys');
+  assert.equal(new Set(regCalls.map(c => c[2])).size, regCalls.length, 'each key is read once');
+  for (const tw of TWEAKS) assert.equal(st.find(x => x.id === tw.id).applied, await tw.check(makeCtx(fw.runner, engine.backup)), tw.id);
+  assert.deepEqual(st.map(x => x.id), TWEAKS.map(x => x.id), 'order kept');
 });
 
 test('nagle: sets both values on every interface and revert removes them', async () => {

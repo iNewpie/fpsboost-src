@@ -65,8 +65,18 @@ ipcMain.handle('app:open', wrap(async (e, url) => { url = str(url, 500); if (url
 ipcMain.handle('app:relaunch', wrap(async () => { app.relaunch(); app.quit(); }));
 ipcMain.handle('auth:login', wrap((e, username, password) => auth.login(str(username, 40), str(password, 200))));
 ipcMain.handle('auth:status', wrap(() => auth.status()));
+ipcMain.handle('auth:cached', wrap(() => auth.view()));   // what is on disk, no network — enough to draw the first screen
 ipcMain.handle('auth:logout', wrap(() => auth.logout()));
-ipcMain.handle('tweaks:state', wrap(() => engine.state()));
+/* tweak state: the live check takes seconds on a slow PC, so the page first draws the last known state (state.json)
+   and swaps in the live one when it lands; parallel requests share one run */
+const STATE_FILE = () => path.join(app.getPath('userData'), 'state.json');
+let stateRun = null;
+const liveState = () => stateRun || (stateRun = engine.state().then((st) => {
+  try { require('node:fs').writeFileSync(STATE_FILE(), JSON.stringify({ at: Date.now(), version: app.getVersion(), tweaks: st })); } catch (e) {}
+  return st;
+}).finally(() => { stateRun = null; }));
+ipcMain.handle('tweaks:state', wrap(() => liveState()));
+ipcMain.handle('tweaks:cached', wrap(() => { try { const c = JSON.parse(require('node:fs').readFileSync(STATE_FILE(), 'utf8')); return c.version === app.getVersion() ? c.tweaks : null; } catch (e) { return null; } }));
 ipcMain.handle('tweaks:apply', wrap(gated((id, option) => engine.apply(str(id, 40), option == null ? undefined : str(option, 40)))));
 ipcMain.handle('tweaks:revert', wrap(gated((id) => engine.revert(str(id, 40)))));
 ipcMain.handle('tweaks:applyRecommended', wrap(gated(async (category) => {
