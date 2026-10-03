@@ -1,0 +1,214 @@
+; FPS Boost installer (NSIS 3, MUI2). Built on Linux by scripts/build.sh with electron-builder's makensis.
+; Flow: close the running app → remove the old Electron install if present → install WebView2 if missing → copy the exe →
+; shortcuts + Add/Remove entry → optional launch. Silent: FPSBoost-Setup.exe /S (the app's self-update uses this).
+Unicode true
+ManifestDPIAware true
+RequestExecutionLevel admin
+SetCompressor /SOLID lzma
+SetCompressorDictSize 16
+
+!ifndef VERSION
+  !define VERSION "0.0.0"
+!endif
+!define NAME "FPS Boost"
+!define EXE "fpsboost.exe"
+!define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\FPSBoost"
+!define WV2_KEY "SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+!define WV2_KEY_USER "Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+
+Name "${NAME}"
+OutFile "..\dist\FPSBoost-Setup.exe"
+InstallDir "$PROGRAMFILES64\${NAME}"
+InstallDirRegKey HKLM "${UNINST_KEY}" "InstallLocation"
+BrandingText "fpsboost.ir"
+VIProductVersion "${VERSION}.0"
+VIAddVersionKey "ProductName" "${NAME}"
+VIAddVersionKey "FileDescription" "${NAME} Setup"
+VIAddVersionKey "FileVersion" "${VERSION}"
+VIAddVersionKey "ProductVersion" "${VERSION}"
+VIAddVersionKey "LegalCopyright" "fpsboost.ir"
+
+!include "MUI2.nsh"
+!include "x64.nsh"
+!include "LogicLib.nsh"
+!include "WinVer.nsh"
+!include "FileFunc.nsh"
+
+!define MUI_ICON "icon.ico"
+!define MUI_UNICON "icon.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "installerSidebar.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "uninstallerSidebar.bmp"
+!define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_BITMAP "installerHeader.bmp"
+!define MUI_HEADERIMAGE_RIGHT
+!define MUI_ABORTWARNING
+!define MUI_LANGDLL_ALLLANGUAGES
+
+!define MUI_WELCOMEPAGE_TITLE "$(WelcomeTitle)"
+!define MUI_WELCOMEPAGE_TEXT "$(WelcomeText)"
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_TITLE "$(FinishTitle)"
+!define MUI_FINISHPAGE_TEXT "$(FinishText)"
+!define MUI_FINISHPAGE_RUN
+!define MUI_FINISHPAGE_RUN_TEXT "$(RunText)"
+!define MUI_FINISHPAGE_RUN_FUNCTION "LaunchApp"
+!define MUI_FINISHPAGE_LINK "fpsboost.ir"
+!define MUI_FINISHPAGE_LINK_LOCATION "https://fpsboost.ir"
+!insertmacro MUI_PAGE_FINISH
+
+!define MUI_UNCONFIRMPAGE_TEXT_TOP "$(UnConfirm)"
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+
+!insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "Farsi"
+
+LangString WelcomeTitle ${LANG_ENGLISH} "Welcome to FPS Boost ${VERSION}"
+LangString WelcomeTitle ${LANG_FARSI} "به FPS Boost ${VERSION} خوش آمدید"
+LangString WelcomeText ${LANG_ENGLISH} "Higher FPS and lower ping in a few clicks.$\r$\n$\r$\nFPS Boost is a single small program (under 10 MB). Every change it makes to Windows is backed up and can be undone from inside the app.$\r$\n$\r$\nClose your games before you continue, then click Next."
+LangString WelcomeText ${LANG_FARSI} "FPS بیشتر و پینگ کمتر با چند کلیک.$\r$\n$\r$\nFPS Boost یک برنامهٔ کوچک است (زیر ۱۰ مگابایت). هر تغییری که در ویندوز می‌دهد پشتیبان دارد و از داخل برنامه قابل بازگشت است.$\r$\n$\r$\nقبل از ادامه بازی‌ها را ببندید و Next را بزنید."
+LangString FinishTitle ${LANG_ENGLISH} "FPS Boost is ready"
+LangString FinishTitle ${LANG_FARSI} "FPS Boost آماده است"
+LangString FinishText ${LANG_ENGLISH} "FPS Boost ${VERSION} has been installed.$\r$\n$\r$\nSign in with your fpsboost.ir account to start optimizing. The app keeps running in the tray and boosts your games automatically."
+LangString FinishText ${LANG_FARSI} "FPS Boost ${VERSION} نصب شد.$\r$\n$\r$\nبا حساب fpsboost.ir وارد شوید. برنامه در تری می‌ماند و بازی‌های شما را خودکار بوست می‌کند."
+LangString RunText ${LANG_ENGLISH} "Launch FPS Boost"
+LangString RunText ${LANG_FARSI} "اجرای FPS Boost"
+LangString UnConfirm ${LANG_ENGLISH} "FPS Boost will be removed from your computer. Every Windows setting it changed is put back first."
+LangString UnConfirm ${LANG_FARSI} "FPS Boost از کامپیوتر شما حذف می‌شود. اول همهٔ تنظیمات ویندوز که تغییر داده بود برمی‌گردند."
+LangString NeedWin10 ${LANG_ENGLISH} "FPS Boost needs 64-bit Windows 10 or 11."
+LangString NeedWin10 ${LANG_FARSI} "FPS Boost به ویندوز ۱۰ یا ۱۱ شصت‌وچهار بیتی نیاز دارد."
+LangString WV2Install ${LANG_ENGLISH} "Installing the Microsoft Edge WebView2 runtime…"
+LangString WV2Install ${LANG_FARSI} "در حال نصب Microsoft Edge WebView2…"
+LangString WV2Failed ${LANG_ENGLISH} "The WebView2 runtime could not be installed (no internet?). FPS Boost will offer the download when it starts."
+LangString WV2Failed ${LANG_FARSI} "WebView2 نصب نشد (اینترنت قطع است؟). FPS Boost هنگام اجرا لینک دانلود را نشان می‌دهد."
+
+Function .onInit
+  ${IfNot} ${RunningX64}
+    MessageBox MB_OK|MB_ICONSTOP "$(NeedWin10)"
+    Abort
+  ${EndIf}
+  ${IfNot} ${AtLeastWin10}
+    MessageBox MB_OK|MB_ICONSTOP "$(NeedWin10)"
+    Abort
+  ${EndIf}
+  SetRegView 64
+  !insertmacro MUI_LANGDLL_DISPLAY
+FunctionEnd
+
+Function un.onInit
+  SetRegView 64
+  !insertmacro MUI_UNGETLANGUAGE
+FunctionEnd
+
+Function LaunchApp
+  ; we are elevated and so is the app (requireAdministrator): a plain Exec, no Explorer round-trip — the old installer froze here
+  Exec '"$INSTDIR\${EXE}"'
+FunctionEnd
+
+!macro KillApp
+  nsExec::ExecToLog 'taskkill /F /IM ${EXE} /T'
+  nsExec::ExecToLog 'taskkill /F /IM "FPS Boost.exe" /T'
+  Sleep 400
+!macroend
+
+Section "FPS Boost" SecMain
+  SectionIn RO
+  SetRegView 64
+  !insertmacro KillApp
+
+  ; the Electron-era install (0.1 / 0.2) lives in the same folder with its own uninstaller: remove it quietly first
+  ${If} ${FileExists} "$INSTDIR\Uninstall FPS Boost.exe"
+    DetailPrint "Removing the previous version…"
+    ExecWait '"$INSTDIR\Uninstall FPS Boost.exe" /S _?=$INSTDIR'
+    Delete "$INSTDIR\Uninstall FPS Boost.exe"
+    RMDir /r "$INSTDIR\locales"
+    RMDir /r "$INSTDIR\resources"
+    Delete "$INSTDIR\*.dll"
+    Delete "$INSTDIR\*.pak"
+    Delete "$INSTDIR\*.bin"
+    Delete "$INSTDIR\*.dat"
+    Delete "$INSTDIR\*.json"
+    Delete "$INSTDIR\FPS Boost.exe"
+    Delete "$INSTDIR\LICENSE*"
+    Delete "$INSTDIR\vk_swiftshader_icd.json"
+  ${EndIf}
+  SetOutPath "$INSTDIR"
+  File "..\dist\${EXE}"
+
+  ; WebView2 runtime: per-machine or per-user key present = installed (also true for every Windows 11)
+  ClearErrors
+  ReadRegStr $0 HKLM "${WV2_KEY}" "pv"
+  ${If} ${Errors}
+  ${OrIf} $0 == ""
+  ${OrIf} $0 == "0.0.0.0"
+    ClearErrors
+    ReadRegStr $0 HKCU "${WV2_KEY_USER}" "pv"
+  ${EndIf}
+  ${If} $0 == ""
+  ${OrIf} $0 == "0.0.0.0"
+    ; under Wine (local test builds) the bootstrapper cannot run
+    ClearErrors
+    ReadRegStr $1 HKCU "Software\Wine" ""
+    ${If} ${Errors}
+      DetailPrint "$(WV2Install)"
+      SetOutPath "$TEMP"
+      File "MicrosoftEdgeWebview2Setup.exe"
+      ExecWait '"$TEMP\MicrosoftEdgeWebview2Setup.exe" /silent /install' $2
+      Delete "$TEMP\MicrosoftEdgeWebview2Setup.exe"
+      ${If} $2 != 0
+        DetailPrint "$(WV2Failed)"
+        IfSilent +2
+        MessageBox MB_OK|MB_ICONEXCLAMATION "$(WV2Failed)"
+      ${EndIf}
+      SetOutPath "$INSTDIR"
+    ${EndIf}
+  ${EndIf}
+
+  WriteUninstaller "$INSTDIR\Uninstall.exe"
+  CreateShortcut "$DESKTOP\${NAME}.lnk" "$INSTDIR\${EXE}"
+  CreateDirectory "$SMPROGRAMS\${NAME}"
+  CreateShortcut "$SMPROGRAMS\${NAME}\${NAME}.lnk" "$INSTDIR\${EXE}"
+  CreateShortcut "$SMPROGRAMS\${NAME}\Uninstall ${NAME}.lnk" "$INSTDIR\Uninstall.exe"
+
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayName" "${NAME}"
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\${EXE}"
+  WriteRegStr HKLM "${UNINST_KEY}" "Publisher" "fpsboost.ir"
+  WriteRegStr HKLM "${UNINST_KEY}" "URLInfoAbout" "https://fpsboost.ir"
+  WriteRegStr HKLM "${UNINST_KEY}" "InstallLocation" "$INSTDIR"
+  WriteRegStr HKLM "${UNINST_KEY}" "UninstallString" '"$INSTDIR\Uninstall.exe"'
+  WriteRegStr HKLM "${UNINST_KEY}" "QuietUninstallString" '"$INSTDIR\Uninstall.exe" /S'
+  WriteRegDWORD HKLM "${UNINST_KEY}" "NoModify" 1
+  WriteRegDWORD HKLM "${UNINST_KEY}" "NoRepair" 1
+  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+  IntFmt $0 "0x%08X" $0
+  WriteRegDWORD HKLM "${UNINST_KEY}" "EstimatedSize" "$0"
+
+  ; silent self-update from the running app: start the new version again, in the tray
+  IfSilent 0 +2
+  Exec '"$INSTDIR\${EXE}" --tray'
+SectionEnd
+
+Section "Uninstall"
+  SetRegView 64
+  !insertmacro KillApp
+  ; put every Windows setting back + remove the logon task (the app does it from its backups)
+  ${If} ${FileExists} "$INSTDIR\${EXE}"
+    DetailPrint "Restoring Windows settings…"
+    ExecWait '"$INSTDIR\${EXE}" --restore'
+  ${Else}
+    nsExec::ExecToLog 'schtasks /Delete /TN "FPS Boost" /F'
+  ${EndIf}
+  Delete "$INSTDIR\${EXE}"
+  Delete "$INSTDIR\Uninstall.exe"
+  RMDir "$INSTDIR"
+  Delete "$DESKTOP\${NAME}.lnk"
+  Delete "$SMPROGRAMS\${NAME}\${NAME}.lnk"
+  Delete "$SMPROGRAMS\${NAME}\Uninstall ${NAME}.lnk"
+  RMDir "$SMPROGRAMS\${NAME}"
+  RMDir /r "$APPDATA\fpsboost"
+  DeleteRegKey HKLM "${UNINST_KEY}"
+SectionEnd

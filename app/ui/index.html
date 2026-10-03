@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FPS Boost</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<svg hidden xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h8l-1 8 11-14h-8z"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10.5 10.5 0 0 1 14 0M8.5 15.5a5.5 5.5 0 0 1 7 0M12 19h.01"/></symbol>
+  <symbol id="i-pad" viewBox="0 0 24 24"><path d="M6 8h12a4 4 0 0 1 4 4v3a3 3 0 0 1-5.4 1.8L15 15H9l-1.6 1.8A3 3 0 0 1 2 15v-3a4 4 0 0 1 4-4zM7 11v3M5.5 12.5h3M16 11.5h.01M18.5 13h.01"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-tool" viewBox="0 0 24 24"><path d="m3 21 8.5-8.5M14.5 6.5a4 4 0 1 0 3 3l3-3-3-3-3 3z"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+  <symbol id="i-pc" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3 2 21h20zM12 10v4M12 17.5h.01"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-min" viewBox="0 0 10 10"><path d="M1 5h8"/></symbol>
+  <symbol id="i-max" viewBox="0 0 10 10"><rect x="1.5" y="1.5" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-restore" viewBox="0 0 10 10"><path d="M3 3V1.5h5.5V7H7M1.5 3h5.5v5.5H1.5z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 10 10"><path d="m1.5 1.5 7 7m0-7-7 7"/></symbol>
+  <symbol id="i-ram" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 17v3M10 17v3M14 17v3M18 17v3M6 11h2M11 11h2M16 11h2"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-broom" viewBox="0 0 24 24"><path d="m14 3-5.5 5.5M8 9l7 7M5 21c0-4 1.5-6.5 3-7.5l4.5 4.5C11.5 19.5 9 21 5 21zM13 11l2-2 4 4-2 2"/></symbol>
+  <symbol id="i-gpu" viewBox="0 0 24 24"><rect x="2" y="6" width="18" height="11" rx="2"/><circle cx="9" cy="11.5" r="3"/><path d="M15 9h3M15 13h3M5 17v3M9 17v3M20 10h2"/></symbol>
+  <symbol id="i-dns" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-net" viewBox="0 0 24 24"><path d="M12 3v6M12 15v6M5 12h14"/><circle cx="12" cy="12" r="3"/><circle cx="12" cy="3" r="1.5"/><circle cx="12" cy="21" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 3v6h6"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></symbol>
+  <symbol id="i-mouse" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v4"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v9M18.4 6.6a9 9 0 1 1-12.8 0"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A10 10 0 0 1 12 5c5 0 9 4 10 7a13 13 0 0 1-2.6 3.8M6.6 6.6A13 13 0 0 0 2 12c1 3 5 7 10 7a9.6 9.6 0 0 0 3.4-.6"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zM3 13l9 5 9-5M3 18l9 5 9-5"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4v16l14-8z"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+</svg>
+
+<header class="tb" id="tb">
+  <div class="tb-l"><img src="assets/logo.png" alt="" class="tb-mark"><b class="tb-name">FPS BOOST</b><span class="tb-ver" id="tbver"></span></div>
+  <div class="tb-c" id="tbguard" hidden><i class="dot"></i><span></span></div>
+  <div class="tb-r">
+    <button class="wb" data-win="min" title="Minimize"><svg><use href="#i-min"/></svg></button>
+    <button class="wb" data-win="max" title="Maximize"><svg id="maxico"><use href="#i-max"/></svg></button>
+    <button class="wb close" data-win="close" title="Close"><svg><use href="#i-x"/></svg></button>
+  </div>
+</header>
+
+<div id="login" class="screen login" hidden>
+  <div class="aura"></div>
+  <div class="lcard">
+    <img src="assets/logo.png" alt="" class="lmark">
+    <h1>FPS Boost</h1><p class="muted" data-i18n="login_sub"></p>
+    <form id="loginform" autocomplete="on">
+      <label><span data-i18n="username"></span><input id="lu" autocomplete="username" spellcheck="false" required maxlength="40"></label>
+      <label><span data-i18n="password"></span><input id="lp" type="password" autocomplete="current-password" required maxlength="200"></label>
+      <p class="err" id="lerr"></p>
+      <button type="submit" class="pri wide big" id="lbtn"><span data-i18n="login"></span></button>
+    </form>
+    <p class="lfoot"><a href="#" data-open="/register" data-i18n="no_account"></a><span>·</span><a href="#" data-open="/account" data-i18n="forgot"></a><span>·</span><a href="#" class="lang"></a></p>
+  </div>
+  <p class="lver muted"><span id="version1"></span> · <span data-i18n="win"></span></p>
+</div>
+
+<div id="main" class="screen app" hidden>
+  <aside class="side">
+    <nav class="nav">
+      <button class="nav-i on" data-page="home"><svg><use href="#i-home"/></svg><span data-i18n="nav_home"></span></button>
+      <button class="nav-i" data-page="fps"><svg><use href="#i-bolt"/></svg><span data-i18n="nav_fps"></span><i class="cnt" id="cnt-fps"></i></button>
+      <button class="nav-i" data-page="network"><svg><use href="#i-wifi"/></svg><span data-i18n="nav_network"></span><i class="cnt" id="cnt-network"></i></button>
+      <button class="nav-i" data-page="games"><svg><use href="#i-pad"/></svg><span data-i18n="nav_games"></span></button>
+      <button class="nav-i" data-page="guard"><svg><use href="#i-shield"/></svg><span data-i18n="nav_guard"></span><i class="cnt live" id="cnt-guard"></i></button>
+      <button class="nav-i" data-page="tools"><svg><use href="#i-tool"/></svg><span data-i18n="nav_tools"></span></button>
+      <button class="nav-i" data-page="settings"><svg><use href="#i-gear"/></svg><span data-i18n="nav_settings"></span></button>
+    </nav>
+    <div class="subcard" id="subcard"></div>
+    <button class="lang side-lang"></button>
+  </aside>
+
+  <main class="content" id="content">
+    <div class="prog" id="prog" hidden><i></i></div>
+    <div id="banner" class="banner" hidden><svg><use href="#i-warn"/></svg><span></span></div>
+    <div id="ubanner" class="banner info" hidden><svg><use href="#i-download"/></svg><span id="ubanner-t"></span><button class="pri sm" id="ubanner-b"></button></div>
+
+    <section data-page="home">
+      <div class="ph"><div><h2 id="hi"></h2><p class="muted" id="sysline"></p></div></div>
+      <div class="hero">
+        <div class="score">
+          <svg viewBox="0 0 120 120" class="ring"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle cx="60" cy="60" r="52" class="ring-fg" id="ringfg"/></svg>
+          <div class="score-n"><b id="score">0</b><small data-i18n="score"></small></div>
+        </div>
+        <div class="hero-mid">
+          <div class="tile"><span data-i18n="tiles_active"></span><b id="t-active">–</b><small id="t-active-s"></small></div>
+          <div class="tile"><span data-i18n="tiles_ping"></span><b id="t-ping">–</b><small id="t-ping-s"></small></div>
+          <div class="tile"><span data-i18n="tiles_guard"></span><b id="t-guard">–</b><small id="t-guard-s"></small></div>
+        </div>
+        <div class="hero-act">
+          <button class="pri big boost" id="boost"><svg><use href="#i-bolt"/></svg><span data-i18n="boost_now"></span></button>
+          <p class="muted" data-i18n="boost_sub"></p>
+          <button class="ghost sm" id="unboost" data-i18n="restore_all"></button>
+        </div>
+      </div>
+      <div class="two">
+        <div class="card guardcard" id="guardcard">
+          <h3><svg><use href="#i-shield"/></svg><span data-i18n="guard_title"></span><i class="pill" id="gpill"></i></h3>
+          <div class="gstate" id="gstate"></div>
+          <div class="meter"><div class="meter-h"><span data-i18n="ram_in_use"></span><b id="ramtxt">–</b></div><div class="bar"><i id="rambar"></i></div></div>
+          <div class="gstats"><div><b id="g-boosted">0</b><span data-i18n="g_boosted"></span></div><div><b id="g-freed">0</b><span data-i18n="g_freed"></span></div><div><b id="g-enforced">0</b><span data-i18n="g_enforced"></span></div></div>
+        </div>
+        <div class="card"><h3><svg><use href="#i-pc"/></svg><span data-i18n="this_pc"></span></h3><dl class="kv" id="pcinfo"></dl></div>
+      </div>
+      <div class="card"><h3><svg><use href="#i-refresh"/></svg><span data-i18n="activity"></span></h3><ul class="log" id="log"></ul></div>
+    </section>
+
+    <section data-page="fps" hidden>
+      <div class="ph"><div><h2 data-i18n="fps_title"></h2><p class="muted" data-i18n="fps_sub"></p></div><div class="acts"><button class="pri" data-rec="fps"><svg><use href="#i-bolt"/></svg><span data-i18n="apply_recommended"></span></button><button class="ghost" data-revert="fps" data-i18n="revert_all"></button></div></div>
+      <div class="chips" data-filter-for="fps"><button class="chip on" data-f="all" data-i18n="all"></button><button class="chip" data-f="rec" data-i18n="rec"></button><button class="chip" data-f="adv" data-i18n="adv"></button><span class="muted" id="fps-count"></span></div>
+      <div class="list" id="list-fps"></div>
+    </section>
+
+    <section data-page="network" hidden>
+      <div class="ph"><div><h2 data-i18n="net_title"></h2><p class="muted" data-i18n="net_sub"></p></div><div class="acts"><button class="pri" data-rec="network"><svg><use href="#i-wifi"/></svg><span data-i18n="apply_recommended"></span></button><button class="ghost" data-revert="network" data-i18n="revert_all"></button></div></div>
+      <div class="card ping">
+        <div class="ping-h"><div><h3><svg><use href="#i-zap"/></svg><span data-i18n="ping_title"></span></h3><p class="muted" data-i18n="ping_sub"></p></div><div class="row"><input id="pinghosts" class="mono" spellcheck="false"><button class="pri" id="pingbtn" data-i18n="ping_run"></button></div></div>
+        <div class="pingr" id="pingr"></div>
+      </div>
+      <div class="chips" data-filter-for="network"><button class="chip on" data-f="all" data-i18n="all"></button><button class="chip" data-f="rec" data-i18n="rec"></button><button class="chip" data-f="adv" data-i18n="adv"></button><span class="muted" id="network-count"></span></div>
+      <div class="list" id="list-network"></div>
+    </section>
+
+    <section data-page="games" hidden>
+      <div class="ph"><div><h2 data-i18n="games_title"></h2><p class="muted" data-i18n="games_sub"></p></div></div>
+      <div class="games" id="games"></div>
+    </section>
+
+    <section data-page="guard" hidden>
+      <div class="ph"><div><h2 data-i18n="guard_title"></h2><p class="muted" data-i18n="guard_sub"></p></div><div class="acts"><button class="pri" id="cleannow"><svg><use href="#i-ram"/></svg><span data-i18n="clean_now"></span></button></div></div>
+      <div class="gtop">
+        <div class="card gbig" id="gbig"></div>
+        <div class="card">
+          <h3><svg><use href="#i-ram"/></svg><span data-i18n="ram_title"></span></h3>
+          <div class="meter big"><div class="meter-h"><span data-i18n="ram_in_use"></span><b id="ramtxt2">–</b></div><div class="bar"><i id="rambar2"></i></div></div>
+          <div class="gstats"><div><b id="g2-boosted">0</b><span data-i18n="g_boosted"></span></div><div><b id="g2-freed">0</b><span data-i18n="g_freed"></span></div><div><b id="g2-enforced">0</b><span data-i18n="g_enforced"></span></div></div>
+        </div>
+      </div>
+      <div class="card set" id="guardset"></div>
+      <div class="card"><h3><svg><use href="#i-clock"/></svg><span data-i18n="guard_log"></span></h3><ul class="log" id="glog"></ul></div>
+    </section>
+
+    <section data-page="tools" hidden>
+      <div class="ph"><div><h2 data-i18n="tools_title"></h2><p class="muted" data-i18n="tools_sub"></p></div></div>
+      <div class="tools" id="tools"></div>
+    </section>
+
+    <section data-page="settings" hidden>
+      <div class="ph"><div><h2 data-i18n="settings_title"></h2><p class="muted" id="settings-sub"></p></div></div>
+      <div id="settings"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
