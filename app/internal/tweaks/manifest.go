@@ -683,8 +683,8 @@ func ipList(s string) []string {
 	return out
 }
 
-// All = every tweak in display order.
-var All = append(append([]*Tweak{}, FPS...), Network...)
+// All = every tweak in display order (FPS, then the stage-guide set, then network; the UI filters by category).
+var All = append(append(append([]*Tweak{}, FPS...), Stage...), Network...)
 
 // ByID finds a tweak.
 func ByID(id string) *Tweak {

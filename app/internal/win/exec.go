@@ -176,3 +176,15 @@ func HasStartupTask() bool {
 	}
 	return Run(30*time.Second, "schtasks", "/Query", "/TN", taskName).Code == 0
 }
+
+// StartVisible launches a program in its own window and does not wait: a console program (cmd.exe running sfc,
+// chkdsk…) gets a fresh console the user can watch; a GUI program just opens. cmdLine, when set, is passed to Windows
+// verbatim (cmd.exe's own quoting rules, not Go's) and must start with the program name.
+func StartVisible(exe, cmdLine string) error {
+	c := exec.Command(exe)
+	c.SysProcAttr = &syscall.SysProcAttr{CreationFlags: windows.CREATE_NEW_CONSOLE | windows.CREATE_NEW_PROCESS_GROUP, CmdLine: cmdLine}
+	if err := c.Start(); err != nil {
+		return err
+	}
+	return c.Process.Release()
+}

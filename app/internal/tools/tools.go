@@ -1,5 +1,7 @@
 // Package tools is the one-shot actions (no state to revert): ping test, flush DNS, Winsock reset, temp + shader cache
-// cleanup, System Restore point, IP renew. The RAM cleaner lives in the guard package and is plugged in by main.
+// cleanup, System Restore point, IP renew, and the Windows repair / diagnostic programs (SFC + DISM, chkdsk, memory
+// test, Defender full scan, Resource Monitor) which open in their own window. The RAM cleaner lives in the guard package
+// and is plugged in by main.
 package tools
 
 import (
@@ -25,9 +27,11 @@ type Action struct {
 	Run    func(s engine.Sys) (engine.Text, error) `json:"-"`
 }
 
-// Env tells the cleaners where Windows keeps things.
+// Env tells the cleaners where Windows keeps things. Start opens a program in its own visible window and returns at
+// once (win.StartVisible); nil on non-Windows.
 type Env struct {
 	Temp, SystemRoot, LocalAppData string
+	Start                          func(exe, cmdLine string) error
 }
 
 func t(en, fa string) engine.Text { return engine.Text{En: en, Fa: fa} }
@@ -111,8 +115,39 @@ func Actions(env Env, ramClean func() (freedMB int, err error)) []*Action {
 				mb := CleanDirs(dirs, 0)
 				return t(fmt.Sprintf("Freed %d MB — games rebuild their cache on first launch", mb), fmt.Sprintf("%d مگابایت آزاد شد — بازی‌ها در اولین اجرا کش را دوباره می‌سازند", mb)), nil
 			}},
+		{ID: "sfc_scan", Icon: "tool", Title: t("Repair Windows system files (DISM + SFC)", "ترمیم فایل‌های سیستمی ویندوز (DISM + SFC)"),
+			Desc: t("Opens a window that runs DISM /RestoreHealth and then sfc /scannow: damaged Windows files are replaced from Microsoft's copy. The cure for random crashes and DirectX errors after a bad update. Takes 10–30 minutes; needs internet.", "پنجره‌ای باز می‌کند که DISM /RestoreHealth و بعد sfc /scannow را اجرا می‌کند: فایل‌های خراب ویندوز از نسخهٔ مایکروسافت جایگزین می‌شوند. درمان کرش‌های تصادفی و خطاهای DirectX بعد از یک آپدیت بد. ۱۰ تا ۳۰ دقیقه؛ اینترنت لازم است."),
+			Run: visible(env, "cmd.exe", `cmd.exe /c "title FPS Boost - Windows repair & echo Step 1/2: DISM & DISM /Online /Cleanup-Image /RestoreHealth & echo. & echo Step 2/2: SFC & sfc /scannow & echo. & pause"`,
+				t("Started in a new window — wait for it to finish, then restart Windows", "در پنجرهٔ جدید شروع شد — تا تمام شود صبر کنید، بعد ویندوز را ریستارت کنید"))},
+		{ID: "chkdsk_scan", Icon: "tool", Title: t("Check the Windows drive for errors (chkdsk)", "بررسی خطاهای درایو ویندوز (chkdsk)"),
+			Desc: t("Opens a window that runs an online chkdsk scan of the Windows drive — no restart needed. File-system errors and bad sectors make games load wrong files and crash at random; this finds them and schedules the repair.", "پنجره‌ای باز می‌کند که اسکن آنلاین chkdsk روی درایو ویندوز اجرا می‌کند — بدون ریستارت. خطاهای فایل‌سیستم و بدسکتور باعث می‌شوند بازی فایل اشتباه بارگذاری کند و تصادفی کرش کند؛ این آن‌ها را پیدا و تعمیر را زمان‌بندی می‌کند."),
+			Run: visible(env, "cmd.exe", `cmd.exe /c "title FPS Boost - Disk check & chkdsk %SystemDrive% /scan & echo. & pause"`,
+				t("Started in a new window — a few minutes", "در پنجرهٔ جدید شروع شد — چند دقیقه"))},
+		{ID: "mem_test", Icon: "ram", Reboot: true, Title: t("Test the RAM (Windows Memory Diagnostic)", "تست رم (Windows Memory Diagnostic)"),
+			Desc: t("Opens the Windows Memory Diagnostic. Faulty RAM shows up as blue screens and crashes that no setting fixes. Choose 'Restart now' — the test runs before Windows starts and reports after sign-in.", "Windows Memory Diagnostic را باز می‌کند. رم خراب به‌شکل صفحهٔ آبی و کرش‌هایی که هیچ تنظیمی درست نمی‌کند ظاهر می‌شود. «Restart now» را بزنید — تست قبل از بالا آمدن ویندوز اجرا و بعد از ورود گزارش می‌شود."),
+			Run:  visible(env, "mdsched.exe", "", t("Memory Diagnostic opened — choose 'Restart now'", "Memory Diagnostic باز شد — «Restart now» را بزنید"))},
+		{ID: "defender_scan", Icon: "shield", Title: t("Full Microsoft Defender scan", "اسکن کامل Microsoft Defender"),
+			Desc: t("Opens a window that runs a full Defender scan of every file. Malware and miners are a classic hidden FPS killer — scan before you blame your hardware. Takes 30–90 minutes; keep playing meanwhile if you like.", "پنجره‌ای باز می‌کند که اسکن کامل Defender روی همهٔ فایل‌ها اجرا می‌کند. بدافزار و ماینر FPS‌کش پنهان کلاسیک‌اند — قبل از اینکه سخت‌افزار را مقصر بدانید اسکن کنید. ۳۰ تا ۹۰ دقیقه؛ در این بین می‌توانید بازی کنید."),
+			Run: visible(env, "cmd.exe", `cmd.exe /c "title FPS Boost - Defender full scan & "%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 2 & echo. & pause"`,
+				t("Started in a new window", "در پنجرهٔ جدید شروع شد"))},
+		{ID: "resmon", Icon: "cpu", Title: t("Open Resource Monitor", "باز کردن Resource Monitor"),
+			Desc: t("Windows' detailed live view of which process eats CPU, disk, network and memory — find the updater or launcher that steals frames while you play.", "نمای زندهٔ دقیق ویندوز از اینکه کدام پروسه CPU، دیسک، شبکه و حافظه را می‌خورد — آپدیتر یا لانچری که هنگام بازی فریم می‌دزدد را پیدا کنید."),
+			Run:  visible(env, "resmon.exe", "", t("Resource Monitor opened", "Resource Monitor باز شد"))},
 	}
 	return list
+}
+
+// visible builds a Run that opens a program in its own window (see Env.Start) and reports msg.
+func visible(env Env, exe, cmdLine string, msg engine.Text) func(engine.Sys) (engine.Text, error) {
+	return func(engine.Sys) (engine.Text, error) {
+		if env.Start == nil {
+			return engine.Text{}, fmt.Errorf("not available on this system")
+		}
+		if err := env.Start(exe, cmdLine); err != nil {
+			return engine.Text{}, fmt.Errorf("could not start %s: %v", exe, err)
+		}
+		return msg, nil
+	}
 }
 
 // Find returns an action by id.

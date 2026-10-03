@@ -172,7 +172,7 @@ func main() {
 	a.guard.Active = a.auth.Active
 	a.guard.Enforce = a.engine.Enforce
 	a.guard.OnChange = func(s guard.Status) { a.emit("guard", s); a.trayTip() }
-	a.actions = tools.Actions(tools.Env{Temp: os.Getenv("TEMP"), SystemRoot: os.Getenv("SystemRoot"), LocalAppData: os.Getenv("LOCALAPPDATA")}, a.guard.CleanNow)
+	a.actions = tools.Actions(tools.Env{Temp: os.Getenv("TEMP"), SystemRoot: os.Getenv("SystemRoot"), LocalAppData: os.Getenv("LOCALAPPDATA"), Start: win.StartVisible}, a.guard.CleanNow)
 	a.updater = update.New(a.auth, config.Version, filepath.Join(a.dataDir, "update"), func(s update.State) { a.emit("update", s); a.notifyUpdate(s) })
 	a.updater.Launch = win.StartDetached
 

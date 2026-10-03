@@ -8,7 +8,7 @@ when the window closes to the tray).
 app/
   main_windows.go        wiring: flags, data folder, RPC handlers, tray menu, window open/close, update loop
   internal/engine        Sys interface (registry + commands), Backup (backup.json), Tweak, RegTweak/ServiceTweak/PowercfgTweak, Engine
-  internal/tweaks        the 34 tweaks (fps / network) + game presets + the Guard's game exe list
+  internal/tweaks        the 61 tweaks (fps / network, incl. the stage-guide set in stage.go) + game presets + the Guard's game exe list
   internal/dns           resolver list (Shatel / TCI / Pishgaman ISP resolvers, Shecan & co, the DNS Jumper lists), the concurrent
                          benchmark (dns.scan), ISP detection (server ASN → DHCP ranges) and the "auto" pick behind dns_fast
   internal/sysimpl       the real Sys: golang.org/x/sys/windows/registry + hidden commands; registry-only system info

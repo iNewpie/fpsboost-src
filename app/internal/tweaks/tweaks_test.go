@@ -380,3 +380,137 @@ func TestHiddenPowercfgSettingIsUnhiddenBeforeReading(t *testing.T) {
 		t.Fatalf("expected the value to be set: %v", cmds)
 	}
 }
+
+func TestNICPowerManagementTouchesOnlyPhysicalAdapters(t *testing.T) {
+	f := newFake()
+	const CLS = `HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}`
+	sz := func(v string) engine.RegValue { return engine.RegValue{Type: "REG_SZ", Value: v} }
+	f.set(CLS+`\0001`, "NetCfgInstanceId", sz("{A}"))
+	f.set(CLS+`\0001`, "DeviceInstanceID", sz(`PCI\VEN_10EC&DEV_8168\4&2b3c`)) // Ethernet
+	f.set(CLS+`\0001`, "PnPCapabilities", engine.RegValue{Type: "REG_DWORD", Value: uint32(0)})
+	f.set(CLS+`\0002`, "NetCfgInstanceId", sz("{B}"))
+	f.set(CLS+`\0002`, "DeviceInstanceID", sz(`usb\VID_0BDA&PID_8153\00E0`)) // USB Wi-Fi dongle, no value yet
+	f.set(CLS+`\0003`, "NetCfgInstanceId", sz("{C}"))
+	f.set(CLS+`\0003`, "DeviceInstanceID", sz(`ROOT\NET\0000`)) // VPN TAP adapter: left alone
+	f.set(CLS+`\Properties`, "Something", sz("x"))              // the class's own Properties key: no NetCfgInstanceId
+	e := engine.New(tweaks.All, f, engine.NewBackup(""))
+	if r := e.Apply("nic_power_mgmt_off", ""); r.Error != "" || !*r.Applied || !r.Reboot {
+		t.Fatalf("apply %+v", r)
+	}
+	for _, k := range []string{`\0001`, `\0002`} {
+		if v, _ := f.RegGet(CLS+k, "PnPCapabilities"); v == nil || !engine.Same(v.Value, 24) {
+			t.Fatalf("%s: PnPCapabilities = %v", k, v)
+		}
+	}
+	if v, _ := f.RegGet(CLS+`\0003`, "PnPCapabilities"); v != nil {
+		t.Fatal("virtual adapter must not be touched")
+	}
+	if r := e.Revert("nic_power_mgmt_off"); r.Error != "" || *r.Applied {
+		t.Fatalf("revert %+v", r)
+	}
+	if v, _ := f.RegGet(CLS+`\0001`, "PnPCapabilities"); v == nil || !engine.Same(v.Value, 0) {
+		t.Fatalf("0001 original (0) not restored: %v", v)
+	}
+	if v, _ := f.RegGet(CLS+`\0002`, "PnPCapabilities"); v != nil {
+		t.Fatal("0002 had no value before: must be deleted again")
+	}
+}
+
+func TestWindowsSoundsSchemeSilencesEveryEventAndRevertRestoresIt(t *testing.T) {
+	f := newFake()
+	const S = `HKCU\AppEvents\Schemes`
+	sz := func(v string) engine.RegValue { return engine.RegValue{Type: "REG_SZ", Value: v} }
+	f.set(S, "", sz(".Default"))
+	f.set(S+`\Apps\.Default\.Default\.Current`, "", engine.RegValue{Type: "REG_EXPAND_SZ", Value: `%SystemRoot%\media\Windows Ding.wav`})
+	f.set(S+`\Apps\.Default\.Default\.Default`, "", engine.RegValue{Type: "REG_EXPAND_SZ", Value: `%SystemRoot%\media\Windows Ding.wav`})
+	f.set(S+`\Apps\.Default\DeviceConnect\.Current`, "", sz(`C:\Windows\media\Windows Hardware Insert.wav`))
+	f.set(S+`\Apps\Explorer\Navigating\.Current`, "", sz(""))
+	f.set(S+`\Apps\Explorer\Navigating\.Default`, "", sz(`C:\Windows\media\Windows Navigation Start.wav`))
+	f.set(S+`\Names\.None`, "", sz("No Sounds")) // not an app: ignored
+	e := engine.New(tweaks.All, f, engine.NewBackup(""))
+	if st := state(e, "win_sounds_off"); st.Applied == nil || *st.Applied {
+		t.Fatalf("should be off: %+v", st)
+	}
+	if r := e.Apply("win_sounds_off", ""); r.Error != "" || !*r.Applied {
+		t.Fatalf("apply %+v", r)
+	}
+	for _, k := range []string{`\Apps\.Default\.Default\.Current`, `\Apps\.Default\DeviceConnect\.Current`, `\Apps\Explorer\Navigating\.Current`} {
+		if v, _ := f.RegGet(S+k, ""); v == nil || fmt.Sprint(v.Value) != "" {
+			t.Fatalf("%s not silenced: %v", k, v)
+		}
+	}
+	if v, _ := f.RegGet(S+`\Apps\.Default\.Default\.Default`, ""); fmt.Sprint(v.Value) == "" {
+		t.Fatal("the .Default sound of an event must stay (Windows uses it to restore the scheme)")
+	}
+	if v, _ := f.RegGet(S, ""); fmt.Sprint(v.Value) != ".None" {
+		t.Fatalf("scheme = %v", v)
+	}
+	if r := e.Revert("win_sounds_off"); r.Error != "" || *r.Applied {
+		t.Fatalf("revert %+v", r)
+	}
+	if v, _ := f.RegGet(S+`\Apps\.Default\.Default\.Current`, ""); v == nil || v.Type != "REG_EXPAND_SZ" || fmt.Sprint(v.Value) != `%SystemRoot%\media\Windows Ding.wav` {
+		t.Fatalf("Ding not restored with its type: %v", v)
+	}
+	if v, _ := f.RegGet(S+`\Apps\Explorer\Navigating\.Current`, ""); fmt.Sprint(v.Value) != "" {
+		t.Fatal("an event that was already silent must stay silent")
+	}
+	if v, _ := f.RegGet(S, ""); fmt.Sprint(v.Value) != ".Default" {
+		t.Fatalf("scheme after revert = %v", v)
+	}
+	// revert without a backup falls back to each event's .Default sound
+	_ = e.Apply("win_sounds_off", "")
+	_ = e.Backup.Clear("win_sounds_off")
+	if r := e.Revert("win_sounds_off"); r.Error != "" {
+		t.Fatalf("revert without backup %+v", r)
+	}
+	if v, _ := f.RegGet(S+`\Apps\Explorer\Navigating\.Current`, ""); fmt.Sprint(v.Value) != `C:\Windows\media\Windows Navigation Start.wav` {
+		t.Fatalf("fallback must copy .Default into .Current: %v", v)
+	}
+}
+
+func TestStageTweaksAreWiredIn(t *testing.T) {
+	want := []string{"usb_suspend_off", "pcie_aspm_off", "disk_sleep_off", "cpu_min_100", "cooling_active", "sleep_never_ac", "slideshow_paused", "nic_power_mgmt_off", "fast_startup_off", "diagtrack_off", "svc_unused_off", "wer_off", "geolocation_off", "hyperv_guest_off", "bluetooth_off", "print_off", "imaging_off", "mixed_reality_off", "netbios_helper_off", "iphelper_off", "telemetry_tasks_off", "defrag_schedule_off", "wu_notify_only", "store_autoupdate_off", "cortana_off", "privacy_off", "win_sounds_off"}
+	for _, id := range want {
+		if tweaks.ByID(id) == nil {
+			t.Fatalf("%s missing from All", id)
+		}
+	}
+	if len(tweaks.Stage) != len(want) {
+		t.Fatalf("Stage has %d tweaks, the list above %d", len(tweaks.Stage), len(want))
+	}
+	// the guide's Fast Startup advice is part of the Valorant freeze bundle
+	if p := tweaks.PresetByID("val_freeze"); p == nil || !contains(p.Tweaks, "fast_startup_off") {
+		t.Fatal("val_freeze should include fast_startup_off")
+	}
+	// the one-click boost stays cheap: no PowerShell-based stage tweak is recommended
+	for _, id := range []string{"telemetry_tasks_off", "defrag_schedule_off"} {
+		if tweaks.ByID(id).Recommended {
+			t.Fatalf("%s must not be in the recommended set", id)
+		}
+	}
+	// nothing the guide marks as a trade-off is applied by the one-click boost
+	for _, id := range []string{"bluetooth_off", "print_off", "imaging_off", "sleep_never_ac", "cpu_min_100", "wu_notify_only", "nic_power_mgmt_off", "fast_startup_off"} {
+		tw := tweaks.ByID(id)
+		if tw.Recommended {
+			t.Fatalf("%s must not be recommended", id)
+		}
+	}
+}
+
+func state(e *engine.Engine, id string) engine.State {
+	for _, s := range e.State() {
+		if s.ID == id {
+			return s
+		}
+	}
+	return engine.State{}
+}
+
+func contains(list []string, s string) bool {
+	for _, x := range list {
+		if x == s {
+			return true
+		}
+	}
+	return false
+}
