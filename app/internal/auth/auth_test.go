@@ -99,3 +99,25 @@ func TestRealServerKeyParses(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestURLSafeUnpaddedSignatureIsAccepted(t *testing.T) {
+	pub, priv, _ := ed25519.GenerateKey(rand.Reader)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var b map[string]any
+		_ = json.Unmarshal(body, &b)
+		d, _ := json.Marshal(map[string]any{"token": "tok", "username": "bob", "active": true, "expires": float64(time.Now().Add(time.Hour).UnixMilli()), "nonce": b["nonce"], "machine": b["machine"]})
+		sig := ed25519.Sign(priv, d)
+		_ = json.NewEncoder(w).Encode(map[string]string{"d": string(d), "sig": base64.RawURLEncoding.EncodeToString(sig)}) // the worker's old b64e()
+	}))
+	defer srv.Close()
+	der, _ := x509.MarshalPKIXPublicKey(pub)
+	a, err := auth.New(srv.URL, filepath.Join(t.TempDir(), "auth.json"), base64.StdEncoding.EncodeToString(der), "guid", 7)
+	if err != nil {
+		t.Fatal(err)
+	}
+	v, err := a.Login("bob", "pw")
+	if err != nil || !v.LoggedIn || !v.Active {
+		t.Fatalf("login with a URL-safe unpadded signature must work: %v %+v", err, v)
+	}
+}

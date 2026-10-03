@@ -142,8 +142,8 @@ func (a *Auth) Post(path string, body map[string]any) (map[string]any, error) {
 		}
 		return nil, &HTTPError{Status: resp.StatusCode, Msg: msg}
 	}
-	sig, err := base64.StdEncoding.DecodeString(j.Sig)
-	if err != nil || j.D == "" || !ed25519.Verify(a.key, []byte(j.D), sig) {
+	sig := decodeB64(j.Sig)
+	if sig == nil || j.D == "" || !ed25519.Verify(a.key, []byte(j.D), sig) {
 		return nil, errors.New("bad server signature")
 	}
 	var d map[string]any
@@ -154,6 +154,16 @@ func (a *Auth) Post(path string, body map[string]any) (map[string]any, error) {
 		return nil, errors.New("server answer does not match this request")
 	}
 	return d, nil
+}
+
+// decodeB64 accepts standard or URL-safe base64, padded or not (the worker used URL-safe unpadded output until 2026-10-03).
+func decodeB64(s string) []byte {
+	for _, enc := range []*base64.Encoding{base64.StdEncoding, base64.RawStdEncoding, base64.URLEncoding, base64.RawURLEncoding} {
+		if b, err := enc.DecodeString(s); err == nil {
+			return b
+		}
+	}
+	return nil
 }
 
 func str(v any) string {

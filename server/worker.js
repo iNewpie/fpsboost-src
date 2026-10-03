@@ -32,7 +32,7 @@ import { ICON_SVG, ICON_IMG } from './icons.js';
 import { t, landing, authPage, termsPage, accountPage, payPage, messagePage, prices } from './pages.js';
 import { adminAuthPage, adminDash } from './admin.js';
 
-const BUILD = '2026-10-03a';
+const BUILD = '2026-10-03b';
 const SESSION_DAYS = 30, APP_TOKEN_DAYS = 30, MONTH_MS = 30 * 86400000;
 
 export default {
@@ -247,7 +247,8 @@ function appKey(env) {
 async function appAnswer(env, b, payload) {
   const key = await appKey(env); if (!key) return Response.json({ error: 'server not configured (APP_SIGN_KEY)' }, { status: 503 });
   const d = JSON.stringify({ ...payload, now: Date.now(), nonce: String(b.nonce || '').slice(0, 64), machine: String(b.machine || '').slice(0, 64) });
-  const sig = b64e(new Uint8Array(await crypto.subtle.sign({ name: 'Ed25519' }, key, enc.encode(d))));
+  // standard base64 with padding: the Go app decodes it with base64.StdEncoding (URL-safe/unpadded output broke every 1.0.x login with "bad server signature")
+  const sig = btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.sign({ name: 'Ed25519' }, key, enc.encode(d)))));
   return Response.json({ d, sig });
 }
 
