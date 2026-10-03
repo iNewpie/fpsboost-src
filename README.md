@@ -1,5 +1,12 @@
 # FPS Boost — fpsboost.ir
 
+> **Discontinued (October 2026).** fpsboost.ir is offline and the app's online services (login, subscriptions, updates)
+> are closed. The code is published here as open source under the [MIT license](LICENSE) — read it, learn from it, fork
+> it, self-host it (see Setup below). No support, no warranty; the app changes Windows power, service and registry
+> settings and needs administrator rights, so read `app/internal/tweaks/` before running it on a PC you care about.
+> The last installers (1.0.7, 1.0.8) stay on the [releases page](https://github.com/iNewpie/fpsboost/releases) for
+> reference; they are unsigned and will keep showing the SmartScreen warning.
+
 A Windows app that applies proven **network** and **FPS** tweaks with full undo, sold as a subscription. Persian + English.
 
 - `server/` — the website + account API: one Cloudflare Worker (free) with a Durable Object (SQLite) for accounts, subscriptions and Zarinpal payments. Admin at `/admin`.
