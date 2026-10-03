@@ -150,9 +150,7 @@ Section "FPS Boost" SecMain
   ${If} $0 == ""
   ${OrIf} $0 == "0.0.0.0"
     ; under Wine (local test builds) the bootstrapper cannot run
-    ClearErrors
-    ReadRegStr $1 HKCU "Software\Wine" ""
-    ${If} ${Errors}
+    ${IfNot} ${FileExists} "$SYSDIR\winemenubuilder.exe"
       DetailPrint "$(WV2Install)"
       SetOutPath "$TEMP"
       File "MicrosoftEdgeWebview2Setup.exe"

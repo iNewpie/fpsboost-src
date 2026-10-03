@@ -16,6 +16,7 @@ import (
 	"unicode/utf16"
 
 	"golang.org/x/sys/windows"
+	"golang.org/x/sys/windows/registry"
 
 	"fpsboost.ir/app/internal/engine"
 )
@@ -126,8 +127,21 @@ func currentUser() (string, error) {
 	return dom + `\` + acc, nil
 }
 
+// IsWine reports whether we run under Wine (local test builds): schtasks and friends hang there.
+func IsWine() bool {
+	k, err := registry.OpenKey(registry.CURRENT_USER, `Software\Wine`, registry.QUERY_VALUE)
+	if err != nil {
+		return false
+	}
+	k.Close()
+	return true
+}
+
 // InstallStartupTask registers (or refreshes) the logon task.
 func InstallStartupTask(exe string) error {
+	if IsWine() {
+		return fmt.Errorf("skipped under Wine")
+	}
 	f := filepath.Join(os.TempDir(), "fpsboost-task.xml")
 	// UTF-16LE with BOM, as schtasks expects
 	u := utf16.Encode([]rune(taskXML(exe)))
@@ -149,10 +163,16 @@ func InstallStartupTask(exe string) error {
 
 // RemoveStartupTask deletes the logon task (also used by the uninstaller through --unregister).
 func RemoveStartupTask() {
+	if IsWine() {
+		return
+	}
 	Run(30*time.Second, "schtasks", "/Delete", "/TN", taskName, "/F")
 }
 
 // HasStartupTask reports whether the task exists.
 func HasStartupTask() bool {
+	if IsWine() {
+		return false
+	}
 	return Run(30*time.Second, "schtasks", "/Query", "/TN", taskName).Code == 0
 }
